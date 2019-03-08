@@ -36,14 +36,8 @@ Returns:
 
 Volcano plot image in same directory (volcano.png)
 
-Example:
-```
-Python 3.6.4 (default, Oct 10 2018, 14:08:09)
-[GCC Intel(R) C++ gcc 6.4 mode] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> from bioinfokit import visuz
->>> visuz.volcano(table="test/test_dataset.csv", lfc="log2FC", pv="p-value")
-```
+<a href="https://reneshbedre.github.io/blog/volcano.html" target="_blank">Working example</a>
+
 
 
 <b>MA plot</b>
