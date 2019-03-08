@@ -3,7 +3,7 @@ Bioinformatics data analysis and visualization toolkit
 
 **<span style="color:#33a8ff">How to install:</span>**
 
-For github,
+From GitHub,
 
 ```
 git clone https://github.com/reneshbedre/bioinfokit.git
@@ -11,11 +11,14 @@ cd bioinfokit
 python3 setup.py install
 ```
 
+<!--
 From Python package index,
 
 `pip install -i https://test.pypi.org/simple/ bioinfokit `
 
 **<span style="color:#33a8ff">Functions:</span>**
+-->
+
 
 <b>Volcano plot</b>
 
@@ -39,7 +42,7 @@ Python 3.6.4 (default, Oct 10 2018, 14:08:09)
 [GCC Intel(R) C++ gcc 6.4 mode] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> from bioinfokit import visuz
-
+>>> visuz.volcano(table="test/test_dataset.csv", lfc="log2FC", pv="p-value")
 ```
 
 
