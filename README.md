@@ -26,7 +26,7 @@ From Python package index,
 
 Parameters | Description
 ------------ | -------------
-`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, P-values or adjusted P-values
+`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
 `lfc` | Name of a column having log fold change values [default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [default:p_values]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
@@ -46,7 +46,7 @@ Volcano plot image in same directory (volcano.png)
 
 Parameters | Description
 ------------ | -------------
-`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, P-values or adjusted P-values
+`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, and counts (control and treatment) columns
 `lfc` | Name of a column having log fold change values [default:logFC]
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
@@ -56,6 +56,7 @@ Returns:
 
 MA plot image in same directory (ma.png)
 
+<a href="https://reneshbedre.github.io/blog/ma.html" target="_blank">Working example</a>
 
 <b>Inverted Volcano plot</b>
 
