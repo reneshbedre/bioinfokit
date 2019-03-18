@@ -3,9 +3,9 @@
 def seqcov(file="fastq_file", gs="genome_size"):
     num_reads, total_len = fqreadcounter(file)
     # haploid genome_size must be in Mbp; convert in bp
-    gs = gs * 1e-6
-    cov = float(total_len/gs)
-    print(file, cov, "X")
+    gs = gs * 1e6
+    cov = round(float(total_len / gs), 4)
+    print(file, cov)
 
 
 def mergevcf(file="vcf_file_com_sep"):
@@ -34,11 +34,11 @@ def fqreadcounter(file="fastq_file"):
     num_lines = 0
     total_len = 0
     for line in read_file:
-        num_lines =+ 1
+        num_lines += 1
         header_1 = line.rstrip()
         read = next(read_file).rstrip()
         len_read = len(read)
-        total_len =+ len_read
+        total_len += len_read
         header_2 = next(read_file).rstrip()
         read_qual = next(read_file).rstrip()
     read_file.close()
