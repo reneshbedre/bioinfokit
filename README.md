@@ -74,7 +74,7 @@ Returns:
 
 Inverted volcano plot image in same directory (involcano.png)
 
-
+<a href="https://reneshbedre.github.io/blog/volcano.html" target="_blank">Working example</a>
 
 
 <b>Correlation matrix plot</b>
@@ -90,3 +90,17 @@ Parameters | Description
 Returns:
 
 Correlation matrix plot image in same directory (corr_mat.png)
+
+<b>Merge VCF files</b>
+
+`bioinfokit.analys.mergevcf(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | Multiple vcf files and separate them by comma
+
+Returns:
+
+Merged VCF file (merge_vcf.vcf)
+
+<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
