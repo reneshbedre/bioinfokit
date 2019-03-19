@@ -3,12 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.cm as cmc
 
-'''
-def example1(a, b):
-    x = a+b
-    return ("Hello, This is a example1 function", x)
-'''
-
 
 def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05):
     # load csv data file
@@ -64,9 +58,10 @@ def ma(table="dataset_file", lfc="logFC", ct_count="value1", st_count="value2", 
     plt.close()
 
 
-def corr_mat(table="dataset_file", corm="pearson"):
+def corr_mat(table="p_df", corm="pearson"):
     # load csv data file
-    d = pd.read_csv(table, sep=",")
+    # d = pd.read_csv(table, sep=",")
+    d = pd.DataFrame(data=table)
     d_corr = d.corr(method=corm)
     plt.matshow(d_corr, vmin=-1, vmax=1, cmap=cmc.seismic)
     plt.colorbar()

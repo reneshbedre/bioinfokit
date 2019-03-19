@@ -79,17 +79,34 @@ Inverted volcano plot image in same directory (involcano.png)
 
 <b>Correlation matrix plot</b>
 
-`bioinfokit.visuz.involcano(table, lfc, pv, lfc_thr, pv_thr)`
+`bioinfokit.visuz.corr_mat(table, corm)`
 
 Parameters | Description
 ------------ | -------------
-`table` |Comma separated (csv) table with numerical variables (columns) to find correlation. Ideally, you should have three or more variables. Table should not have identifier column.
+`table` | Dataframe object with numerical variables (columns) to find correlation. Ideally, you should have three or more variables. Dataframe should not have identifier column.
 `corm` | Correlation method [pearson,kendall,spearman] [default:pearson]
 
 
 Returns:
 
 Correlation matrix plot image in same directory (corr_mat.png)
+
+<a href="https://reneshbedre.github.io/blog/corr.html" target="_blank">Working example</a>
+
+<b>Merge VCF files</b>
+
+`bioinfokit.analys.mergevcf(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | Multiple vcf files and separate them by comma
+
+Returns:
+
+Merged VCF file (merge_vcf.vcf)
+
+<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+
 
 <b>Merge VCF files</b>
 
