@@ -133,6 +133,6 @@ Parameters | Description
 
 Returns:
 
-PCA summary, scree plot (screepca.png), and pca plot (pcaplot_2.png)
+PCA summary, scree plot (screepca.png), and 2D/3D pca plots (pcaplot_2d.png and pcaplot_3d.png)
 
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
