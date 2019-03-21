@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.cm as cmc
 
@@ -73,3 +74,35 @@ def corr_mat(table="p_df", corm="pearson"):
     plt.close()
 
 
+def screeplot(obj="pcascree"):
+    y = [x * 100 for x in obj[1]]
+    plt.bar(obj[0], y)
+    plt.xlabel('PCs', fontsize=12, fontname="sans-serif")
+    plt.ylabel('Proportion of variance (%)', fontsize=12, fontname="sans-serif")
+    plt.xticks(fontsize=7, rotation=70)
+    plt.savefig('screeplot.png', format='png', bbox_inches='tight', dpi=300)
+    plt.close()
+
+
+def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3="var3"):
+    for i, varnames in enumerate(labels):
+        plt.scatter(x[i], y[i])
+        plt.text(x[i], y[i], varnames, fontsize=10)
+    plt.xlabel("PC1 ({}%)".format(var1), fontsize=12, fontname="sans-serif")
+    plt.ylabel("PC2 ({}%)".format(var2), fontsize=12, fontname="sans-serif")
+    plt.tight_layout()
+    plt.savefig('pcaplot_2d.png', format='png', bbox_inches='tight', dpi=300)
+    plt.close()
+
+    # for 3d plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for i, varnames in enumerate(labels):
+        ax.scatter(x[i], y[i], z[i])
+        ax.text(x[i], y[i], z[i], varnames, fontsize=10)
+    ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=12, fontname="sans-serif")
+    ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=12, fontname="sans-serif")
+    ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=12, fontname="sans-serif")
+    plt.tight_layout()
+    plt.savefig('pcaplot_3d.png', format='png', bbox_inches='tight',  dpi=300)
+    plt.close()

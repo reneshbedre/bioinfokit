@@ -121,3 +121,18 @@ Returns:
 Merged VCF file (merge_vcf.vcf)
 
 <a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+
+
+<b>PCA</b>
+
+`bioinfokit.analys.pca(table)`
+
+Parameters | Description
+------------ | -------------
+`table` | Dataframe object with numerical variables (columns). Dataframe should not have identifier column.
+
+Returns:
+
+PCA summary, scree plot (screepca.png), and pca plot (pcaplot_2.png)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
