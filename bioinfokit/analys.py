@@ -1,7 +1,9 @@
 from sklearn.decomposition import PCA
 import pandas as pd
+import re
 import numpy as np
 from bioinfokit.visuz import screeplot, pcaplot
+from itertools import groupby
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -63,6 +65,48 @@ def pca(table="p_df"):
             var3=round(prop_var[2] * 100, 2))
 
 
+def extract_seq(file="fasta_file", id="id_file"):
+    # extract seq from fasta file based on id match
+    id_list = []
+    id_file = open(id, "rU")
+    out_file = open("output.fasta", 'w')
+    for line in id_file:
+        id_name = line.rstrip('\n')
+        id_list.append(id_name)
+    list_len = len(id_list)
+    value = [1] * list_len
+    # id_list converted to dict for faster search
+    dict_list = dict(zip(id_list, value))
+    fasta_iter = fasta_reader(file)
+    for record in fasta_iter:
+        fasta_header, seq = record
+        if fasta_header.strip() in dict_list.keys():
+            out_file.write(">"+fasta_header+"\n"+seq+"\n")
+    out_file.close()
+    id_file.close()
+
+
+# remove seqs which match to ids in id file
+def extract_seq_nomatch(file="fasta_file", id="id_file"):
+    # extract seq from fasta file based on id match
+    id_list = []
+    id_file = open(id, "rU")
+    out_file = open("output.fasta", 'w')
+    for line in id_file:
+        id_name = line.rstrip('\n')
+        id_list.append(id_name)
+    list_len = len(id_list)
+    value = [1] * list_len
+    # id_list converted to dict for faster search
+    dict_list = dict(zip(id_list, value))
+    fasta_iter = fasta_reader(file)
+    for record in fasta_iter:
+        fasta_header, seq = record
+        if fasta_header.strip() not in dict_list.keys():
+            out_file.write(">"+fasta_header+"\n"+seq+"\n")
+    out_file.close()
+    id_file.close()
+
 def fqreadcounter(file="fastq_file"):
     read_file = open(file, "rU")
     num_lines = 0
@@ -78,3 +122,13 @@ def fqreadcounter(file="fastq_file"):
     read_file.close()
     num_reads = num_lines/4
     return num_reads, total_len
+
+
+def fasta_reader(file="fasta_file"):
+    read_file = open(file, "U")
+    fasta_iter = (rec[1] for rec in groupby(read_file, lambda line: line[0] == ">"))
+    for record in fasta_iter:
+        fasta_header = record .__next__()[1:].strip()
+        fasta_header = re.split("\s+", fasta_header)[0]
+        seq = "".join(s.strip() for s in fasta_iter.__next__())
+        yield (fasta_header, seq)
