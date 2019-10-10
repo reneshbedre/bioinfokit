@@ -136,3 +136,40 @@ Returns:
 PCA summary, scree plot (screepca.png), and 2D/3D pca plots (pcaplot_2d.png and pcaplot_3d.png)
 
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
+
+
+<b>Reverse complement of DNA sequence</b>
+
+`bioinfokit.analys.rev_com(sequence)`
+
+Parameters | Description
+------------ | -------------
+`seq` | DNA sequence to perform reverse complement
+`file` | DNA sequence in a fasta file
+
+Returns:
+
+Reverse complement of original DNA sequence
+
+<a href="https://reneshbedre.github.io/blog/revcom.html" target="_blank">Working example</a>
+
+<!--
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
+
+<b>Extract the subsequence from the genome or gene sequences</b>
+
+`bioinfokit.analys.rev_com(sequence)`
+
+Parameters | Description
+------------ | -------------
+`sequence file` | Genome or gene sequence file in fasta format
+`id` | sequence ID
+`start` | Start coordinate of the sequence to extract
+`end` | End coordinate of the sequence to extract
+`strand` | Sequence strand [default: plus]
+
+Returns:
+Extracted subsequence
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
+-->

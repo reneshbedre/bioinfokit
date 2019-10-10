@@ -4,6 +4,7 @@ import re
 import numpy as np
 from bioinfokit.visuz import screeplot, pcaplot
 from itertools import groupby
+import string
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -125,10 +126,40 @@ def fqreadcounter(file="fastq_file"):
 
 
 def fasta_reader(file="fasta_file"):
-    read_file = open(file, "U")
+    read_file = open(file, "rU")
     fasta_iter = (rec[1] for rec in groupby(read_file, lambda line: line[0] == ">"))
     for record in fasta_iter:
         fasta_header = record .__next__()[1:].strip()
         fasta_header = re.split("\s+", fasta_header)[0]
         seq = "".join(s.strip() for s in fasta_iter.__next__())
         yield (fasta_header, seq)
+
+def rev_com(seq=None, file=None):
+    if seq is not None:
+        rev_seq = seq[::-1]
+        rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
+        return rev_seq
+    elif file is not None:
+        out_file = open("output_revcom.fasta", 'w')
+        fasta_iter = fasta_reader(file)
+        for record in fasta_iter:
+            fasta_header, seq = record
+            rev_seq = seq[::-1]
+            rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
+            out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
+        out_file.close()
+
+# extract subseq from genome sequence
+def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
+    fasta_iter = fasta_reader(file)
+    for record in fasta_iter:
+        fasta_header, seq = record
+        if id == fasta_header.strip() and strand == "plus":
+            # -1 is necessary as it counts from 0
+            sub_seq = seq[int(st-1):int(end)]
+            print(sub_seq)
+        elif id == fasta_header.strip() and strand == "minus":
+            seq = rev_com(seq)
+            sub_seq = seq[int(st-1):int(end)]
+            print(sub_seq)
+
