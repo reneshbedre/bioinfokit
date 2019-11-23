@@ -5,15 +5,19 @@ import numpy as np
 from bioinfokit.visuz import screeplot, pcaplot
 from itertools import groupby
 import string
+import sys
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
+    x = fastq_format_check(file)
+    if x == 1:
+        print("Error: Sequences are not in fastq format")
+        sys.exit(1)
     num_reads, total_len = fqreadcounter(file)
     # haploid genome_size must be in Mbp; convert in bp
     gs = gs * 1e6
-    cov = round(float(total_len / gs), 4)
-    print(file, cov)
-
+    cov = round(float(total_len / gs), 2)
+    print("Sequence coverage for", file, "is", cov)
 
 def mergevcf(file="vcf_file_com_sep"):
     vcf_files = file.split(",")
@@ -162,4 +166,16 @@ def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"
             seq = rev_com(seq)
             sub_seq = seq[int(st-1):int(end)]
             print(sub_seq)
+
+def fastq_format_check(file="fastq_file"):
+    read_file = open(file, 'rU')
+    x = 0
+    for line in read_file:
+        header = line.rstrip()
+        if not header.startswith('@'):
+            x = 1
+        else:
+            x = 0
+        break
+    return x
 

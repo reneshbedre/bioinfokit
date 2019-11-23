@@ -153,6 +153,21 @@ Reverse complement of original DNA sequence
 
 <a href="https://reneshbedre.github.io/blog/revcom.html" target="_blank">Working example</a>
 
+<b>Sequencing coverage</b>
+
+`bioinfokit.analys.seqcov(file, gs)`
+
+Parameters | Description
+------------ | -------------
+`file` | FASTQ file
+`gs` | Genome size in Mbp
+
+Returns:
+
+Sequencing coverage of the given FASTQ file
+
+<a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Working example</a>
+
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
 
