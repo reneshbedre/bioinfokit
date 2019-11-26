@@ -189,7 +189,7 @@ CSV delimited file (out.csv)
 
 <b>Heatmap</b>
 
-`bioinfokit.analys.hmap(table, cmap='seismic', scale=True, dim=(6, 8), 
+`bioinfokit.visuz.hmap(table, cmap='seismic', scale=True, dim=(6, 8), 
     clus=True, zscore=None, xlabel=True, ylabel=True, tickfont=(12, 12))`
 
 Parameters | Description
@@ -208,7 +208,7 @@ Returns:
 
 heatmap plot (heatmap.png, heatmap_clus.png)
 
-<a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Working example</a>
+<a href="https://reneshbedre.github.io/blog/hmap.html" target="_blank">Working example</a>
 
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
