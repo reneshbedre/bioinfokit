@@ -5,7 +5,7 @@ import numpy as np
 from bioinfokit.visuz import screeplot, pcaplot
 from itertools import groupby
 import string
-import sys
+import sys, csv
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -178,4 +178,12 @@ def fastq_format_check(file="fastq_file"):
             x = 0
         break
     return x
+
+def tcsv(file="tab_file"):
+    tab_file = csv.reader(open(file, 'r'), dialect=csv.excel_tab)
+    csv_file = csv.writer(open('out.csv', 'w', newline=''), dialect=csv.excel)
+
+    for record in tab_file:
+        csv_file.writerow(record)
+
 

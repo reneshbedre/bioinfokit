@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.cm as cmc
+import seaborn as sns
 
 
 def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05):
@@ -106,3 +107,26 @@ def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3
     plt.tight_layout()
     plt.savefig('pcaplot_3d.png', format='png', bbox_inches='tight',  dpi=300)
     plt.close()
+
+def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True, zscore=None, xlabel=True, ylabel=True,
+         tickfont=(10,10)):
+    # load csv data file
+    d = pd.read_csv(table, sep=",")
+    d = d.set_index(d.columns[0])
+    # plot heatmap without cluster
+    # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+    dim = dim
+    fig, hm = plt.subplots(figsize=dim)
+    if clus:
+        hm = sns.clustermap(d, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
+                            figsize=dim)
+        hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
+        hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
+        plt.savefig('heatmap_clus.png', format='png', bbox_inches='tight', dpi=300)
+        plt.close()
+    else:
+        hm = sns.heatmap(d, cmap=cmap, cbar=scale, xticklabels=xlabel, yticklabels=ylabel)
+        plt.xticks(fontsize=tickfont[0])
+        plt.yticks(fontsize=tickfont[1])
+        plt.savefig('heatmap.png', format='png', bbox_inches='tight', dpi=300)
+        plt.close()

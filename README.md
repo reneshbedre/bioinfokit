@@ -3,7 +3,14 @@ Bioinformatics data analysis and visualization toolkit
 
 **<span style="color:#33a8ff">How to install:</span>**
 
-From GitHub,
+bioinfokit requires
+- Python 3
+- NumPy 
+- scikit-learn
+- seaborn
+- pandas
+- matplotlib
+- SciPy 
 
 ```
 git clone https://github.com/reneshbedre/bioinfokit.git
@@ -165,6 +172,41 @@ Parameters | Description
 Returns:
 
 Sequencing coverage of the given FASTQ file
+
+<a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Working example</a>
+
+<b>Convert TAB to CSV file</b>
+
+`bioinfokit.analys.tcsv(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | TAB delimited text file
+
+Returns:
+
+CSV delimited file (out.csv)
+
+<b>Heatmap</b>
+
+`bioinfokit.analys.hmap(table, cmap='seismic', scale=True, dim=(6, 8), 
+    clus=True, zscore=None, xlabel=True, ylabel=True, tickfont=(12, 12))`
+
+Parameters | Description
+------------ | -------------
+`file` | CSV delimited data file. It should not have NA or missing values
+`cmap` | Color Palette for heatmap [string][default: 'seismic']
+`scale` | Draw a color key with heatmap [boolean (True or False)][default: True]
+`dim` | heatmap figure size [tuple of two floats (width, height) in inches][default: (6, 8)]
+`clus` | Draw hierarchical clustering with heatmap [boolean (True or False)][default: True]
+`zscore` | Z-score standardization of row (0) or column (1). It works when clus is True. [None, 0, 1][default: None]
+`xlable` | Plot X-label [boolean (True or False)][default: True]
+`ylable` | Plot Y-label [boolean (True or False)][default: True]
+`tickfont` | Fontsize for X and Y-axis tick labels [tuple of two floats][default: (14, 14)]
+
+Returns:
+
+heatmap plot (heatmap.png, heatmap_clus.png)
 
 <a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Working example</a>
 

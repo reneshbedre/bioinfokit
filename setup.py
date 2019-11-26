@@ -27,5 +27,5 @@ setup(name='bioinfokit',
         "Intended Audience :: Science/Research",
        ],
 
-      install_requires=['pandas', 'numpy', 'matplotlib', 'scipy', 'scikit-learn'],
+      install_requires=['pandas', 'numpy', 'matplotlib', 'scipy', 'scikit-learn', 'seaborn'],
       )
