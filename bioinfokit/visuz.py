@@ -4,6 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.cm as cmc
 import seaborn as sns
+from matplotlib_venn import venn3, venn2
 
 
 def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05):
@@ -84,7 +85,6 @@ def screeplot(obj="pcascree"):
     plt.savefig('screeplot.png', format='png', bbox_inches='tight', dpi=300)
     plt.close()
 
-
 def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3="var3"):
     for i, varnames in enumerate(labels):
         plt.scatter(x[i], y[i])
@@ -130,3 +130,16 @@ def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True,
         plt.yticks(fontsize=tickfont[1])
         plt.savefig('heatmap.png', format='png', bbox_inches='tight', dpi=300)
         plt.close()
+
+def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), vennalpha=0.5,
+         vennlabel=('A', 'B', 'C')):
+    fig = plt.figure()
+    if len(vennset) == 7:
+        venn3(subsets=vennset, set_labels=vennlabel, set_colors=venncolor, alpha=vennalpha)
+        plt.savefig('venn3.png', format='png', bbox_inches='tight', dpi=300)
+    elif len(vennset) == 3:
+        venn2(subsets=vennset, set_labels=vennlabel, set_colors=venncolor, alpha=vennalpha)
+        plt.savefig('venn2.png', format='png', bbox_inches='tight', dpi=300)
+    else:
+        print("Error: check the set dataset")
+

@@ -210,6 +210,24 @@ heatmap plot (heatmap.png, heatmap_clus.png)
 
 <a href="https://reneshbedre.github.io/blog/hmap.html" target="_blank">Working example</a>
 
+
+`bioinfokit.visuz.venn(vennset, venncolor, vennalpha, vennlabel)`
+
+Parameters | Description
+------------ | -------------
+`vennset` | Venn dataset for 3 and 2-way venn. Data should be in the format of (100,010,110,001,101,011,111) for 3-way venn and 2-way venn (10, 01, 11) [default: (1,1,1,1,1,1,1)]
+`venncolor` | Color Palette for Venn [color code][default: ('#00909e', '#f67280', '#ff971d')]
+`vennalpha` | Transparency of Venn  [float (0 to 1)][default: 0.5]
+`vennlabel` | Labels to Venn [string][default: ('A', 'B', 'C')]
+
+Returns:
+
+Venn plot (venn3.png, venn2.png)
+
+<a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
+
+
+
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
 
