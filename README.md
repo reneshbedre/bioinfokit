@@ -210,6 +210,7 @@ heatmap plot (heatmap.png, heatmap_clus.png)
 
 <a href="https://reneshbedre.github.io/blog/hmap.html" target="_blank">Working example</a>
 
+<b>Venn Diagram</b>
 
 `bioinfokit.visuz.venn(vennset, venncolor, vennalpha, vennlabel)`
 
