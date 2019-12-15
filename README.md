@@ -227,6 +227,23 @@ Venn plot (venn3.png, venn2.png)
 
 <a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
+<b>Two sample t-test with equal and unequal variance</b>
+
+`bioinfokit.analys.ttsam(table, xfac, res, evar)`
+
+Parameters | Description
+------------ | -------------
+`table` | CSV delimited data file. It should be stacked table with independent (xfac) and dependent (res) variable columns.
+`xfac` | Independent group column name with two levels [string][default: None]
+`res` | Response variable column name [string][default: None]
+`evar` | t-test with equal variance [bool (True or False)][default: True]
+
+Returns:
+
+summary output and group boxplot (ttsam_boxplot.png)
+
+<a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Working example</a>
+
 
 
 <!--
