@@ -41,7 +41,7 @@ Parameters | Description
 `color` | Tuple of two colors [tuple][default: ("green", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
-`genenames` | Tuple of gene Ids to label the points. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
+`genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]
 
 Returns:
@@ -85,7 +85,7 @@ Parameters | Description
 `color` | Tuple of two colors [tuple][default: ("green", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
-`genenames` | Tuple of gene Ids to label the points. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
+`genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]
 
 Returns:

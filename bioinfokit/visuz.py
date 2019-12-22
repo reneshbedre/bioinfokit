@@ -6,7 +6,7 @@ import matplotlib.cm as cmc
 import seaborn as sns
 from matplotlib_venn import venn3, venn2
 
-def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont):
+def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv):
     if genenames is not None and genenames == "deg":
         for i in d[geneid].unique():
             if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr) or \
@@ -32,7 +32,7 @@ def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=
     d['color'].fillna('grey', inplace=True)  # intermediate
     d['logpv'] = -(np.log10(d[pv]))
 
-    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont)
+    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv)
     # plot
     plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha)
     plt.xlabel('log2 Fold Change', fontsize=12, fontname="sans-serif", fontweight="bold")
@@ -54,7 +54,7 @@ def involcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_th
     d['color'].fillna('grey', inplace=True)  # intermediate
     d['logpv'] = -(np.log10(d[pv]))
 
-    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont)
+    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv)
 
     # plot
     plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha)
