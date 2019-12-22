@@ -29,15 +29,20 @@ From Python package index,
 
 <b>Volcano plot</b>
 
-`bioinfokit.visuz.volcano(table, lfc, pv, lfc_thr, pv_thr)`
+`bioinfokit.visuz.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont)`
 
 Parameters | Description
 ------------ | -------------
 `table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
-`lfc` | Name of a column having log fold change values [default:logFC]
-`pv` | Name of a column having P-values or adjusted P-values [default:p_values]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-`pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [default:0.05]
+`lfc` | Name of a column having log fold change values [string][default:logFC]
+`pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [float][default:1.0]
+`pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [float][default:0.05]
+`color` | Tuple of two colors [tuple][default: ("green", "red")]
+`valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
+`geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
+`genenames` | Tuple of gene Ids to label the points. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
+`gfont` | Font size for genenames [float][default: 10.0]
 
 Returns:
 
@@ -49,7 +54,7 @@ Volcano plot image in same directory (volcano.png)
 
 <b>MA plot</b>
 
-`bioinfokit.visuz.ma(table, lfc, ct_count, st_count, pv_thr)`
+`bioinfokit.visuz.ma(table, lfc, ct_count, st_count, pv_thr, color, valpha, geneid, genenames, gfont)`
 
 Parameters | Description
 ------------ | -------------
@@ -58,6 +63,11 @@ Parameters | Description
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
+`color` | Tuple of two colors [tuple][default: ("green", "red")]
+`valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
+`geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
+`genenames` | Tuple of gene Ids to label the points. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
+`gfont` | Font size for genenames [float][default: 10.0]
 
 Returns:
 

@@ -6,36 +6,61 @@ import matplotlib.cm as cmc
 import seaborn as sns
 from matplotlib_venn import venn3, venn2
 
+def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont):
+    if genenames is not None and genenames == "deg":
+        for i in d[geneid].unique():
+            if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr) or \
+                    (d.loc[d[geneid] == i, lfc].iloc[0] <= -lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr):
+                plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i, fontsize=gfont)
+    elif genenames is not None and type(genenames) is tuple:
+        for i in d[geneid].unique():
+            if i in genenames:
+                plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i, fontsize=gfont)
+    elif genenames is not None and type(genenames) is dict:
+        for i in d[geneid].unique():
+            if i in genenames:
+                plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], genenames[i],
+                         fontsize=gfont)
 
-def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05):
+def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
+            geneid=None, genenames=None, gfont=8):
     # load csv data file
     d = pd.read_csv(table, sep=",")
-    d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = "green"  # upregulated
-    d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = "red"  # downregulated
+    color = color
+    d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
+    d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
     d['color'].fillna('grey', inplace=True)  # intermediate
     d['logpv'] = -(np.log10(d[pv]))
+
+    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont)
     # plot
-    plt.scatter(d[lfc], d['logpv'], c=d['color'])
-    plt.xlabel('log2 Fold Change', fontsize=15, fontname="sans-serif", fontweight="bold")
-    plt.ylabel('-log10(P-value)', fontsize=15, fontname="sans-serif", fontweight="bold")
+    plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha)
+    plt.xlabel('log2 Fold Change', fontsize=12, fontname="sans-serif", fontweight="bold")
+    plt.ylabel('-log10(P-value)', fontsize=12, fontname="sans-serif", fontweight="bold")
     plt.xticks(fontsize=12, fontname="sans-serif")
     plt.yticks(fontsize=12, fontname="sans-serif")
+    
     plt.savefig('volcano.png', format='png', bbox_inches='tight', dpi=300)
     plt.close()
 
 
-def involcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05):
+def involcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
+              geneid=None, genenames=None, gfont=8):
     # load csv data file
     d = pd.read_csv(table, sep=",")
-    d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = "green"  # upregulated
-    d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = "red"  # downregulated
+    color = color
+    d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
+    d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
     d['color'].fillna('grey', inplace=True)  # intermediate
     d['logpv'] = -(np.log10(d[pv]))
+
+    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont)
+
     # plot
-    plt.scatter(d[lfc], d['logpv'], c=d['color'])
+    plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha)
     plt.gca().invert_yaxis()
-    plt.xlabel('log2 Fold Change', fontsize=15, fontname="sans-serif", fontweight="bold")
-    plt.ylabel('-log10(P-value)', fontsize=15, fontname="sans-serif", fontweight="bold")
+    plt.xlabel('log2 Fold Change', fontsize=12, fontname="sans-serif", fontweight="bold")
+    plt.ylabel('-log10(P-value)', fontsize=12, fontname="sans-serif", fontweight="bold")
     plt.xticks(fontsize=12, fontname="sans-serif")
     plt.yticks(fontsize=12, fontname="sans-serif")
     plt.savefig('involcano.png', format='png', bbox_inches='tight', dpi=300)

@@ -27,5 +27,6 @@ setup(name='bioinfokit',
         "Intended Audience :: Science/Research",
        ],
 
-      install_requires=['pandas', 'numpy', 'matplotlib', 'scipy', 'scikit-learn', 'seaborn', 'matplotlib_venn'],
+      install_requires=['pandas', 'numpy', 'matplotlib', 'scipy', 'scikit-learn', 'seaborn', 'matplotlib_venn',
+                        'tabulate', 'termcolor'],
       )
