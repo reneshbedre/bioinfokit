@@ -256,6 +256,21 @@ summary output and group boxplot (ttsam_boxplot.png)
 <a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Working example</a>
 
 
+<b>Chi-square test for independence</b>
+
+`bioinfokit.analys.chisq(table)`
+
+Parameters | Description
+------------ | -------------
+`table` | CSV delimited data file. It should be contingency table.
+
+Returns:
+
+summary output and variable mosaic plot (mosaic.png)
+
+<a href="https://reneshbedre.github.io/blog/chisq.html" target="_blank">Working example</a>
+
+
 
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>

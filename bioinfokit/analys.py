@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 from tabulate import tabulate
 from termcolor import colored
+from statsmodels.graphics.mosaicplot import mosaic
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -267,5 +268,29 @@ def ttsam(table="table", xfac=None, res=None, evar=True):
     plt.ylabel(res)
     plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
 
+
+def chisq(table="table"):
+    d = pd.read_csv(table, index_col=0)
+    tabulate_list = []
+    chi_ps, p_ps, dof_ps, expctd_ps = stats.chi2_contingency(d.to_dict('split')['data'])
+    tabulate_list.append(["Pearson", dof_ps, chi_ps, p_ps])
+    chi_ll, p_ll, dof_ll, expctd_ll = stats.chi2_contingency(d.to_dict('split')['data'], lambda_="log-likelihood")
+    tabulate_list.append(["Log-likelihood", dof_ll, chi_ll, p_ll])
+
+    mosaic_dict = dict()
+    m = d.to_dict('split')
+
+    for i in range(d.shape[0]):
+        for j in range(d.shape[1]):
+            mosaic_dict[(m['index'][i], m['columns'][j])] = m['data'][i][j]
+
+    print("\nChi-squared test\n")
+    print(tabulate(tabulate_list, headers=["Test", "Df", "Chi-square", "P-value"]))
+    print("\nExpected frequency counts\n")
+    print(tabulate(expctd_ps, headers=d.to_dict('split')['columns'], showindex="always"))
+
+    labels = lambda k: "" if mosaic_dict[k] != 0 else ""
+    mosaic(mosaic_dict, labelizer=labels)
+    plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
 
 
