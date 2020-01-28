@@ -11,6 +11,7 @@ import scipy.stats as stats
 from tabulate import tabulate
 from termcolor import colored
 from statsmodels.graphics.mosaicplot import mosaic
+from textwrap3 import wrap
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -292,5 +293,59 @@ def chisq(table="table"):
     labels = lambda k: "" if mosaic_dict[k] != 0 else ""
     mosaic(mosaic_dict, labelizer=labels)
     plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
+
+
+class format():
+    def fqtofa(file="fastq_file"):
+        x = fastq_format_check(file)
+        if x == 1:
+            print("Error: Sequences are not in fastq format")
+            sys.exit(1)
+
+        read_file = open(file, "rU")
+        out_file = open("output.fasta", 'w')
+        for line in read_file:
+            header_1 = line.rstrip()
+            read = next(read_file).rstrip()
+            header_2 = next(read_file).rstrip()
+            read_qual = next(read_file).rstrip()
+            out_file.write(header_1+"\n"+'\n'.join(wrap(read, 60))+"\n")
+        read_file.close()
+
+    def tabtocsv(file="tab_file"):
+        tab_file = csv.reader(open(file, 'r'), dialect=csv.excel_tab)
+        csv_file = csv.writer(open('output.csv', 'w', newline=''), dialect=csv.excel)
+
+        for record in tab_file:
+            csv_file.writerow(record)
+
+    def csvtotab(file="csv_file"):
+        csv_file = csv.reader(open(file, 'r'), dialect=csv.excel)
+        tab_file = csv.writer(open('output.txt', 'w', newline=''), dialect=csv.excel_tab)
+
+        for record in csv_file:
+            tab_file.writerow(record)
+
+    def hmmtocsv(file="hmm_file"):
+        hmm_file = open(file, "rU")
+        csv_file = open("ouput_hmm.csv", "w")
+
+        for line in hmm_file:
+            line = line.strip()
+            if not line.startswith("#"):
+                data = re.split(' +', line)
+                if len(data) == 19:
+                    data[18] = data[18].replace(',', ' ')
+                    csv_file.write(str.join(',', data))
+                    csv_file.write("\n")
+                elif len(data) > 19:
+                    ele = list(range(18, len(data)))
+                    data[18] = " ".join([e for i, e in enumerate(data) if i in ele])
+                    data[18] = data[18].replace(',', '')
+                    csv_file.write(str.join(',', data[0:19]))
+                    csv_file.write("\n")
+        hmm_file.close()
+        csv_file.close()
+
 
 

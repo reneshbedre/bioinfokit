@@ -271,6 +271,25 @@ summary output and variable mosaic plot (mosaic.png)
 <a href="https://reneshbedre.github.io/blog/chisq.html" target="_blank">Working example</a>
 
 
+<b>File format conversions</b>
+
+`bioinfokit.analys.format`
+
+Function | Parameters | Description
+------------|---------- | -------------
+`bioinfokit.analys.format.fqtofa(file)` | `FASTQ file` | Convert FASTQ file into FASTA format
+`bioinfokit.analys.format.hmmtocsv(file)` | `HMM file` | Convert HMM text output (from HMMER tool) to CSV format
+`bioinfokit.analys.format.tabtocsv(file)` | `TAB file` | Convert TAB file to CSV format
+`bioinfokit.analys.format.csvtotab(file)` | `CSV file` | Convert CSV file to TAB format
+
+
+Returns:
+
+Output will be saved in same directory
+
+<a href="https://reneshbedre.github.io/blog/format.html" target="_blank">Working example</a>
+
+
 
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
