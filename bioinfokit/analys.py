@@ -12,6 +12,9 @@ from tabulate import tabulate
 from termcolor import colored
 from statsmodels.graphics.mosaicplot import mosaic
 from textwrap3 import wrap
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from statsmodels.formula.api import ols
+import statsmodels.api as sm
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -346,6 +349,48 @@ class format():
                     csv_file.write("\n")
         hmm_file.close()
         csv_file.close()
+
+class stat():
+    def oanova(table="table", res=None, xfac=None, ph=False, phalpha=0.05):
+        # create and run model
+        model = ols('{} ~ C({})'.format(res, xfac), data=d).fit()
+        anova_table = sm.stats.anova_lm(model, typ=2)
+
+        # treatments
+        # this is for bartlett test
+        levels = d[xfac].unique()
+        fac_list = []
+        for i in levels:
+            temp = d.loc[d[xfac]==i, res]
+            fac_list.append(temp)
+
+        # check assumptions
+        # Shapiro-Wilk  data is drawn from normal distribution.
+        w, pvalue1 = stats.shapiro(model.resid)
+        w, pvalue2 = stats.bartlett(*fac_list)
+        if pvalue1 < 0.05:
+            print("Warning: Data is not drawn from normal distribution")
+        else:
+            # samples from populations have equal variances.
+            if pvalue2 < 0.05:
+                print("Warning: treatments do not have equal variances")
+
+        print("\nOne-way ANOVA Summary\n")
+        print(anova_table)
+        print("\n")
+
+        # if post-hoc test is true
+        if ph:
+            # perform multiple pairwise comparison (Tukey HSD)
+            m_comp = pairwise_tukeyhsd(endog=d[res], groups=d[xfac], alpha=phalpha)
+            print("\nPost-hoc Tukey HSD test\n")
+            print(m_comp, "\n")
+
+        print("ANOVA Assumption tests\n")
+        print("Shapiro-Wilk (P-value):", pvalue1, "\n")
+        print("Bartlett (P-value):", pvalue2, "\n")
+
+
 
 
 

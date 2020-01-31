@@ -289,6 +289,24 @@ Output will be saved in same directory
 
 <a href="https://reneshbedre.github.io/blog/format.html" target="_blank">Working example</a>
 
+<b>One-way ANOVA</b>
+
+`bioinfokit.stat.oanova(table, )`
+
+Parameters | Description
+------------ | -------------
+`table` | Pandas dataframe in stacked table format
+`res` | Response variable (dependent variable) [string][default: None]
+`xfac` | Treatments or groups or factors (independent variable) [string][default: None]
+`ph` | perform pairwise comparisons with Tukey HSD test [bool (True or False)] [default: False]
+`phalpha` |significance level Tukey HSD test [float (0 to 1)][default: 0.5] [default: 0.05]
+
+
+Returns:
+
+ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
+
+<a href="https://reneshbedre.github.io/blog/oanova.html" target="_blank">Working example</a>
 
 
 <!--
