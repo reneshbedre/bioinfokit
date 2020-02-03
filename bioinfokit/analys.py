@@ -353,16 +353,24 @@ class format():
 class stat():
     def oanova(table="table", res=None, xfac=None, ph=False, phalpha=0.05):
         # create and run model
-        model = ols('{} ~ C({})'.format(res, xfac), data=d).fit()
+        model = ols('{} ~ C({})'.format(res, xfac), data=table).fit()
         anova_table = sm.stats.anova_lm(model, typ=2)
 
         # treatments
         # this is for bartlett test
-        levels = d[xfac].unique()
+        levels = table[xfac].unique()
         fac_list = []
+        data_summary = []
         for i in levels:
-            temp = d.loc[d[xfac]==i, res]
+            temp_summary = []
+            temp = table.loc[table[xfac]==i, res]
             fac_list.append(temp)
+            temp_summary.append(i)
+            temp_summary.extend(temp.describe().to_numpy())
+            data_summary.append(temp_summary)
+
+        print("\nTable Summary\n")
+        print(tabulate(data_summary, headers=["Group", "Count", "Mean", "Std Dev", "Min", "25%", "50%", "75%", "Max"]), "\n")
 
         # check assumptions
         # Shapiro-Wilk  data is drawn from normal distribution.
@@ -382,7 +390,7 @@ class stat():
         # if post-hoc test is true
         if ph:
             # perform multiple pairwise comparison (Tukey HSD)
-            m_comp = pairwise_tukeyhsd(endog=d[res], groups=d[xfac], alpha=phalpha)
+            m_comp = pairwise_tukeyhsd(endog=table[res], groups=table[xfac], alpha=phalpha)
             print("\nPost-hoc Tukey HSD test\n")
             print(m_comp, "\n")
 
