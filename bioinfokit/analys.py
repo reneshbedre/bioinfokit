@@ -350,6 +350,7 @@ class format():
         hmm_file.close()
         csv_file.close()
 
+
 class stat():
     def oanova(table="table", res=None, xfac=None, ph=False, phalpha=0.05):
         # create and run model

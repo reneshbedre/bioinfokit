@@ -22,6 +22,7 @@ def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv):
                 plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], genenames[i],
                          fontsize=gfont)
 
+
 def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
             geneid=None, genenames=None, gfont=8):
     # load csv data file
@@ -110,6 +111,7 @@ def screeplot(obj="pcascree"):
     plt.savefig('screeplot.png', format='png', bbox_inches='tight', dpi=300)
     plt.close()
 
+
 def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3="var3"):
     for i, varnames in enumerate(labels):
         plt.scatter(x[i], y[i])
@@ -132,6 +134,7 @@ def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3
     plt.tight_layout()
     plt.savefig('pcaplot_3d.png', format='png', bbox_inches='tight',  dpi=300)
     plt.close()
+
 
 def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True, zscore=None, xlabel=True, ylabel=True,
          tickfont=(10,10)):
@@ -156,6 +159,7 @@ def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True,
         plt.savefig('heatmap.png', format='png', bbox_inches='tight', dpi=300)
         plt.close()
 
+
 def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), vennalpha=0.5,
          vennlabel=('A', 'B', 'C')):
     fig = plt.figure()
@@ -168,3 +172,37 @@ def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), v
     else:
         print("Error: check the set dataset")
 
+
+class marker():
+    def oanova(df="dataframe", chr=None, pv=None, dim=(6,4), r=300):
+        rand_colors = ('#f67280', '#00a8cc', '#ffd082', '#fb8d62', '#dab8f3', '#21bf73', '#d5c455', '#c9753d',
+                       '#ad62aa','#d77fa1', '#fab696', '#ffd800', '#da2d2d', '#6f9a8d', '#f2eee5', '#b2fcff',
+                       '#a0c334', '#b5525c', '#c06c84', '#3a3535', '#9b45e4', '#f6da63', '#9dab86', '#0c093c',
+                       '#f6f078', '#64c4ed', '#da4302', '#5edfff', '#08ffc8', '#ca3e47', '#f7ff56', '#6c5ce7')
+        # minus log10 of P-value
+        df['tpval'] = -np.log10(df[pv])
+        df = df.sort_values(chr)
+        # add indices
+        df['ind'] = range(len(df))
+        df_group = df.groupby(chr)
+        # select colors randomly from the list based in number of chr
+        color_list = sample(rand_colors, df[chr].nunique())
+        xlabels = []
+        xticks = []
+
+        fig, ax = plt.subplots(figsize=dim)
+        i = 0
+        for label, df1 in df.groupby(chr):
+            df1.plot(kind='scatter', x='ind', y='tpval', colors=color_list[i], ax=ax)
+            df1_max_ind = df1['ind'].iloc[-1]
+            df1_min_ind = df1['ind'].iloc[0]
+            xlabels.append(label)
+            xticks.append((df1_max_ind - (df1_max_ind - df1_min_ind) / 2))
+            i += 1
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xlabels)
+        # ax.set_xlim([0, len(df)])
+        # ax.set_ylim([0, 3.5])
+        ax.set_xlabel('Chromosomes')
+        plt.savefig('manhatten.png', format='png', bbox_inches='tight', dpi=r)
+        plt.close()
