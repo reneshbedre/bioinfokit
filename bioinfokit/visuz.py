@@ -5,6 +5,10 @@ import numpy as np
 import matplotlib.cm as cmc
 import seaborn as sns
 from matplotlib_venn import venn3, venn2
+from random import sample
+from functools import reduce
+import sys
+
 
 def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv):
     if genenames is not None and genenames == "deg":
@@ -174,7 +178,16 @@ def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), v
 
 
 class marker():
-    def oanova(df="dataframe", chr=None, pv=None, dim=(6,4), r=300):
+    def geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax):
+        if markernames is not None and markernames is True:
+            for i in df[markeridcol].unique():
+                if df.loc[df[markeridcol] == i, pv].iloc[0] <= gwasp:
+                    plt.text((df.loc[df[markeridcol] == i, 'ind'].iloc[0]), df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                            str(i), fontsize=gfont)
+
+
+    def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False, gwasp=5E-08,
+            dotsize=8, markeridcol=None, markernames=None, gfont=8):
         rand_colors = ('#f67280', '#00a8cc', '#ffd082', '#fb8d62', '#dab8f3', '#21bf73', '#d5c455', '#c9753d',
                        '#ad62aa','#d77fa1', '#fab696', '#ffd800', '#da2d2d', '#6f9a8d', '#f2eee5', '#b2fcff',
                        '#a0c334', '#b5525c', '#c06c84', '#3a3535', '#9b45e4', '#f6da63', '#9dab86', '#0c093c',
@@ -185,24 +198,42 @@ class marker():
         # add indices
         df['ind'] = range(len(df))
         df_group = df.groupby(chr)
-        # select colors randomly from the list based in number of chr
-        color_list = sample(rand_colors, df[chr].nunique())
+        if len(color) == 2:
+            color_1 = int(df[chr].nunique() / 2) * [color[0]]
+            color_2 = int(df[chr].nunique() / 2) * [color[1]]
+            if df[chr].nunique() % 2 == 0:
+                color_list = list(reduce(lambda x, y: x+y, zip(color_1, color_2)))
+            elif df[chr].nunique() % 2 == 1:
+                color_list = list(reduce(lambda x, y: x + y, zip(color_1, color_2)))
+                color_list.append(color[0])
+        elif color is None:
+            # select colors randomly from the list based in number of chr
+            color_list = sample(rand_colors, df[chr].nunique())
+        else:
+            print("Error: in color argument")
+            sys.exit(1)
+
+        # marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont)
+        # add GWAS significant line
         xlabels = []
         xticks = []
-
         fig, ax = plt.subplots(figsize=dim)
         i = 0
         for label, df1 in df.groupby(chr):
-            df1.plot(kind='scatter', x='ind', y='tpval', colors=color_list[i], ax=ax)
+            df1.plot(kind='scatter', x='ind', y='tpval', color=color_list[i], s=dotsize, ax=ax)
             df1_max_ind = df1['ind'].iloc[-1]
             df1_min_ind = df1['ind'].iloc[0]
             xlabels.append(label)
             xticks.append((df1_max_ind - (df1_max_ind - df1_min_ind) / 2))
+            # marker.geneplot_mhat(df1, markeridcol, chr, pv, gwasp, markernames, gfont, ax=ax)
             i += 1
+        if gwas_sign_line is True:
+            ax.axhline(y=-np.log10(gwasp), linestyle='--', color='#7d7d7d', linewidth=1)
+        marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax=ax)
         ax.set_xticks(xticks)
-        ax.set_xticklabels(xlabels)
-        # ax.set_xlim([0, len(df)])
-        # ax.set_ylim([0, 3.5])
-        ax.set_xlabel('Chromosomes')
+        ax.set_xticklabels(xlabels, fontsize=12, rotation=ar)
+        ax.set_xlabel('Chromosomes', fontsize=12, fontname="sans-serif", fontweight="bold" )
+        ax.set_ylabel('-log10(P-value)', fontsize=12, fontname="sans-serif", fontweight="bold")
+
         plt.savefig('manhatten.png', format='png', bbox_inches='tight', dpi=r)
         plt.close()
