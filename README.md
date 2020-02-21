@@ -291,7 +291,7 @@ Output will be saved in same directory
 
 <b>One-way ANOVA</b>
 
-`bioinfokit.stat.oanova(table, )`
+`bioinfokit.stat.oanova(table, res, xfac, ph, phalpha)`
 
 Parameters | Description
 ------------ | -------------
@@ -299,7 +299,7 @@ Parameters | Description
 `res` | Response variable (dependent variable) [string][default: None]
 `xfac` | Treatments or groups or factors (independent variable) [string][default: None]
 `ph` | perform pairwise comparisons with Tukey HSD test [bool (True or False)] [default: False]
-`phalpha` |significance level Tukey HSD test [float (0 to 1)][default: 0.5] [default: 0.05]
+`phalpha` |significance level Tukey HSD test [float (0 to 1)][default: 0.05]
 
 
 Returns:
@@ -308,6 +308,34 @@ ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 
 <a href="https://reneshbedre.github.io/blog/oanova.html" target="_blank">Working example</a>
 
+
+<b>Manhatten plot</b>
+
+`bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, gfont, valpha)`
+
+Parameters | Description
+------------ | -------------
+`df` |Pandas dataframe object with atleast SNP, chromosome, and P-values columns
+`chr` | Name of a column having chromosome numbers [string][default:None]
+`pv` | Name of a column having P-values. Must be numeric column [string][default:None]
+`color` | List the name of the colors to be plotted. It can accept two alternate colors or the number colors equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each chromosome [list][default:None]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 90]
+`gwas_sign_line` |Plot statistical significant threshold line defined by option `gwasp` [bool (True or False)][default: False]
+`gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markeridcol` | Name of a column having SNPs. This is necessary for plotting SNP names on the plot [string][default: None]
+`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, dict][default: True]
+`gfont` | Font size for SNP names to display on the plot [float][default: 8]
+`valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
+
+
+Returns:
+
+Manhatten plot image in same directory (manhatten.png)
+
+<a href="https://reneshbedre.github.io/blog/mhat.html" target="_blank">Working example</a>
 
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>

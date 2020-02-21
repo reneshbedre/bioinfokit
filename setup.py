@@ -1,10 +1,11 @@
 from setuptools import setup
+import bioinfokit
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='bioinfokit',
-      version='0.11',
+      version=bioinfokit.__version__,
 
       # metadata
       author='Renesh Bedre',
@@ -28,5 +29,5 @@ setup(name='bioinfokit',
        ],
 
       install_requires=['pandas', 'numpy', 'matplotlib', 'scipy', 'scikit-learn', 'seaborn', 'matplotlib_venn',
-                        'tabulate', 'termcolor', 'statsmodels', 'textwrap3'],
+                        'tabulate', 'termcolor', 'statsmodels', 'textwrap3', 'adjustText',],
       )

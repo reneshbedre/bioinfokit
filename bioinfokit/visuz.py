@@ -8,6 +8,7 @@ from matplotlib_venn import venn3, venn2
 from random import sample
 from functools import reduce
 import sys
+from adjustText import adjust_text
 
 
 def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv):
@@ -179,26 +180,49 @@ def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), v
 
 class marker():
     def geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax):
-        if markernames is not None and markernames is True:
-            for i in df[markeridcol].unique():
-                if df.loc[df[markeridcol] == i, pv].iloc[0] <= gwasp:
-                    plt.text((df.loc[df[markeridcol] == i, 'ind'].iloc[0]), df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                            str(i), fontsize=gfont)
+        if markeridcol is not None:
+            if markernames is not None and markernames is True:
+                for i in df[markeridcol].unique():
+                    if df.loc[df[markeridcol] == i, pv].iloc[0] <= gwasp:
+                        texts = [plt.text((df.loc[df[markeridcol] == i, 'ind'].iloc[0]), df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                 str(i), fontsize=gfont)]
+                        adjust_text(texts)
+            elif markernames is not None and type(markernames) is tuple:
+                for i in df[markeridcol].unique():
+                    if i in markernames:
+                        texts = [plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                 str(i), fontsize=gfont)]
+                        adjust_text(texts)
+            elif markernames is not None and type(markernames) is dict:
+                for i in df[markeridcol].unique():
+                    if i in markernames:
+                        texts = [plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                 markernames[i], fontsize=gfont)]
+                        adjust_text(texts)
+        else:
+            print("Error: provide 'markeridcol' parameter")
+            sys.exit(1)
 
+    def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
+             gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1):
 
-    def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False, gwasp=5E-08,
-            dotsize=8, markeridcol=None, markernames=None, gfont=8):
-        rand_colors = ('#f67280', '#00a8cc', '#ffd082', '#fb8d62', '#dab8f3', '#21bf73', '#d5c455', '#c9753d',
-                       '#ad62aa','#d77fa1', '#fab696', '#ffd800', '#da2d2d', '#6f9a8d', '#f2eee5', '#b2fcff',
+        rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
+                       '#6465a5', '#00743f', '#be9063', '#de8cf0', '#888c46', '#c0334d', '#270101', '#8d2f23',
+                       '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
+                       '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
+        '''
+         rand_colors = ('#f67280', '#00a8cc', '#ffd082', '#fb8d62', '#6e5773', '#21bf73', '#d5c455', '#c9753d',
+                       '#ad62aa','#d77fa1', '#a0855b', '#ffd800', '#da2d2d', '#6f9a8d', '#a8ff3e', '#b2fcff',
                        '#a0c334', '#b5525c', '#c06c84', '#3a3535', '#9b45e4', '#f6da63', '#9dab86', '#0c093c',
                        '#f6f078', '#64c4ed', '#da4302', '#5edfff', '#08ffc8', '#ca3e47', '#f7ff56', '#6c5ce7')
+        '''
         # minus log10 of P-value
         df['tpval'] = -np.log10(df[pv])
         df = df.sort_values(chr)
         # add indices
         df['ind'] = range(len(df))
         df_group = df.groupby(chr)
-        if len(color) == 2:
+        if color is not None and len(color) == 2:
             color_1 = int(df[chr].nunique() / 2) * [color[0]]
             color_2 = int(df[chr].nunique() / 2) * [color[1]]
             if df[chr].nunique() % 2 == 0:
@@ -206,6 +230,8 @@ class marker():
             elif df[chr].nunique() % 2 == 1:
                 color_list = list(reduce(lambda x, y: x + y, zip(color_1, color_2)))
                 color_list.append(color[0])
+        elif color is not None and len(color) == df[chr].nunique():
+            color_list = color
         elif color is None:
             # select colors randomly from the list based in number of chr
             color_list = sample(rand_colors, df[chr].nunique())
@@ -213,27 +239,70 @@ class marker():
             print("Error: in color argument")
             sys.exit(1)
 
-        # marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont)
-        # add GWAS significant line
         xlabels = []
         xticks = []
         fig, ax = plt.subplots(figsize=dim)
         i = 0
         for label, df1 in df.groupby(chr):
-            df1.plot(kind='scatter', x='ind', y='tpval', color=color_list[i], s=dotsize, ax=ax)
+            df1.plot(kind='scatter', x='ind', y='tpval', color=color_list[i], s=dotsize, alpha=valpha, ax=ax)
             df1_max_ind = df1['ind'].iloc[-1]
             df1_min_ind = df1['ind'].iloc[0]
             xlabels.append(label)
             xticks.append((df1_max_ind - (df1_max_ind - df1_min_ind) / 2))
-            # marker.geneplot_mhat(df1, markeridcol, chr, pv, gwasp, markernames, gfont, ax=ax)
             i += 1
+
+        # add GWAS significant line
         if gwas_sign_line is True:
             ax.axhline(y=-np.log10(gwasp), linestyle='--', color='#7d7d7d', linewidth=1)
-        marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax=ax)
+        if markernames is not None:
+            marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax=ax)
+        ax.margins(x=0)
+        ax.margins(y=0)
         ax.set_xticks(xticks)
-        ax.set_xticklabels(xlabels, fontsize=12, rotation=ar)
-        ax.set_xlabel('Chromosomes', fontsize=12, fontname="sans-serif", fontweight="bold" )
-        ax.set_ylabel('-log10(P-value)', fontsize=12, fontname="sans-serif", fontweight="bold")
-
+        ax.set_yticks(np.arange(0, max(df['tpval']+1), 1))
+        ax.set_xticklabels(xlabels, fontsize=9, rotation=ar)
+        ax.set_xlabel('Chromosomes', fontsize=9, fontname="sans-serif", fontweight="bold" )
+        ax.set_ylabel(r'$\bf -log_{10}(P)$', fontsize=9, fontname="sans-serif", fontweight="bold")
+        ax.set_ylim([0, max(df['tpval']+1)])
         plt.savefig('manhatten.png', format='png', bbox_inches='tight', dpi=r)
         plt.close()
+
+
+class help():
+    def mhat():
+        text = """
+        Manhatten plot
+
+        bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, gfont, valpha)
+
+        Parameters:
+        ------------
+        df             : Pandas dataframe object with atleast SNP, chromosome, and P-values columns
+        chr            : Name of a column having chromosome numbers [string][default:None]
+        pv             : Name of a column having P-values. Must be numeric column [string][default:None]
+        color          : List the name of the colors to be plotted. It can accept two alternate colors or the number colors 
+                         equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each 
+                         chromosome [list][default:None]
+        dim            : Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+        r              : Figure resolution in dpi [int][default: 300]
+        ar             : Rotation of X-axis labels [float][default: 90]
+        gwas_sign_line : Plot statistical significant threshold line defined by option `gwasp` 
+                         [bool (True or False)][default: False]
+        gwasp          : Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
+        dotsize        : The size of the dots in the plot [float][default: 8]
+        markeridcol    : Name of a column having SNPs. This is necessary for plotting SNP names on the plot 
+                         [string][default: None]
+        markernames    : The list of the SNPs to display on the plot. These SNP should be present in SNP column. 
+                         Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set 
+                         to True, it will label all SNPs with P-value significant score defined by `gwasp` 
+                         [string, list, dict][default: True]
+        gfont          : Font size for SNP names to display on the plot [float][default: 8]
+        valpha         : Transparency of points on plot [float (between 0 and 1)][default: 1.0]
+
+        Returns:
+        Manhatten plot image in same directory (manhatten.png)
+
+        Working example: https://reneshbedre.github.io/blog/mhat.html
+        """
+
+        print(text)
