@@ -302,7 +302,7 @@ class help():
         Returns:
         Manhatten plot image in same directory (manhatten.png)
 
-        Working example: https://reneshbedre.github.io/blog/mhat.html
+        Working example: https://reneshbedre.github.io/blog/manhat.html
         """
 
         print(text)

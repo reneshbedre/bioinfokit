@@ -335,7 +335,7 @@ Returns:
 
 Manhatten plot image in same directory (manhatten.png)
 
-<a href="https://reneshbedre.github.io/blog/mhat.html" target="_blank">Working example</a>
+<a href="https://reneshbedre.github.io/blog/manhat.html" target="_blank">Working example</a>
 
 <!--
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
