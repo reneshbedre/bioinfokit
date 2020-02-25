@@ -268,6 +268,15 @@ class marker():
         plt.close()
 
 
+class stat():
+    def bardot(df=df, dim=(6, 4), hbsize=4, r=300):
+        fig, ax = plt.subplots(figsize=dim)
+        ax.bar(x=df.columns.to_numpy(), height=df.describe().mean().to_numpy(), yerr=df.sem(), capsize=hbsize)
+        plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
+
+
+
+
 class help():
     def mhat():
         text = """
