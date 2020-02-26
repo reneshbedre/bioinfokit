@@ -269,9 +269,17 @@ class marker():
 
 
 class stat():
-    def bardot(df=df, dim=(6, 4), hbsize=4, r=300):
+    def bardot(df="dataframe", dim=(6, 4), bw=0.2, hbsize=4, r=300, ar=0, dotsize=8):
+        xbar = np.arange(len(df.columns.to_numpy()))
         fig, ax = plt.subplots(figsize=dim)
-        ax.bar(x=df.columns.to_numpy(), height=df.describe().mean().to_numpy(), yerr=df.sem(), capsize=hbsize)
+        ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, capsize=hbsize, zorder=0)
+        ax.set_xticks([0,0.1,0.2,0.3,0.4,0.5,1,2,3,4])
+        # ax.set_xticklabels(df.columns.to_numpy(), fontsize=9, rotation=ar)
+        # add dots
+        for cols in range(len(df.columns.to_numpy())):
+            print(np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]))
+            ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]),
+                       y=df[df.columns[cols]], s=dotsize, zorder=1)
         plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
 
 
