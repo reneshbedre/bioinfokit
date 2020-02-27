@@ -178,6 +178,12 @@ def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), v
         print("Error: check the set dataset")
 
 
+class general():
+    rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
+                   '#6465a5', '#00743f', '#be9063', '#de8cf0', '#888c46', '#c0334d', '#270101', '#8d2f23',
+                   '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
+                   '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
+
 class marker():
     def geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax):
         if markeridcol is not None:
@@ -269,18 +275,26 @@ class marker():
 
 
 class stat():
-    def bardot(df="dataframe", dim=(6, 4), bw=0.2, hbsize=4, r=300, ar=0, dotsize=8):
+    def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#bbcfff", colordot="#ee8972", hbsize=4, r=300, ar=0,
+               dotsize=6, valphabar=1, valphadot=1, markerdot="o"):
         xbar = np.arange(len(df.columns.to_numpy()))
+        color_list_bar = colorbar
+        if len([colordot]) == 1:
+            color_list_dot = [colordot]*len(df.columns.to_numpy())
         fig, ax = plt.subplots(figsize=dim)
-        ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, capsize=hbsize, zorder=0)
-        ax.set_xticks([0,0.1,0.2,0.3,0.4,0.5,1,2,3,4])
-        # ax.set_xticklabels(df.columns.to_numpy(), fontsize=9, rotation=ar)
+        ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
+               zorder=0, alpha=valphabar)
+        ax.set_xticks(xbar)
+        ax.set_xticklabels(df.columns.to_numpy(), fontsize=9, rotation=ar)
         # add dots
         for cols in range(len(df.columns.to_numpy())):
             print(np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]))
+            # get markers from here https://matplotlib.org/3.1.1/api/markers_api.html
             ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]),
-                       y=df[df.columns[cols]], s=dotsize, zorder=1)
+                       y=df[df.columns[cols]], s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
+                       marker=markerdot)
         plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
+        plt.close()
 
 
 
