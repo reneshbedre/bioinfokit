@@ -400,6 +400,27 @@ class stat():
         print("Bartlett (P-value):", pvalue2, "\n")
 
 
+class help:
+    def __init__(self):
+        pass
 
+    @staticmethod
+    def extract_seq():
+        text = """
+        Manhatten plot
 
+        bioinfokit.analys.extract_seq(file, id)
+
+        Parameters:
+        ------------
+        file : input FASTA file from which sequneces to be extracted
+        id   : sequence ID file
+
+        Returns:
+        Extracted sequences in FASTA format file in same directory (out.fasta )
+
+        Example: https://reneshbedre.github.io/blog/extrseq.html
+        """
+
+        print(text)
 
