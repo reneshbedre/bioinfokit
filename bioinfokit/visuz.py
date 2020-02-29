@@ -276,14 +276,19 @@ class marker():
 
 class stat():
     def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#bbcfff", colordot="#ee8972", hbsize=4, r=300, ar=0,
-               dotsize=6, valphabar=1, valphadot=1, markerdot="o"):
+               dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True):
         xbar = np.arange(len(df.columns.to_numpy()))
         color_list_bar = colorbar
         if len([colordot]) == 1:
             color_list_dot = [colordot]*len(df.columns.to_numpy())
         fig, ax = plt.subplots(figsize=dim)
-        ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
-               zorder=0, alpha=valphabar)
+        if errorbar:
+            ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
+                zorder=0, alpha=valphabar)
+        else:
+            ax.bar(x=xbar, height=df.describe().loc['mean'], width=bw, color=color_list_bar,
+                   capsize=hbsize,
+                   zorder=0, alpha=valphabar)
         ax.set_xticks(xbar)
         ax.set_xticklabels(df.columns.to_numpy(), fontsize=9, rotation=ar)
         # add dots
@@ -296,10 +301,26 @@ class stat():
         plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
         plt.close()
 
+'''
+quit()
+python setup.py install
+python
+import pandas as pd
+import numpy as np
+from bioinfokit import visuz
+d = pd.read_csv("C:/Users/renesh.bedre/Downloads/barplot.txt", sep="\t")
+# d = pd.DataFrame(np.random.randint(90,100,size=(30, 6)), columns=['col%i' % i for i in np.arange(6)])
+# d = pd.read_csv("https://reneshbedre.github.io/myfiles/anova/onewayanova.txt", sep="\t")
+visuz.stat.bardot(df=d)
+visuz.stat.bardot(df=d, colorbar=("#bbcfff","#a7e9af", "#f1f1b0", "#dddc92") )
+'''
 
 
+class help:
+    def __init__(self):
+        pass
 
-class help():
+    @staticmethod
     def mhat():
         text = """
         Manhatten plot
@@ -335,5 +356,35 @@ class help():
 
         Working example: https://reneshbedre.github.io/blog/manhat.html
         """
+
+        print(text)
+
+    def bardot():
+        text = """
+               Bar-dot plot
+
+               bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)
+
+               Parameters:
+               ------------
+               df        : Pandas dataframe object
+               colorbar  : Color of bar graph [string or list][default:"#bbcfff"]
+               colordot  : Color of dots on bar [string or list][default:"#ee8972"]
+               bw        : Width of bar [float][default: 0.4]
+               dim       : Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+               r         : Figure resolution in dpi [int][default: 300]
+               ar        : Rotation of X-axis labels [float][default: 0]
+               hbsize    : Horizontal bar size for standard error bars [float][default: 4]
+               errorbar  : Draw standard error bars [bool (True or False)][default: True]
+               dotsize   : The size of the dots in the plot [float][default: 6]
+               markerdot : Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+               valphabar : Transparency of bars on plot [float (between 0 and 1)][default: 1]
+               valphadot : Transparency of dots on plot [float (between 0 and 1)][default: 1]
+
+               Returns:
+               Bar-dot plot image in same directory (bardot.png)
+
+               Working example: https://reneshbedre.github.io/blog/bardot.html
+               """
 
         print(text)

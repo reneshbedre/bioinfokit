@@ -337,23 +337,46 @@ Manhatten plot image in same directory (manhatten.png)
 
 <a href="https://reneshbedre.github.io/blog/manhat.html" target="_blank">Working example</a>
 
-<!--
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
 
-<b>Extract the subsequence from the genome or gene sequences</b>
+<b>Extract the sequences from the FASTA file</b>
 
-`bioinfokit.analys.rev_com(sequence)`
+`bioinfokit.analys.extract_seq(file, id)`
 
 Parameters | Description
 ------------ | -------------
-`sequence file` | Genome or gene sequence file in fasta format
-`id` | sequence ID
-`start` | Start coordinate of the sequence to extract
-`end` | End coordinate of the sequence to extract
-`strand` | Sequence strand [default: plus]
+`file` | input FASTA file from which sequneces to be extracted
+`id` | sequence ID file
 
 Returns:
-Extracted subsequence
+Extracted sequences in FASTA format file in same directory (out.fasta )
 
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
--->
+
+<a href="https://reneshbedre.github.io/blog/extrseq.html" target="_blank">Example</a>
+
+
+
+<b>Bar-dot plot</b>
+
+`bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)`
+
+Parameters | Description
+------------ | -------------
+`df` |Pandas dataframe object
+`colorbar` | Color of bar graph [string or list][default:"#bbcfff"]
+`colordot` | Color of dots on bar [string or list][default:"#ee8972"]
+`bw` |Width of bar [float][default: 0.4]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 0]
+`hbsize` | Horizontal bar size for standard error bars [float][default: 4]
+`errorbar` |  Draw standard error bars [bool (True or False)][default: True]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+
+
+Returns:
+
+Bra-dot plot image in same directory (bardot.png)
+
