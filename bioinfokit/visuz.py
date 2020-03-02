@@ -274,13 +274,17 @@ class marker():
         plt.close()
 
 
-class stat():
-    def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#bbcfff", colordot="#ee8972", hbsize=4, r=300, ar=0,
+class stat:
+    def __init__(self):
+        pass
+
+    def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", colordot=["#101820ff"], hbsize=4, r=300, ar=0,
                dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True):
         xbar = np.arange(len(df.columns.to_numpy()))
         color_list_bar = colorbar
-        if len([colordot]) == 1:
-            color_list_dot = [colordot]*len(df.columns.to_numpy())
+        color_list_dot = colordot
+        if len(color_list_dot) == 1:
+            color_list_dot = colordot*len(df.columns.to_numpy())
         fig, ax = plt.subplots(figsize=dim)
         if errorbar:
             ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
@@ -293,7 +297,6 @@ class stat():
         ax.set_xticklabels(df.columns.to_numpy(), fontsize=9, rotation=ar)
         # add dots
         for cols in range(len(df.columns.to_numpy())):
-            print(np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]))
             # get markers from here https://matplotlib.org/3.1.1/api/markers_api.html
             ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]),
                        y=df[df.columns[cols]], s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
