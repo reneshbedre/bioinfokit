@@ -348,11 +348,11 @@ Parameters | Description
 `id` | sequence ID file
 
 Returns:
-Extracted sequences in FASTA format file in same directory (out.fasta )
+Extracted sequences in FASTA format file in same directory (out.fasta)
 
-
+<!--
 <a href="https://reneshbedre.github.io/blog/extrseq.html" target="_blank">Example</a>
-
+-->
 
 
 <b>Bar-dot plot</b>
