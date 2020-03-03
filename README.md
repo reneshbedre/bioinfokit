@@ -375,4 +375,4 @@ Returns:
 
 Bra-dot plot image in same directory (bardot.png)
 
-<a href="https://reneshbedre.github.io/blog/bardot.html" target="_blank">Example</a>
+<a href="https://reneshbedre.github.io/blog/bardot.html" target="_blank">Working Example</a>
