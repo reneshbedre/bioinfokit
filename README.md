@@ -350,11 +350,6 @@ Parameters | Description
 Returns:
 Extracted sequences in FASTA format file in same directory (out.fasta)
 
-<!--
-<a href="https://reneshbedre.github.io/blog/extrseq.html" target="_blank">Example</a>
--->
-
-
 <b>Bar-dot plot</b>
 
 `bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)`
