@@ -304,20 +304,6 @@ class stat:
         plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
         plt.close()
 
-'''
-quit()
-python setup.py install
-python
-import pandas as pd
-import numpy as np
-from bioinfokit import visuz
-d = pd.read_csv("C:/Users/renesh.bedre/Downloads/barplot.txt", sep="\t")
-# d = pd.DataFrame(np.random.randint(90,100,size=(30, 6)), columns=['col%i' % i for i in np.arange(6)])
-# d = pd.read_csv("https://reneshbedre.github.io/myfiles/anova/onewayanova.txt", sep="\t")
-visuz.stat.bardot(df=d)
-visuz.stat.bardot(df=d, colorbar=("#bbcfff","#a7e9af", "#f1f1b0", "#dddc92") )
-'''
-
 
 class help:
     def __init__(self):
@@ -380,7 +366,8 @@ class help:
                hbsize    : Horizontal bar size for standard error bars [float][default: 4]
                errorbar  : Draw standard error bars [bool (True or False)][default: True]
                dotsize   : The size of the dots in the plot [float][default: 6]
-               markerdot : Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+               markerdot : Shape of the dot marker. 
+                           See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
                valphabar : Transparency of bars on plot [float (between 0 and 1)][default: 1]
                valphadot : Transparency of dots on plot [float (between 0 and 1)][default: 1]
 
