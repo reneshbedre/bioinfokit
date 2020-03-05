@@ -1,5 +1,5 @@
-Bioinformatics data analysis and visualization toolkit
-
+The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
+visualize, and interpret the biological data generated from genome-scale omics experiments.
 
 **<span style="color:#33a8ff">How to install:</span>**
 
@@ -15,7 +15,7 @@ bioinfokit requires
 ```
 git clone https://github.com/reneshbedre/bioinfokit.git
 cd bioinfokit
-python3 setup.py install
+python setup.py install
 ```
 
 <!--
