@@ -298,11 +298,60 @@ def chisq(table="table"):
     plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
 
 
-class format():
+class fastq:
+    def __init__(self):
+        pass
+
+    def fastq_format_check(file="fastq_file"):
+        read_file = open(file, 'rU')
+        x = 0
+        for line in read_file:
+            header = line.rstrip()
+            if not header.startswith('@'):
+                x = 1
+            else:
+                x = 0
+            break
+        return x
+
+    def detect_fastq_variant(file="fastq_file"):
+        count = 0
+        check = []
+        fastq_file = open(file, 'rU')
+
+        for line in fastq_file:
+            header_1 = line.rstrip()
+            read = next(fastq_file).rstrip()
+            header_2 = next(fastq_file).rstrip()
+            read_qual_asc = next(fastq_file).rstrip()
+            asc_list = list(read_qual_asc)
+            asc_list = list(map(ord, asc_list))
+            min_q = min(asc_list)
+            max_q = max(asc_list)
+            check.append(min_q)
+            check.append(max_q)
+            count += 1
+            if count == 40000:
+                break
+        fastq_file.close()
+        min_q = min(check)
+        max_q = max(check)
+        if 64 > min_q >= 33 and max_q == 74:
+            return 1
+        elif min_q >= 64 and 74 < max_q <= 104:
+            return 2
+        elif 64 > min_q >= 33 and max_q <= 73:
+            return 3
+
+
+class format:
+    def __init__(self):
+        pass
+
     def fqtofa(file="fastq_file"):
         x = fastq_format_check(file)
         if x == 1:
-            print("Error: Sequences are not in fastq format")
+            print("Error: Sequences are not in sanger fastq format")
             sys.exit(1)
 
         read_file = open(file, "rU")
@@ -349,6 +398,28 @@ class format():
                     csv_file.write("\n")
         hmm_file.close()
         csv_file.close()
+
+    # find sanger fastq phred quality encoding format
+    def fq_qual_var(file=None):
+        if file is None:
+            print("Error: No sanger fastq file provided")
+            sys.exit(1)
+        x = fastq.fastq_format_check(file)
+        if x == 1:
+            print("Error: Sequences are not in sanger fastq format")
+            sys.exit(1)
+
+        qual_format = fastq.detect_fastq_variant(file)
+
+        if qual_format == 1:
+            print("The fastq quality format is illumina 1.8+ (Offset +33)")
+        elif qual_format == 2:
+            print("The fastq quality format is illumina 1.3/1.4 (Offset +64)")
+        elif qual_format == 3:
+            print("The fastq quality format is Sanger (Offset +33)")
+        else:
+            print("\nError: Wrong quality format\n")
+            sys.exit(1)
 
 
 class stat():

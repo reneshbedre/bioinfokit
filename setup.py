@@ -10,7 +10,7 @@ setup(name='bioinfokit',
       # metadata
       author='Renesh Bedre',
       author_email='reneshbe@gmail.com',
-      description='Bioinformatics data analysis and visualization',
+      description='Bioinformatics data analysis and visualization toolkit',
       long_description=long_description,
       long_description_content_type="text/markdown",
       license='MIT',
