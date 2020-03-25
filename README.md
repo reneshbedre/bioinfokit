@@ -397,6 +397,31 @@ Quality format encoding name for FASTQ file (Supports only Sanger, Illumina 1.8+
 <a href="https://reneshbedre.github.io/blog/fqqualfmt.html" target="_blank">Working Example</a>
 
 
+<b>Regression analysis</b>
+
+`bioinfokit.visuz.stat.bardot(df, x, y, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)`
+
+Parameters | Description
+------------ | -------------
+`df` |Pandas dataframe object
+`x` | Name of column having independent X variables [list][default:None]
+`y` | Name of column having dependent Y variables [list][default:None]
+`bw` |Width of bar [float][default: 0.4]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 0]
+`hbsize` | Horizontal bar size for standard error bars [float][default: 4]
+`errorbar` |  Draw standard error bars [bool (True or False)][default: True]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+
+
+
+
+
+
 References:
 - Travis E. Oliphant. A guide to NumPy, USA: Trelgol Publishing, (2006).
 - John D. Hunter. Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering, 9, 90-95 (2007), DOI:10.1109/MCSE.2007.55 (publisher link)

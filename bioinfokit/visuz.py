@@ -304,6 +304,15 @@ class stat:
         plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
         plt.close()
 
+    def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='black', colorline='blue', r=300, ar=0,
+                dotsize=6, valphaline=1, valphadot=1, linewidth=1):
+        fig, ax = plt.subplots(figsize=dim)
+        plt.scatter(df[x].to_numpy(), df[y].to_numpy(), color=colordot, alpha=valphadot, label='Observed data')
+        plt.plot(df[x].to_numpy(), df[yhat].to_numpy(), color=colorline, linewidth=linewidth, alpha=valphaline, label='Regression line')
+        plt.xlabel(x, fontsize=9)
+        plt.ylabel(y, fontsize=9)
+        plt.savefig('reg_plot.png', format='png', bbox_inches='tight', dpi=r)
+        plt.close()
 
 class help:
     def __init__(self):
