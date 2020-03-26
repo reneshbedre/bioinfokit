@@ -397,26 +397,49 @@ Quality format encoding name for FASTQ file (Supports only Sanger, Illumina 1.8+
 <a href="https://reneshbedre.github.io/blog/fqqualfmt.html" target="_blank">Working Example</a>
 
 
-<b>Regression analysis</b>
+<b>Linear regression analysis</b>
 
-`bioinfokit.visuz.stat.bardot(df, x, y, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)`
+`bioinfokit.visuz.stat.lin_reg(df, x, y)`
 
 Parameters | Description
 ------------ | -------------
 `df` |Pandas dataframe object
 `x` | Name of column having independent X variables [list][default:None]
 `y` | Name of column having dependent Y variables [list][default:None]
-`bw` |Width of bar [float][default: 0.4]
+
+Returns:
+
+Regression analysis summary
+
+<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
+
+
+<b>Regression plot</b>
+
+`bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
+    valphaline, valphadot)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe object
+`x` | Name of column having independent X variables [string][default:None]
+`y` | Name of column having dependent Y variables [string][default:None]
+`yhat` |Name of column having predicted response of Y variable (y_hat) from regression [string][default:None]
 `dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
 `r` | Figure resolution in dpi [int][default: 300]
 `ar` | Rotation of X-axis labels [float][default: 0]
-`hbsize` | Horizontal bar size for standard error bars [float][default: 4]
-`errorbar` |  Draw standard error bars [bool (True or False)][default: True]
 `dotsize`| The size of the dots in the plot [float][default: 6]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
+`valphaline` | Transparency of regression line on plot [float (between 0 and 1)][default: 1]
 `valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`linewidth` | Width of regression line [float][default: 1]
 
+
+Returns:
+
+Regression plot image in same directory (reg_plot.png)
+
+<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
 
 
 

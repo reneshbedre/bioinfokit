@@ -16,6 +16,7 @@ from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.formula.api import ols
 import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
+from decimal import Decimal
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -491,13 +492,13 @@ class stat():
         # run regression
         reg_out = LinearRegression().fit(self.X, self.Y)
         # coefficient  of determination
-        r_sq = reg_out.score(self.X, self.Y)
+        r_sq = round(reg_out.score(self.X, self.Y), 4)
         # Correlation coefficient (r)
-        r = np.sqrt(r_sq)
+        r = round(np.sqrt(r_sq), 4)
         # Adjusted r-Squared https://www.listendata.com/2014/08/adjusted-r-squared.html
-        r_sq_adj = 1 - (1 - r_sq) * ((n - 1)/(n-p-1))
+        r_sq_adj = round(1 - (1 - r_sq) * ((n - 1)/(n-p-1)), 4)
         # RMSE http://statweb.stanford.edu/~susan/courses/s60/split/node60.html
-        rmse = np.sqrt(1-r_sq) * np.std(self.Y)
+        rmse = round(np.sqrt(1-r_sq) * np.std(self.Y), 4)
         # intercept and slopes
         reg_intercept = reg_out.intercept_
         reg_slopes = reg_out.coef_
@@ -506,11 +507,10 @@ class stat():
         # residuals
         self.residuals = self.Y - self.y_hat
         eq = ""
-        print(p, reg_slopes, reg_slopes[0], x)
         for i in range(p):
-            eq = eq+' + '+str(reg_slopes[0][i])+'*'+x[i]
+            eq = eq+' + '+ '(' + str(round(reg_slopes[0][i], 4))+'*'+x[i] + ')'
 
-        self.reg_eq = str(reg_intercept[0]) + eq
+        self.reg_eq = str(round(reg_intercept[0], 4)) + eq
 
         # sum of squares http://www.stat.uchicago.edu/~eichler/stat22000/Handouts/l23.pdf
         regSS = np.sum((self.y_hat - np.mean(self.Y)) ** 2)  # variation explained by linear model
@@ -519,7 +519,7 @@ class stat():
 
         # variance and std error http://www.stat.uchicago.edu/~eichler/stat22000/Handouts/l23.pdf
         # Residual variance
-        sigma_sq_hat = residual_sse/(n-e)
+        sigma_sq_hat = round(residual_sse/(n-e), 4)
         # https://stackoverflow.com/questions/22381497/python-scikit-learn-linear-model-parameter-standard-error
         X_with_intercept = np.empty(shape=(n, e), dtype=np.float)
         X_with_intercept[:, 0] = 1
@@ -527,7 +527,7 @@ class stat():
         var_hat = np.linalg.inv(X_with_intercept.T @ X_with_intercept) * sigma_sq_hat
         standard_error = []
         for param in range(e):
-            standard_error.append(np.sqrt(var_hat[param, param]))
+            standard_error.append(round(np.sqrt(var_hat[param, param]), 4))
 
         # t = b1 / SE
         params = list(chain(*[["Intercept"], x]))
@@ -536,13 +536,13 @@ class stat():
         for param in range(e):
             tabulate_list.append([params[param], estimates[param], standard_error[param],
                                   estimates[param]/standard_error[param],
-                                  stats.t.sf(np.abs(estimates[param]/standard_error[param]), n-1)*2   ])
+                                  '%.4E' % Decimal(stats.t.sf(np.abs(estimates[param]/standard_error[param]), n-1)*2)   ])
 
         # anova
         anova_table = []
-        anova_table.append(["Model", p, regSS, regSS/p, (regSS/p)/(residual_sse/(n-e)),
-                            stats.f.sf((regSS/p)/(residual_sse/(n-e)), p, n-e)])
-        anova_table.append(["Error", n-e, residual_sse, residual_sse/(n-e), "", ""])
+        anova_table.append(["Model", p, regSS, round(regSS/p, 4), round((regSS/p)/(residual_sse/(n-e)), 4),
+                            '%.4E' % Decimal(stats.f.sf((regSS/p)/(residual_sse/(n-e)), p, n-e))])
+        anova_table.append(["Error", n-e, residual_sse, round(residual_sse/(n-e), 4), "", ""])
         anova_table.append(["Total", n-1, sst, "", "", ""])
 
         print("\nRegression equation:\n")
@@ -552,7 +552,7 @@ class stat():
                         ["Coefficient of determination (r-squared)", r_sq], ["Adjusted r-squared)", r_sq_adj],
                         ["Correlation coefficient (r)", r],
                         ["Root Mean Square Error (RMSE)", rmse], ["Adjusted r-squared)", r_sq_adj],
-                        ["Mean of Y", np.mean(self.Y)], ["Residual standard error", np.sqrt(sigma_sq_hat)],
+                        ["Mean of Y", round(np.mean(self.Y), 4)], ["Residual standard error", round(np.sqrt(sigma_sq_hat), 4)],
                         ["No. of Observations", n]], "\n"))
         print("\nRegression Coefficients:\n")
         print(tabulate(tabulate_list, headers=["Parameter", "Estimate", "Std Error", "t-value", "P-value Pr(>|t|)"]), "\n")
