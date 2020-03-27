@@ -317,6 +317,30 @@ class stat:
         plt.savefig('reg_plot.png', format='png', bbox_inches='tight', dpi=r)
         plt.close()
 
+    def reg_resid_plot(df="dataframe", yhat=None, resid=None, stdresid=None, dim=(6, 4), colordot='#4a4e4d',
+                       colorline='#2ab7ca', r=300, ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1,
+                       markerdot="o"):
+        fig, ax = plt.subplots(figsize=dim)
+        if resid is not None:
+            plt.scatter(df[yhat], df[resid], color=colordot, s=dotsize, alpha=valphadot, marker=markerdot)
+            plt.axhline(y=0, color=colorline, linestyle='--', linewidth=linewidth, alpha=valphaline)
+            plt.xlabel("Fitted")
+            plt.ylabel("Residuals")
+            plt.savefig('resid_plot.png', format='png', bbox_inches='tight', dpi=r)
+            plt.close()
+        else:
+            print ("Error: Provide residual data")
+        if stdresid is not None:
+            plt.scatter(df[yhat], df[stdresid], color=colordot, s=dotsize, alpha=valphadot, marker=markerdot)
+            plt.axhline(y=0, color=colorline, linestyle='--', linewidth=linewidth, alpha=valphaline)
+            plt.xlabel("Fitted")
+            plt.ylabel("Standardized Residuals")
+            plt.savefig('std_resid_plot.png', format='png', bbox_inches='tight', dpi=r)
+            plt.close()
+        else:
+            print ("Error: Provide standardized residual data")
+
+
 class help:
     def __init__(self):
         pass

@@ -520,6 +520,11 @@ class stat():
         # variance and std error http://www.stat.uchicago.edu/~eichler/stat22000/Handouts/l23.pdf
         # Residual variance
         sigma_sq_hat = round(residual_sse/(n-e), 4)
+        # residual std dev
+        res_stdev = round(np.sqrt(sigma_sq_hat))
+        # standardized residuals http://www.r-tutor.com/elementary-statistics/simple-linear-regression/standardized-residual
+        self.std_residuals = self.residuals/res_stdev
+
         # https://stackoverflow.com/questions/22381497/python-scikit-learn-linear-model-parameter-standard-error
         X_with_intercept = np.empty(shape=(n, e), dtype=np.float)
         X_with_intercept[:, 0] = 1
