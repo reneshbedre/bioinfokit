@@ -33,11 +33,12 @@ From Python package index,
 
 <b>Volcano plot</b>
 
-`bioinfokit.visuz.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont)`
+`bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
+    dotsize, markerdot, r, dim, show)`
 
 Parameters | Description
 ------------ | -------------
-`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
+`table` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
 `lfc` | Name of a column having log fold change values [string][default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [float][default:1.0]
@@ -46,42 +47,52 @@ Parameters | Description
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
-`gfont` | Font size for genenames [float][default: 10.0]
+`gfont` | Font size for genenames [float][default: 10.0]. gfont not compatible with gstyle=2.
+`gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`sign_line` | Show grid lines on plot with defined log fold change (`lfc_thr`) and P-value (`pv_thr`) threshold value [True or False][default:False]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 
 Returns:
 
 Volcano plot image in same directory (volcano.png)
-
 <a href="https://reneshbedre.github.io/blog/volcano.html" target="_blank">Working example</a>
-
-
 
 <b>MA plot</b>
 
-`bioinfokit.visuz.ma(table, lfc, ct_count, st_count, pv_thr)`
+`bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha)`
 
 Parameters | Description
 ------------ | -------------
-`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, and counts (control and treatment) columns
+`table` |Pandas dataframe  table having atleast gene IDs, log fold change, and counts (control and treatment) columns
 `lfc` | Name of a column having log fold change values [default:logFC]
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-
+`color` | Tuple of two colors [tuple][default: ("green", "red")]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 
 Returns:
 
 MA plot image in same directory (ma.png)
-
 <a href="https://reneshbedre.github.io/blog/ma.html" target="_blank">Working example</a>
 
 <b>Inverted Volcano plot</b>
 
-`bioinfokit.visuz.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont)`
+`bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
+    dotsize, markerdot, r, dim, show)`
 
 Parameters | Description
 ------------ | -------------
-`table` |Comma separated (csv) gene expression table having atleast gene IDs, log fold change, P-values or adjusted P-values
+`table` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values
 `lfc` | Name of a column having log fold change values [default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [default:p_values]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
@@ -91,6 +102,12 @@ Parameters | Description
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]
+`gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 
 Returns:
 
@@ -101,13 +118,17 @@ Inverted volcano plot image in same directory (involcano.png)
 
 <b>Correlation matrix plot</b>
 
-`bioinfokit.visuz.corr_mat(table, corm)`
+`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show)`
 
 Parameters | Description
 ------------ | -------------
 `table` | Dataframe object with numerical variables (columns) to find correlation. Ideally, you should have three or more variables. Dataframe should not have identifier column.
 `corm` | Correlation method [pearson,kendall,spearman] [default:pearson]
-
+`cmap` | Color Palette for heatmap [string][default: 'seismic']. More colormaps are available at  
+         https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 5)]        
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 
 Returns:
 
@@ -204,8 +225,8 @@ CSV delimited file (out.csv)
 
 <b>Heatmap</b>
 
-`bioinfokit.visuz.hmap(table, cmap='seismic', scale=True, dim=(6, 8), 
-    clus=True, zscore=None, xlabel=True, ylabel=True, tickfont=(12, 12))`
+`bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), clus=True, zscore=None, xlabel=True, ylabel=True, 
+    tickfont=(12, 12), show, r)`
 
 Parameters | Description
 ------------ | -------------
@@ -218,6 +239,8 @@ Parameters | Description
 `xlable` | Plot X-label [boolean (True or False)][default: True]
 `ylable` | Plot Y-label [boolean (True or False)][default: True]
 `tickfont` | Fontsize for X and Y-axis tick labels [tuple of two floats][default: (14, 14)]
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 
 Returns:
 
@@ -244,7 +267,7 @@ Venn plot (venn3.png, venn2.png)
 
 <b>Two sample t-test with equal and unequal variance</b>
 
-`bioinfokit.analys.ttsam(table, xfac, res, evar)`
+`bioinfokit.analys.stat.ttsam(table, xfac, res, evar)`
 
 Parameters | Description
 ------------ | -------------
@@ -315,7 +338,8 @@ ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 
 <b>Manhatten plot</b>
 
-`bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, gfont, valpha)`
+`bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
+    gfont, valpha, show)`
 
 Parameters | Description
 ------------ | -------------
@@ -333,7 +357,7 @@ Parameters | Description
 `markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, dict][default: True]
 `gfont` | Font size for SNP names to display on the plot [float][default: 8]
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
-
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 
 Returns:
 
@@ -356,7 +380,8 @@ Extracted sequences in FASTA format file in same directory (out.fasta)
 
 <b>Bar-dot plot</b>
 
-`bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)`
+`bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, 
+    valphadot, show)`
 
 Parameters | Description
 ------------ | -------------
@@ -373,11 +398,11 @@ Parameters | Description
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
 `valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
-
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 
 Returns:
 
-Bra-dot plot image in same directory (bardot.png)
+Bar-dot plot image in same directory (bardot.png)
 
 <a href="https://reneshbedre.github.io/blog/bardot.html" target="_blank">Working Example</a>
 

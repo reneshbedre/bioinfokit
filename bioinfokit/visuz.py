@@ -11,101 +11,21 @@ import sys
 from adjustText import adjust_text
 
 
-def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv):
-    if genenames is not None and genenames == "deg":
-        for i in d[geneid].unique():
-            if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr) or \
-                    (d.loc[d[geneid] == i, lfc].iloc[0] <= -lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr):
-                plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i, fontsize=gfont)
-    elif genenames is not None and type(genenames) is tuple:
-        for i in d[geneid].unique():
-            if i in genenames:
-                plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i, fontsize=gfont)
-    elif genenames is not None and type(genenames) is dict:
-        for i in d[geneid].unique():
-            if i in genenames:
-                plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], genenames[i],
-                         fontsize=gfont)
-
-
-def volcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
-            geneid=None, genenames=None, gfont=8):
-    # load csv data file
-    d = pd.read_csv(table, sep=",")
-    color = color
-    d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
-    d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
-    d['color'].fillna('grey', inplace=True)  # intermediate
-    d['logpv'] = -(np.log10(d[pv]))
-
-    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv)
-    # plot
-    plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha)
-    plt.xlabel('log2 Fold Change', fontsize=12, fontname="sans-serif", fontweight="bold")
-    plt.ylabel('-log10(P-value)', fontsize=12, fontname="sans-serif", fontweight="bold")
-    plt.xticks(fontsize=12, fontname="sans-serif")
-    plt.yticks(fontsize=12, fontname="sans-serif")
-    
-    plt.savefig('volcano.png', format='png', bbox_inches='tight', dpi=300)
-    plt.close()
+def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
+            geneid=None, genenames=None, gfont=8, dim=(6,4), r=300, ar=90, dotsize=8, markerdot="o", sign_line=False):
+    general.depr_mes("bioinfokit.visuz.gene_exp.volcano")
 
 
 def involcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
               geneid=None, genenames=None, gfont=8):
-    # load csv data file
-    d = pd.read_csv(table, sep=",")
-    color = color
-    d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
-    d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
-    d['color'].fillna('grey', inplace=True)  # intermediate
-    d['logpv'] = -(np.log10(d[pv]))
-
-    geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv)
-
-    # plot
-    plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha)
-    plt.gca().invert_yaxis()
-    plt.xlabel('log2 Fold Change', fontsize=12, fontname="sans-serif", fontweight="bold")
-    plt.ylabel('-log10(P-value)', fontsize=12, fontname="sans-serif", fontweight="bold")
-    plt.xticks(fontsize=12, fontname="sans-serif")
-    plt.yticks(fontsize=12, fontname="sans-serif")
-    plt.savefig('involcano.png', format='png', bbox_inches='tight', dpi=300)
-    plt.close()
+    general.depr_mes("bioinfokit.visuz.gene_exp.involcano")
 
 
 def ma(table="dataset_file", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1):
-    # load csv data file
-    d = pd.read_csv(table, sep=",")
-    d.loc[(d[lfc] >= lfc_thr), 'color'] = "green" # upregulated
-    d.loc[(d[lfc] <= -lfc_thr), 'color'] = "red"  # downregulated
-    d['color'].fillna('grey', inplace=True)  # intermediate
-    d['A'] = np.log2((d[ct_count] + d[st_count]) / 2)
-    # plot
-    plt.scatter(d['A'], d[lfc], c=d['color'])
-    # draw a central line at M=0
-    plt.axhline(y=0, color='b', linestyle='--')
-    plt.xlabel('A', fontsize=15, fontname="sans-serif", fontweight="bold")
-    plt.ylabel('M', fontsize=15, fontname="sans-serif", fontweight="bold")
-    plt.xticks(fontsize=12, fontname="sans-serif")
-    plt.yticks(fontsize=12, fontname="sans-serif")
-    plt.savefig('ma.png', format='png', bbox_inches='tight', dpi=300)
-    plt.close()
-
+    general.depr_mes("bioinfokit.visuz.gene_exp.ma")
 
 def corr_mat(table="p_df", corm="pearson"):
-    # load csv data file
-    # d = pd.read_csv(table, sep=",")
-    d = pd.DataFrame(data=table)
-    d_corr = d.corr(method=corm)
-    plt.matshow(d_corr, vmin=-1, vmax=1, cmap=cmc.seismic)
-    plt.colorbar()
-    cols = list(d)
-    ticks = list(range(0, len(list(d))))
-    plt.xticks(ticks, cols, fontsize=7, rotation=90)
-    plt.yticks(ticks, cols, fontsize=7)
-    plt.savefig('corr_mat.png', format='png', bbox_inches='tight', dpi=300)
-    plt.close()
-
+    general.depr_mes("bioinfokit.visuz.stat.corr_mat")
 
 def screeplot(obj="pcascree"):
     y = [x * 100 for x in obj[1]]
@@ -143,27 +63,7 @@ def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3
 
 def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True, zscore=None, xlabel=True, ylabel=True,
          tickfont=(10,10)):
-    # load csv data file
-    d = pd.read_csv(table, sep=",")
-    d = d.set_index(d.columns[0])
-    # plot heatmap without cluster
-    # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
-    dim = dim
-    fig, hm = plt.subplots(figsize=dim)
-    if clus:
-        hm = sns.clustermap(d, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
-                            figsize=dim)
-        hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
-        hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-        plt.savefig('heatmap_clus.png', format='png', bbox_inches='tight', dpi=300)
-        plt.close()
-    else:
-        hm = sns.heatmap(d, cmap=cmap, cbar=scale, xticklabels=xlabel, yticklabels=ylabel)
-        plt.xticks(fontsize=tickfont[0])
-        plt.yticks(fontsize=tickfont[1])
-        plt.savefig('heatmap.png', format='png', bbox_inches='tight', dpi=300)
-        plt.close()
-
+    general.depr_mes("bioinfokit.visuz.gene_exp.hmap")
 
 def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), vennalpha=0.5,
          vennlabel=('A', 'B', 'C')):
@@ -177,12 +77,152 @@ def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), v
     else:
         print("Error: check the set dataset")
 
+class gene_exp():
+    def __init__(self):
+        pass
+
+    def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle):
+        if genenames is not None and genenames == "deg":
+            for i in d[geneid].unique():
+                if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr) or \
+                        (d.loc[d[geneid] == i, lfc].iloc[0] <= -lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr):
+                    if gstyle==1:
+                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i,
+                                      fontsize=gfont)
+                    elif gstyle==2:
+                        plt.annotate(i, xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0]),
+                                     xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                     bbox=dict(boxstyle="round", alpha=0.1),
+                                     arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.1, relpos=(0, 0)))
+                    else:
+                        print("Error: invalid gstyle choice")
+                        sys.exit(1)
+        elif genenames is not None and type(genenames) is tuple:
+            for i in d[geneid].unique():
+                if i in genenames:
+                    if gstyle==1:
+                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i,
+                                      fontsize=gfont)
+                    elif gstyle==2:
+                        plt.annotate(i, xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0]),
+                                     xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                     bbox=dict(boxstyle="round", alpha=0.1),
+                                     arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.1, relpos=(0, 0)))
+                    else:
+                        print("Error: invalid gstyle choice")
+                        sys.exit(1)
+        elif genenames is not None and type(genenames) is dict:
+            for i in d[geneid].unique():
+                if i in genenames:
+                    if gstyle==1:
+                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0],
+                                      genenames[i], fontsize=gfont)
+                    elif gstyle == 2:
+                        plt.annotate(genenames[i], xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0]),
+                                     xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                     bbox=dict(boxstyle="round", alpha=0.1),
+                                     arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.1, relpos=(0, 0)))
+                    else:
+                        print("Error: invalid gstyle choice")
+                        sys.exit(1)
+
+    def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
+                geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
+                sign_line=False, gstyle=1, show=False):
+        # load csv data file
+        # d = pd.read_csv(table, sep=",")
+        color = color
+        d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
+        d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
+        d['color'].fillna('grey', inplace=True)  # intermediate
+        d['logpv'] = -(np.log10(d[pv]))
+        # plot
+        plt.subplots(figsize=dim)
+        plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha, s=dotsize, marker=markerdot)
+        if sign_line:
+            plt.axhline(y=-np.log10(pv_thr), linestyle='--', color='#7d7d7d', linewidth=1)
+            plt.axvline(x=lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
+            plt.axvline(x=-lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
+        gene_exp.geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+        general.axis_labels(r'$ -log_{2}(Fold Change)$', r'$ -log_{10}(P-value)$')
+        general.get_figure(show, r, 'volcano.png')
+
+    def involcano(d="dataframe", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"),
+                  valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
+                sign_line=False, gstyle=1, show=False):
+        color = color
+        d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
+        d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
+        d['color'].fillna('grey', inplace=True)  # intermediate
+        d['logpv'] = -(np.log10(d[pv]))
+
+        # plot
+        plt.subplots(figsize=dim)
+        plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha, s=dotsize, marker=markerdot)
+        gene_exp.geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+        plt.gca().invert_yaxis()
+        general.axis_labels(r'$ -log_{2}(Fold Change)$', r'$ -log_{10}(P-value)$')
+        general.get_figure(show, r, 'involcano.png')
+
+    def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
+           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "red")):
+        df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
+        df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[1]  # downregulated
+        df['color'].fillna('grey', inplace=True)  # intermediate
+        df['A'] = np.log2((df[ct_count] + df[st_count]) / 2)
+        # plot
+        plt.subplots(figsize=dim)
+        plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
+        # draw a central line at M=0
+        plt.axhline(y=0, color='#7d7d7d', linestyle='--')
+        general.axis_labels('A', 'M')
+        general.get_figure(show, r, 'ma.png')
+
+    def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), clus=True, zscore=None, xlabel=True,
+             ylabel=True, tickfont=(10, 10), r=300, show=False):
+        # df = df.set_index(d.columns[0])
+        # plot heatmap without cluster
+        # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+        # dim = dim
+        fig, hm = plt.subplots(figsize=dim)
+        if clus:
+            hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
+                                figsize=dim)
+            hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
+            hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
+            general.get_figure(show, r, 'heatmap.png')
+        else:
+            hm = sns.heatmap(df, cmap=cmap, cbar=scale, xticklabels=xlabel, yticklabels=ylabel)
+            plt.xticks(fontsize=tickfont[0])
+            plt.yticks(fontsize=tickfont[1])
+            general.get_figure(show, r, 'heatmap.png')
+
 
 class general():
+    def __init__(self):
+        pass
+
     rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
                    '#6465a5', '#00743f', '#be9063', '#de8cf0', '#888c46', '#c0334d', '#270101', '#8d2f23',
                    '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
                    '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
+
+    def get_figure(show, r, fig_name):
+        if show:
+            plt.show()
+        else:
+            plt.savefig(fig_name, format='png', bbox_inches='tight', dpi=r)
+        plt.close()
+
+    def axis_labels(x, y):
+        plt.xlabel(x, fontsize=12, fontname="sans-serif")
+        plt.ylabel(y, fontsize=12, fontname="sans-serif")
+        plt.xticks(fontsize=9, fontname="sans-serif")
+        plt.yticks(fontsize=9, fontname="sans-serif")
+
+    def depr_mes(func_name):
+        print("This function is deprecated. Please use", func_name )
+        print("Read docs at https://reneshbedre.github.io/blog/howtoinstall.html")
 
 class marker():
     def geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax):
@@ -210,7 +250,7 @@ class marker():
             sys.exit(1)
 
     def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
-             gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1):
+             gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False):
 
         rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
                        '#6465a5', '#00743f', '#be9063', '#de8cf0', '#888c46', '#c0334d', '#270101', '#8d2f23',
@@ -267,11 +307,10 @@ class marker():
         ax.set_xticks(xticks)
         ax.set_yticks(np.arange(0, max(df['tpval']+1), 1))
         ax.set_xticklabels(xlabels, fontsize=9, rotation=ar)
-        ax.set_xlabel('Chromosomes', fontsize=9, fontname="sans-serif", fontweight="bold" )
+        ax.set_xlabel('Chromosomes', fontsize=9, fontname="sans-serif")
         ax.set_ylabel(r'$\bf -log_{10}(P)$', fontsize=9, fontname="sans-serif", fontweight="bold")
         ax.set_ylim([0, max(df['tpval']+1)])
-        plt.savefig('manhatten.png', format='png', bbox_inches='tight', dpi=r)
-        plt.close()
+        general.get_figure(show, r, 'manhatten.png')
 
 
 class stat:
@@ -279,7 +318,7 @@ class stat:
         pass
 
     def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", colordot=["#101820ff"], hbsize=4, r=300, ar=0,
-               dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True):
+               dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True, show=False):
         xbar = np.arange(len(df.columns.to_numpy()))
         color_list_bar = colorbar
         color_list_dot = colordot
@@ -301,8 +340,7 @@ class stat:
             ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]),
                        y=df[df.columns[cols]], s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
                        marker=markerdot)
-        plt.savefig('bardot.png', format='png', bbox_inches='tight', dpi=r)
-        plt.close()
+        general.get_figure(show, r, 'bardot.png')
 
     def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='#4a4e4d', colorline='#fe8a71', r=300,
                 ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o"):
@@ -340,6 +378,16 @@ class stat:
         else:
             print ("Error: Provide standardized residual data")
 
+    def corr_mat(df="dataframe", corm="pearson", cmap="seismic", r=300, show=False, dim=(6, 5)):
+        d_corr = df.corr(method=corm)
+        plt.subplots(figsize=dim)
+        plt.matshow(d_corr, vmin=-1, vmax=1, cmap=cmap)
+        plt.colorbar()
+        cols = list(df)
+        ticks = list(range(0, len(list(df))))
+        plt.xticks(ticks, cols, fontsize=7, rotation=90)
+        plt.yticks(ticks, cols, fontsize=7)
+        general.get_figure(show, r, 'corr_mat.png')
 
 class help:
     def __init__(self):
