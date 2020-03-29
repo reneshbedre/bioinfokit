@@ -2,7 +2,7 @@ from sklearn.decomposition import PCA
 import pandas as pd
 import re
 import numpy as np
-from bioinfokit.visuz import screeplot, pcaplot
+from bioinfokit.visuz import screeplot, pcaplot, general
 from itertools import groupby, chain
 import string
 import sys, csv
@@ -198,107 +198,10 @@ def tcsv(file="tab_file"):
         csv_file.writerow(record)
 
 def ttsam(df='dataframe', xfac=None, res=None, evar=True):
-    # d = pd.read_csv(table)
-    if xfac and res is None:
-        print("Error: xfac or res variable is missing")
-        sys.exit(1)
-    levels = d[xfac].unique()
-    if len(levels) > 2:
-        print("Error: there must be only two levels")
-        sys.exit(1)
-    a_val = df.loc[df[xfac] == levels[0], res].to_numpy()
-    b_val = df.loc[df[xfac] == levels[1], res].to_numpy()
-    a_count, b_count = len(a_val), len(b_val)
-    count = [a_count, b_count]
-    mean = df.groupby(xfac)[res].mean().to_numpy()
-    sem = df.groupby(xfac)[res].sem().to_numpy()
-    # degree of freedom
-    # a_count, b_count = np.split(count, 2)
-    dfa = a_count - 1
-    dfb = b_count - 1
-    # sample variance
-    var_a = np.var(a_val, ddof=1)
-    var_b = np.var(b_val, ddof=1)
-    mean_diff = mean[0] - mean[1]
-    # variable 95% CI
-    varci_low = []
-    varci_up = []
-    tcritvar = [(stats.t.ppf((1 + 0.95) / 2, dfa)), (stats.t.ppf((1 + 0.95) / 2, dfb))]
-    for i in range(len(levels)):
-        varci_low.append(mean[i]-(tcritvar[i]*sem[i]))
-        varci_up.append(mean[i]+(tcritvar[i]*sem[i]))
-
-    var_test = 'equal'
-    # perform levene to check for equal variances
-    w, pvalue = stats.levene(a_val, b_val)
-    if pvalue < 0.05:
-        print(colored("Warning: the two group variance are not equal. Rerun the test with evar=False"))
-
-    if evar is True:
-        # pooled variance
-        p_var = (dfa * var_a + dfb * var_b) / (dfa + dfb)
-        # std error
-        se = np.sqrt(p_var * (1.0 / a_count + 1.0 / b_count))
-        dfr = dfa + dfb
-    else:
-        # Welch's t-test for unequal variance
-        # calculate se
-        a_temp = var_a/a_count
-        b_temp = var_b/b_count
-        dfr = ((a_temp + b_temp)**2) / ((a_temp**2)/(a_count-1)+(b_temp**2)/(b_count-1))
-        se = np.sqrt(a_temp+b_temp)
-        var_test = 'unequal'
-
-    tval = np.divide(mean_diff, se)
-    oneside_pval = stats.t.sf(np.abs(tval), dfr)
-    twoside_pval = oneside_pval * 2
-    # 95% CI for diff
-    # 2.306 t critical at 0.05
-    tcritdiff = stats.t.ppf((1 + 0.95) / 2, dfr)
-    diffci_low = mean_diff-(tcritdiff*se)
-    diffci_up = mean_diff+(tcritdiff*se)
-
-    # print results
-    print("\ntwo sample", levels, "t-test with", var_test, "variance", "\n")
-    print(tabulate([["Mean diff", mean_diff], ["t", tval], ["std error", se], ["df", dfr],
-                        ["P-value (one-tail)", oneside_pval], ["P-value (two-tail)", twoside_pval],
-                        ["Lower 95%", diffci_low], ["Upper 95%", diffci_up]]), "\n")
-    print("Parameter estimates\n")
-    print(tabulate([[levels[0], count[0], mean[0], sem[0], varci_low[0], varci_low[1]], [levels[1], count[1],
-                       mean[1], sem[1], varci_up[0], varci_up[1]]], headers=["Level", "Number", "Mean", "Std Error",
-                       "Lower 95%", "Upper 95%"]), "\n")
-
-
-    fig = plt.figure()
-    d.boxplot(column=res, by=xfac, grid=False)
-    plt.ylabel(res)
-    plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
-
+    general.depr_mes("bioinfokit.visuz.stat.ttsam")
 
 def chisq(table="table"):
-    d = pd.read_csv(table, index_col=0)
-    tabulate_list = []
-    chi_ps, p_ps, dof_ps, expctd_ps = stats.chi2_contingency(d.to_dict('split')['data'])
-    tabulate_list.append(["Pearson", dof_ps, chi_ps, p_ps])
-    chi_ll, p_ll, dof_ll, expctd_ll = stats.chi2_contingency(d.to_dict('split')['data'], lambda_="log-likelihood")
-    tabulate_list.append(["Log-likelihood", dof_ll, chi_ll, p_ll])
-
-    mosaic_dict = dict()
-    m = d.to_dict('split')
-
-    for i in range(d.shape[0]):
-        for j in range(d.shape[1]):
-            mosaic_dict[(m['index'][i], m['columns'][j])] = m['data'][i][j]
-
-    print("\nChi-squared test\n")
-    print(tabulate(tabulate_list, headers=["Test", "Df", "Chi-square", "P-value"]))
-    print("\nExpected frequency counts\n")
-    print(tabulate(expctd_ps, headers=d.to_dict('split')['columns'], showindex="always"))
-
-    labels = lambda k: "" if mosaic_dict[k] != 0 else ""
-    mosaic(mosaic_dict, labelizer=labels)
-    plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
-
+    general.depr_mes("bioinfokit.visuz.stat.chisq")
 
 class fastq:
     def __init__(self):

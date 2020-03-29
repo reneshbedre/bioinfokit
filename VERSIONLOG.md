@@ -1,8 +1,19 @@
+v0.5 has the following updates and changes
+- Linear regression analysis added in `analys.stat` class
+- `volcano`, `involcano`, `ma` and `heatmap` functions moved to new `visuz.gen_exp` class
+- In `volcano`, parameters for new box type labelling and threshold grid lines added
+- `corr_mat` updated for new colormaps and moved to stat class
+- To visualize the graph in console itself (e.g. Jupyter notebook), show parameter added
+- Pandas dataframe input added for `volcano`, `involcano`, `corr_mat`, `ma`, `ttsam`, and `chisq`
+- `ttsam` and `chisq` moved to `analys.stat` class
+- graph control parameters added for  `volcano`, `involcano`, `ma`, and `heatmap`
+- documentation can also be accessed at https://reneshbedre.github.io/blog/howtoinstall.html
+- `help` will be deprecated in future release
+
 v0.4 has the following updates and changes
 - function `analyis.format.fq_qual_var()` added for detecting the FASTQ quality encoding format
 - `help` module added command-line help message
 - class `fastq` added for FASTQ related functions
-
 
 
 v0.3 has the following updates and changes
