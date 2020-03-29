@@ -495,9 +495,9 @@ class stat():
         r_sq = round(reg_out.score(self.X, self.Y), 4)
         # Correlation coefficient (r)
         r = round(np.sqrt(r_sq), 4)
-        # Adjusted r-Squared https://www.listendata.com/2014/08/adjusted-r-squared.html
+        # Adjusted r-Squared
         r_sq_adj = round(1 - (1 - r_sq) * ((n - 1)/(n-p-1)), 4)
-        # RMSE http://statweb.stanford.edu/~susan/courses/s60/split/node60.html
+        # RMSE
         rmse = round(np.sqrt(1-r_sq) * np.std(self.Y), 4)
         # intercept and slopes
         reg_intercept = reg_out.intercept_
@@ -512,24 +512,25 @@ class stat():
 
         self.reg_eq = str(round(reg_intercept[0], 4)) + eq
 
-        # sum of squares http://www.stat.uchicago.edu/~eichler/stat22000/Handouts/l23.pdf
+        # sum of squares
         regSS = np.sum((self.y_hat - np.mean(self.Y)) ** 2)  # variation explained by linear model
         residual_sse = np.sum( (self.Y-self.y_hat) ** 2 ) # remaining variation
         sst = np.sum( (self.Y-np.mean(self.Y)) ** 2 ) # total variation
 
-        # variance and std error http://www.stat.uchicago.edu/~eichler/stat22000/Handouts/l23.pdf
+        # variance and std error
         # Residual variance
         sigma_sq_hat = round(residual_sse/(n-e), 4)
         # residual std dev
         res_stdev = round(np.sqrt(sigma_sq_hat))
-        # standardized residuals http://www.r-tutor.com/elementary-statistics/simple-linear-regression/standardized-residual
+        # standardized residuals
         self.std_residuals = self.residuals/res_stdev
 
         # https://stackoverflow.com/questions/22381497/python-scikit-learn-linear-model-parameter-standard-error
-        X_with_intercept = np.empty(shape=(n, e), dtype=np.float)
-        X_with_intercept[:, 0] = 1
-        X_with_intercept[:, 1:e] = self.X
-        var_hat = np.linalg.inv(X_with_intercept.T @ X_with_intercept) * sigma_sq_hat
+        # std error
+        X_mat = np.empty(shape=(n, e), dtype=np.float)
+        X_mat[:, 0] = 1
+        X_mat[:, 1:e] = self.X
+        var_hat = np.linalg.inv(X_mat.T @ X_mat) * sigma_sq_hat
         standard_error = []
         for param in range(e):
             standard_error.append(round(np.sqrt(var_hat[param, param]), 4))
@@ -642,6 +643,30 @@ class stat():
         df.boxplot(column=res, by=xfac, grid=False)
         plt.ylabel(res)
         plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
+
+    def chisq(df='dataframe'):
+        # d = pd.read_csv(table, index_col=0)
+        tabulate_list = []
+        chi_ps, p_ps, dof_ps, expctd_ps = stats.chi2_contingency(df.to_dict('split')['data'])
+        tabulate_list.append(["Pearson", dof_ps, chi_ps, p_ps])
+        chi_ll, p_ll, dof_ll, expctd_ll = stats.chi2_contingency(df.to_dict('split')['data'], lambda_="log-likelihood")
+        tabulate_list.append(["Log-likelihood", dof_ll, chi_ll, p_ll])
+
+        mosaic_dict = dict()
+        m = df.to_dict('split')
+
+        for i in range(df.shape[0]):
+            for j in range(df.shape[1]):
+                mosaic_dict[(m['index'][i], m['columns'][j])] = m['data'][i][j]
+
+        print("\nChi-squared test\n")
+        print(tabulate(tabulate_list, headers=["Test", "Df", "Chi-square", "P-value"]))
+        print("\nExpected frequency counts\n")
+        print(tabulate(expctd_ps, headers=df.to_dict('split')['columns'], showindex="always"))
+
+        labels = lambda k: "" if mosaic_dict[k] != 0 else ""
+        mosaic(mosaic_dict, labelizer=labels)
+        plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
 
 class help:
     def __init__(self):

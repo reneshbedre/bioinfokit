@@ -271,7 +271,7 @@ Venn plot (venn3.png, venn2.png)
 
 Parameters | Description
 ------------ | -------------
-`table` | CSV delimited data file. It should be stacked table with independent (xfac) and dependent (res) variable columns.
+`table` | Pandas dataframe. It should be stacked table with independent (xfac) and dependent (res) variable columns.
 `xfac` | Independent group column name with two levels [string][default: None]
 `res` | Response variable column name [string][default: None]
 `evar` | t-test with equal variance [bool (True or False)][default: True]
@@ -285,11 +285,11 @@ summary output and group boxplot (ttsam_boxplot.png)
 
 <b>Chi-square test for independence</b>
 
-`bioinfokit.analys.chisq(table)`
+`bioinfokit.analys.stat.chisq(table)`
 
 Parameters | Description
 ------------ | -------------
-`table` | CSV delimited data file. It should be contingency table.
+`table` | Pandas dataframe. It should be contingency table.
 
 Returns:
 
@@ -442,7 +442,7 @@ Regression analysis summary
 <b>Regression plot</b>
 
 `bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
-    valphaline, valphadot)`
+    valphaline, valphadot, show)`
 
 Parameters | Description
 ------------ | -------------
@@ -458,7 +458,7 @@ Parameters | Description
 `valphaline` | Transparency of regression line on plot [float (between 0 and 1)][default: 1]
 `valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
 `linewidth` | Width of regression line [float][default: 1]
-
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 
 Returns:
 
@@ -477,3 +477,8 @@ References:
 - Michael Waskom, Olga Botvinnik, Joel Ostblom, Saulius Lukauskas, Paul Hobson, MaozGelbart, … Constantine Evans. (2020, January 24). mwaskom/seaborn: v0.10.0 (January 2020) (Version v0.10.0). Zenodo. http://doi.org/10.5281/zenodo.3629446
 - Fabian Pedregosa, Gaël Varoquaux, Alexandre Gramfort, Vincent Michel, Bertrand Thirion, Olivier Grisel, Mathieu Blondel, Peter Prettenhofer, Ron Weiss, Vincent Dubourg, Jake Vanderplas, Alexandre Passos, David Cournapeau, Matthieu Brucher, Matthieu Perrot, Édouard Duchesnay. Scikit-learn: Machine Learning in Python, Journal of Machine Learning Research, 12, 2825-2830 (2011)
 - Wes McKinney. Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference, 51-56 (2010)
+
+bioinfokit cited by:
+- Greaney AM, Adams TS, Raredon MS, Gubbins E, Schupp JC, Engler AJ, Ghaedi M, Yuan Y, Kaminski N, Niklason LE. Platform 
+  Effects on Regeneration by Pulmonary Basal Cells as Evaluated by Single-Cell RNA Sequencing. Cell Reports. 2020 Mar 
+  24;30(12):4250-65.
