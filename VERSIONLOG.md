@@ -9,6 +9,8 @@ v0.5 has the following updates and changes
 - graph control parameters added for  `volcano`, `involcano`, `ma`, and `heatmap`
 - documentation can also be accessed at https://reneshbedre.github.io/blog/howtoinstall.html
 - `help` will be deprecated in future release
+- fixed the numpy bug in `visuz.stat.bardot`. The `int` cast added to generate number of samples, which does not accept
+  float (See details of numpy bug: https://github.com/numpy/numpy/issues/15345)
 
 v0.4 has the following updates and changes
 - function `analyis.format.fq_qual_var()` added for detecting the FASTQ quality encoding format

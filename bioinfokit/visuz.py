@@ -337,7 +337,7 @@ class stat:
         # add dots
         for cols in range(len(df.columns.to_numpy())):
             # get markers from here https://matplotlib.org/3.1.1/api/markers_api.html
-            ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, df.describe().loc['count'][cols]),
+            ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, int(df.describe().loc['count'][cols])),
                        y=df[df.columns[cols]], s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
                        marker=markerdot)
         general.get_figure(show, r, 'bardot.png')
