@@ -307,7 +307,7 @@ class marker():
         ax.set_xticks(xticks)
         ax.set_yticks(np.arange(0, max(df['tpval']+1), 1))
         ax.set_xticklabels(xlabels, fontsize=9, rotation=ar)
-        ax.set_xlabel('Chromosomes', fontsize=9, fontname="sans-serif")
+        ax.set_xlabel('Chromosomes', fontsize=9, fontname="sans-serif", fontweight="bold")
         ax.set_ylabel(r'$\bf -log_{10}(P)$', fontsize=9, fontname="sans-serif", fontweight="bold")
         ax.set_ylim([0, max(df['tpval']+1)])
         general.get_figure(show, r, 'manhatten.png')
