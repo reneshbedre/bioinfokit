@@ -318,28 +318,35 @@ class stat:
         pass
 
     def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", colordot=["#101820ff"], hbsize=4, r=300, ar=0,
-               dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True, show=False):
+               dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True, show=False, ylm=None, axtickfontsize=9,
+               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial"):
         xbar = np.arange(len(df.columns.to_numpy()))
         color_list_bar = colorbar
         color_list_dot = colordot
         if len(color_list_dot) == 1:
             color_list_dot = colordot*len(df.columns.to_numpy())
-        fig, ax = plt.subplots(figsize=dim)
+        plt.subplots(figsize=dim)
         if errorbar:
-            ax.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
+            plt.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
                 zorder=0, alpha=valphabar)
         else:
-            ax.bar(x=xbar, height=df.describe().loc['mean'], width=bw, color=color_list_bar,
+            plt.bar(x=xbar, height=df.describe().loc['mean'], width=bw, color=color_list_bar,
                    capsize=hbsize,
                    zorder=0, alpha=valphabar)
-        ax.set_xticks(xbar)
-        ax.set_xticklabels(df.columns.to_numpy(), fontsize=9, rotation=ar)
+
+        plt.xticks(xbar, df.columns.to_numpy(), fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        plt.yticks(fontsize=axtickfontsize, fontname=axtickfontname)
+        # plt.xticklabels(df.columns.to_numpy(), fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        # ax.set_yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
         # add dots
         for cols in range(len(df.columns.to_numpy())):
             # get markers from here https://matplotlib.org/3.1.1/api/markers_api.html
-            ax.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, int(df.describe().loc['count'][cols])),
+            plt.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, int(df.describe().loc['count'][cols])),
                        y=df[df.columns[cols]], s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
                        marker=markerdot)
+
         general.get_figure(show, r, 'bardot.png')
 
     def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='#4a4e4d', colorline='#fe8a71', r=300,
