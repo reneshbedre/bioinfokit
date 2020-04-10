@@ -3,7 +3,7 @@ import pandas as pd
 import re
 import numpy as np
 from bioinfokit.visuz import screeplot, pcaplot, general
-from itertools import groupby, chain
+from itertools import groupby, chain, combinations
 import string
 import sys, csv
 import matplotlib.pyplot as plt
@@ -203,6 +203,7 @@ def ttsam(df='dataframe', xfac=None, res=None, evar=True):
 def chisq(table="table"):
     general.depr_mes("bioinfokit.visuz.stat.chisq")
 
+
 class fastq:
     def __init__(self):
         pass
@@ -376,6 +377,7 @@ class stat():
         print("Bartlett (P-value):", pvalue2, "\n")
 
     def lin_reg(self, df="dataframe", y=None, x=None):
+
         if x is None or y is None:
             print("Error:Provide proper column names for X and Y variables\n")
             sys.exit(1)
@@ -397,7 +399,8 @@ class stat():
         # coefficient  of determination
         r_sq = round(reg_out.score(self.X, self.Y), 4)
         # Correlation coefficient (r)
-        r = round(np.sqrt(r_sq), 4)
+        # need to delete this as this is not right formulae for negative correlation
+        # r = round(np.sqrt(r_sq), 4)
         # Adjusted r-Squared
         r_sq_adj = round(1 - (1 - r_sq) * ((n - 1)/(n-p-1)), 4)
         # RMSE
@@ -409,16 +412,19 @@ class stat():
         self.y_hat = reg_out.predict(self.X)
         # residuals
         self.residuals = self.Y - self.y_hat
+
+        # sum of squares
+        regSS = np.sum((self.y_hat - np.mean(self.Y)) ** 2)  # variation explained by linear model
+        residual_sse = np.sum((self.Y - self.y_hat) ** 2)  # remaining variation
+        sst = np.sum((self.Y - np.mean(self.Y)) ** 2)  # total variation
+
+
         eq = ""
         for i in range(p):
             eq = eq+' + '+ '(' + str(round(reg_slopes[0][i], 4))+'*'+x[i] + ')'
 
         self.reg_eq = str(round(reg_intercept[0], 4)) + eq
 
-        # sum of squares
-        regSS = np.sum((self.y_hat - np.mean(self.Y)) ** 2)  # variation explained by linear model
-        residual_sse = np.sum( (self.Y-self.y_hat) ** 2 ) # remaining variation
-        sst = np.sum( (self.Y-np.mean(self.Y)) ** 2 ) # total variation
 
         # variance and std error
         # Residual variance
@@ -454,12 +460,12 @@ class stat():
         anova_table.append(["Error", n-e, residual_sse, round(residual_sse/(n-e), 4), "", ""])
         anova_table.append(["Total", n-1, sst, "", "", ""])
 
+
         print("\nRegression equation:\n")
         print(self.reg_eq)
         print("\nRegression Summary:")
         print(tabulate([["Dependent variables", x], ["Independent variables", y],
                         ["Coefficient of determination (r-squared)", r_sq], ["Adjusted r-squared)", r_sq_adj],
-                        ["Correlation coefficient (r)", r],
                         ["Root Mean Square Error (RMSE)", rmse], ["Adjusted r-squared)", r_sq_adj],
                         ["Mean of Y", round(np.mean(self.Y), 4)], ["Residual standard error", round(np.sqrt(sigma_sq_hat), 4)],
                         ["No. of Observations", n]], "\n"))
@@ -468,6 +474,38 @@ class stat():
         print("\nANOVA Summary:\n")
         print(tabulate(anova_table, headers=["Source", "Df", "Sum Squares", "Mean Squares", "F", "Pr(>F)"]),
               "\n")
+
+        # VIF for MLR
+        # VIF computed as regressing X on remaining X
+        # using correlation
+        if p > 1:
+            vif_table = []
+            vif_df = df[x]
+            df_corr = vif_df.corr()
+            vif_mat = np.linalg.inv(df_corr)
+            self.vif = vif_mat.diagonal()
+            for i in range(len(self.vif)):
+                vif_table.append([x[i], self.vif[i]])
+            print("\nVariance inflation factor (VIF)\n")
+            print(tabulate(vif_table, headers=["Variable", "VIF"]),
+                  "\n")
+
+        '''
+        vif = []
+        for i in range(len(x)):
+            temp = x[:]
+            print(i, x, temp)
+            vif_y = x[i]
+            del temp[i]
+            vif_x = temp
+            y_mat = df[vif_y]
+            x_mat = df[vif_x]
+            print(y_mat, '\n', x_mat, '\n')
+            vif_reg_out = LinearRegression().fit(x_mat, y_mat)
+            vif.append(1 / (1-vif_reg_out.score(x_mat, y_mat)))
+
+        print(vif)
+        '''
 
     def ttsam(df='dataframe', xfac=None, res=None, evar=True):
         # d = pd.read_csv(table)
@@ -571,27 +609,26 @@ class stat():
         mosaic(mosaic_dict, labelizer=labels)
         plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
 
-class help:
-    def __init__(self):
-        pass
 
-    @staticmethod
-    def extract_seq():
-        text = """
-        Manhatten plot
+class get_data:
+    def __init__(self, data=None):
+        if data=='mlr':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/reg/test_reg.csv")
+        elif data=='boston':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/reg/boston.csv")
+        elif data=='volcano':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/volcano/testvolcano.csv")
+        elif data=='ma':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ma/test_dataset.csv")
+        elif data=='hmap':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/heatmap/hm_cot.csv")
+        elif data=='mhat':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/mhat/gwas_res_sim.csv")
+        elif data=='bdot':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/bardot/bardot.txt", sep="\t")
+        elif data=='corr':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/corr/corr_dataset.csv")
+        else:
+            print("Error: Provide correct parameter for data\n")
 
-        bioinfokit.analys.extract_seq(file, id)
-
-        Parameters:
-        ------------
-        file : input FASTA file from which sequneces to be extracted
-        id   : sequence ID file
-
-        Returns:
-        Extracted sequences in FASTA format file in same directory (out.fasta )
-
-        Example: https://reneshbedre.github.io/blog/extrseq.html
-        """
-
-        print(text)
 

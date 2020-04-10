@@ -1,3 +1,11 @@
+v0.6 has the following updates and changes
+- Programmatic access of dataset added (class `get_data`)
+- More features for figures added (`figtype`, `axtickfontsize`, `axtickfontname`, `axxlabel`, `axylabel`, `xlm`, `ylm`,
+  `yerrlw`, `yerrcw`)
+- In volcano plot, the typo for xlabel corrected (-log2(FoldChange) to log2(FoldChange))
+- `help` will be deprecated in future release
+- VIF calculation for MLR updated
+
 v0.5 has the following updates and changes
 - Linear regression analysis added in `analys.stat` class
 - `volcano`, `involcano`, `ma` and `heatmap` functions moved to new `visuz.gen_exp` class

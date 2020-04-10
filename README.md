@@ -34,7 +34,8 @@ From Python package index,
 <b>Volcano plot</b>
 
 `bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
-    dotsize, markerdot, r, dim, show)`
+    dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize,
+    xlm, ylm)`
 
 Parameters | Description
 ------------ | -------------
@@ -49,12 +50,20 @@ Parameters | Description
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]. gfont not compatible with gstyle=2.
 `gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `sign_line` | Show grid lines on plot with defined log fold change (`lfc_thr`) and P-value (`pv_thr`) threshold value [True or False][default:False]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 
 Returns:
 
@@ -63,7 +72,8 @@ Volcano plot image in same directory (volcano.png)
 
 <b>MA plot</b>
 
-`bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha)`
+`bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
+    axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, xlm, ylm)`
 
 Parameters | Description
 ------------ | -------------
@@ -73,12 +83,20 @@ Parameters | Description
 `st_count` | Name of a column having count values for treatment sample [default:value2]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
 `color` | Tuple of two colors [tuple][default: ("green", "red")]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 
 Returns:
 
@@ -88,7 +106,7 @@ MA plot image in same directory (ma.png)
 <b>Inverted Volcano plot</b>
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
-    dotsize, markerdot, r, dim, show)`
+    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize)`
 
 Parameters | Description
 ------------ | -------------
@@ -103,11 +121,17 @@ Parameters | Description
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]
 `gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
 
 Returns:
 
@@ -118,7 +142,7 @@ Inverted volcano plot image in same directory (involcano.png)
 
 <b>Correlation matrix plot</b>
 
-`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show)`
+`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show, figtype, axtickfontsize, axtickfontname)`
 
 Parameters | Description
 ------------ | -------------
@@ -129,6 +153,9 @@ Parameters | Description
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 5)]        
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 
 Returns:
 
@@ -226,7 +253,7 @@ CSV delimited file (out.csv)
 <b>Heatmap</b>
 
 `bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), clus=True, zscore=None, xlabel=True, ylabel=True, 
-    tickfont=(12, 12), show, r)`
+    tickfont=(12, 12), show, r, figtype)`
 
 Parameters | Description
 ------------ | -------------
@@ -241,6 +268,7 @@ Parameters | Description
 `tickfont` | Fontsize for X and Y-axis tick labels [tuple of two floats][default: (14, 14)]
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 
 Returns:
 
@@ -339,7 +367,7 @@ ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 <b>Manhatten plot</b>
 
 `bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
-    gfont, valpha, show)`
+    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, ylm)`
 
 Parameters | Description
 ------------ | -------------
@@ -347,9 +375,6 @@ Parameters | Description
 `chr` | Name of a column having chromosome numbers [string][default:None]
 `pv` | Name of a column having P-values. Must be numeric column [string][default:None]
 `color` | List the name of the colors to be plotted. It can accept two alternate colors or the number colors equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each chromosome [list][default:None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-`r` | Figure resolution in dpi [int][default: 300]
-`ar` | Rotation of X-axis labels [float][default: 90]
 `gwas_sign_line` |Plot statistical significant threshold line defined by option `gwasp` [bool (True or False)][default: False]
 `gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
 `dotsize`| The size of the dots in the plot [float][default: 8]
@@ -357,7 +382,17 @@ Parameters | Description
 `markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, dict][default: True]
 `gfont` | Font size for SNP names to display on the plot [float][default: 8]
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 90]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+
 
 Returns:
 
@@ -381,7 +416,8 @@ Extracted sequences in FASTA format file in same directory (out.fasta)
 <b>Bar-dot plot</b>
 
 `bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, 
-    valphadot, show)`
+    valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, ylm, axtickfontsize, axtickfontname,
+    yerrlw, yerrcw)`
 
 Parameters | Description
 ------------ | -------------
@@ -398,7 +434,18 @@ Parameters | Description
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
 `valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`yerrlw` | Error bar line width [float][default: None]
+`yerrcw` | Error bar cap width [float][default: None]
+
 
 Returns:
 
@@ -442,7 +489,8 @@ Regression analysis summary
 <b>Regression plot</b>
 
 `bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
-    valphaline, valphadot, show)`
+    valphaline, valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, xlm, ylm, axtickfontsize,
+    axtickfontname)`
 
 Parameters | Description
 ------------ | -------------
@@ -458,14 +506,23 @@ Parameters | Description
 `valphaline` | Transparency of regression line on plot [float (between 0 and 1)][default: 1]
 `valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
 `linewidth` | Width of regression line [float][default: 1]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`xlm` | Range of ticks to plot on X-axis [float tuple (bottom, top, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+
 
 Returns:
 
 Regression plot image in same directory (reg_plot.png)
 
 <a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
-
 
 
 

@@ -128,9 +128,11 @@ class gene_exp():
 
     def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
                 geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
-                sign_line=False, gstyle=1, show=False):
-        # load csv data file
-        # d = pd.read_csv(table, sep=",")
+                sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
+               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
+                axylabel=None, xlm=None, ylm=None):
+        _x = r'$ log_{2}(Fold Change)$'
+        _y = r'$ -log_{10}(P-value)$'
         color = color
         d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
         d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
@@ -144,12 +146,21 @@ class gene_exp():
             plt.axvline(x=lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
             plt.axvline(x=-lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
         gene_exp.geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
-        general.axis_labels(r'$ -log_{2}(Fold Change)$', r'$ -log_{10}(P-value)$')
-        general.get_figure(show, r, 'volcano.png')
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
+        general.get_figure(show, r, figtype, 'volcano')
 
     def involcano(d="dataframe", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"),
                   valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
-                sign_line=False, gstyle=1, show=False):
+                sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
+               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
+                axylabel=None, xlm=None, ylm=None):
+        _x = r'$ log_{2}(Fold Change)$'
+        _y = r'$ -log_{10}(P-value)$'
         color = color
         d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
         d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
@@ -161,11 +172,19 @@ class gene_exp():
         plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha, s=dotsize, marker=markerdot)
         gene_exp.geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
         plt.gca().invert_yaxis()
-        general.axis_labels(r'$ -log_{2}(Fold Change)$', r'$ -log_{10}(P-value)$')
-        general.get_figure(show, r, 'involcano.png')
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
+        general.get_figure(show, r, figtype, 'involcano')
 
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
-           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "red")):
+           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "red"), ar=90, figtype='png', axtickfontsize=9,
+               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
+                axylabel=None, xlm=None, ylm=None):
+        _x, _y = 'A', 'M'
         df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
         df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[1]  # downregulated
         df['color'].fillna('grey', inplace=True)  # intermediate
@@ -175,11 +194,16 @@ class gene_exp():
         plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
         # draw a central line at M=0
         plt.axhline(y=0, color='#7d7d7d', linestyle='--')
-        general.axis_labels('A', 'M')
-        general.get_figure(show, r, 'ma.png')
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
+        general.get_figure(show, r, figtype, 'ma')
 
     def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), clus=True, zscore=None, xlabel=True,
-             ylabel=True, tickfont=(10, 10), r=300, show=False):
+             ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png'):
         # df = df.set_index(d.columns[0])
         # plot heatmap without cluster
         # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
@@ -190,12 +214,12 @@ class gene_exp():
                                 figsize=dim)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, 'heatmap.png')
+            general.get_figure(show, r, figtype, 'heatmap')
         else:
             hm = sns.heatmap(df, cmap=cmap, cbar=scale, xticklabels=xlabel, yticklabels=ylabel)
             plt.xticks(fontsize=tickfont[0])
             plt.yticks(fontsize=tickfont[1])
-            general.get_figure(show, r, 'heatmap.png')
+            general.get_figure(show, r, figtype, 'heatmap')
 
 
 class general():
@@ -207,18 +231,31 @@ class general():
                    '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
                    '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
 
-    def get_figure(show, r, fig_name):
+    def get_figure(show, r, figtype, fig_name):
         if show:
             plt.show()
         else:
-            plt.savefig(fig_name, format='png', bbox_inches='tight', dpi=r)
+            plt.savefig(fig_name+'.'+figtype, format=figtype, bbox_inches='tight', dpi=r)
         plt.close()
 
-    def axis_labels(x, y):
-        plt.xlabel(x, fontsize=12, fontname="sans-serif")
-        plt.ylabel(y, fontsize=12, fontname="sans-serif")
-        plt.xticks(fontsize=9, fontname="sans-serif")
-        plt.yticks(fontsize=9, fontname="sans-serif")
+    def axis_labels(x, y, axlabelfontsize=None, axlabelfontname=None):
+        plt.xlabel(x, fontsize=axlabelfontsize, fontname=axlabelfontname)
+        plt.ylabel(y, fontsize=axlabelfontsize, fontname=axlabelfontname)
+        # plt.xticks(fontsize=9, fontname="sans-serif")
+        # plt.yticks(fontsize=9, fontname="sans-serif")
+
+    def axis_ticks(xlm=None, ylm=None, axtickfontsize=None, axtickfontname=None, ar=None):
+        if xlm:
+            plt.xlim(left=xlm[0], right=xlm[1])
+            plt.xticks(np.arange(xlm[0], xlm[1], xlm[2]),  fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        else:
+            plt.xticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]),  fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        else:
+            plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
 
     def depr_mes(func_name):
         print("This function is deprecated. Please use", func_name )
@@ -250,8 +287,11 @@ class marker():
             sys.exit(1)
 
     def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
-             gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False):
+             gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False, figtype='png',
+             axxlabel=None, axylabel=None, axlabelfontsize=9, axlabelfontname="Arial", axtickfontsize=9,
+             axtickfontname="Arial", ylm=None):
 
+        _x, _y = 'Chromosomes', r'$ -log_{10}(P)$'
         rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
                        '#6465a5', '#00743f', '#be9063', '#de8cf0', '#888c46', '#c0334d', '#270101', '#8d2f23',
                        '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
@@ -305,12 +345,21 @@ class marker():
         ax.margins(x=0)
         ax.margins(y=0)
         ax.set_xticks(xticks)
-        ax.set_yticks(np.arange(0, max(df['tpval']+1), 1))
-        ax.set_xticklabels(xlabels, fontsize=9, rotation=ar)
-        ax.set_xlabel('Chromosomes', fontsize=9, fontname="sans-serif", fontweight="bold")
-        ax.set_ylabel(r'$\bf -log_{10}(P)$', fontsize=9, fontname="sans-serif", fontweight="bold")
-        ax.set_ylim([0, max(df['tpval']+1)])
-        general.get_figure(show, r, 'manhatten.png')
+        ax.set_ylim([0, max(df['tpval'] + 1)])
+        if ylm:
+            ylm = np.arange(ylm[0], ylm[1], ylm[2])
+        else:
+            ylm = np.arange(0, max(df['tpval']+1), 1)
+        ax.set_yticks(ylm)
+        ax.set_xticklabels(xlabels, rotation=ar)
+        # ax.set_yticklabels(ylm, fontsize=axtickfontsize, fontname=axtickfontname, rotation=ar)
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        ax.set_xlabel(_x, fontsize=axlabelfontsize, fontname=axlabelfontname)
+        ax.set_ylabel(_y, fontsize=axlabelfontsize, fontname=axlabelfontname)
+        general.get_figure(show, r, figtype, 'manhatten')
 
 
 class stat:
@@ -319,7 +368,11 @@ class stat:
 
     def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", colordot=["#101820ff"], hbsize=4, r=300, ar=0,
                dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True, show=False, ylm=None, axtickfontsize=9,
-               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial"):
+               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
+                axylabel=None, figtype='png'):
+        # set axis labels to None
+        _x = None
+        _y = None
         xbar = np.arange(len(df.columns.to_numpy()))
         color_list_bar = colorbar
         color_list_dot = colordot
@@ -328,49 +381,59 @@ class stat:
         plt.subplots(figsize=dim)
         if errorbar:
             plt.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
-                zorder=0, alpha=valphabar)
+                zorder=0, alpha=valphabar, error_kw={'elinewidth': yerrlw, 'capthick': yerrcw})
         else:
             plt.bar(x=xbar, height=df.describe().loc['mean'], width=bw, color=color_list_bar,
                    capsize=hbsize,
                    zorder=0, alpha=valphabar)
 
         plt.xticks(xbar, df.columns.to_numpy(), fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
-        plt.yticks(fontsize=axtickfontsize, fontname=axtickfontname)
-        # plt.xticklabels(df.columns.to_numpy(), fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
-        # ax.set_yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        # ylm must be tuple of start, end, interval
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+        plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
         # add dots
         for cols in range(len(df.columns.to_numpy())):
             # get markers from here https://matplotlib.org/3.1.1/api/markers_api.html
             plt.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, int(df.describe().loc['count'][cols])),
                        y=df[df.columns[cols]], s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
                        marker=markerdot)
-
-        general.get_figure(show, r, 'bardot.png')
+        general.get_figure(show, r, figtype, 'bardot')
 
     def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='#4a4e4d', colorline='#fe8a71', r=300,
-                ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o", show=False):
+                ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o", show=False, axtickfontsize=9,
+               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", ylm=None, xlm=None, axxlabel=None,
+                axylabel=None, figtype='png'):
         fig, ax = plt.subplots(figsize=dim)
         plt.scatter(df[x].to_numpy(), df[y].to_numpy(), color=colordot, s=dotsize, alpha=valphadot, marker=markerdot,
                     label='Observed data')
         plt.plot(df[x].to_numpy(), df[yhat].to_numpy(), color=colorline, linewidth=linewidth, alpha=valphaline,
                  label='Regression line')
-        plt.xlabel(x, fontsize=9)
-        plt.ylabel(y, fontsize=9)
-        plt.legend(fontsize=8)
-        general.get_figure(show, r, 'reg_plot.png')
+        if axxlabel:
+            x = axxlabel
+        if axylabel:
+            y = axylabel
+        general.axis_labels(x, y, axlabelfontsize, axlabelfontname)
+        general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
+        plt.legend(fontsize=9)
+        general.get_figure(show, r, figtype, 'reg_plot')
 
     def reg_resid_plot(df="dataframe", yhat=None, resid=None, stdresid=None, dim=(6, 4), colordot='#4a4e4d',
                        colorline='#2ab7ca', r=300, ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1,
-                       markerdot="o", show=False):
+                       markerdot="o", show=False, figtype='png'):
         fig, ax = plt.subplots(figsize=dim)
         if resid is not None:
             plt.scatter(df[yhat], df[resid], color=colordot, s=dotsize, alpha=valphadot, marker=markerdot)
             plt.axhline(y=0, color=colorline, linestyle='--', linewidth=linewidth, alpha=valphaline)
             plt.xlabel("Fitted")
             plt.ylabel("Residuals")
-            general.get_figure(show, r, 'resid_plot.png')
+            general.get_figure(show, r, figtype, 'resid_plot')
         else:
             print ("Error: Provide residual data")
         if stdresid is not None:
@@ -378,20 +441,22 @@ class stat:
             plt.axhline(y=0, color=colorline, linestyle='--', linewidth=linewidth, alpha=valphaline)
             plt.xlabel("Fitted")
             plt.ylabel("Standardized Residuals")
-            general.get_figure(show, r, 'std_resid_plot.png')
+            general.get_figure(show, r, figtype, 'std_resid_plot')
         else:
             print ("Error: Provide standardized residual data")
 
-    def corr_mat(df="dataframe", corm="pearson", cmap="seismic", r=300, show=False, dim=(6, 5)):
+    def corr_mat(df="dataframe", corm="pearson", cmap="seismic", r=300, show=False, dim=(6, 5), axtickfontname="Arial",
+                 axlabelfontsize=7, ar=90, figtype='png'):
         d_corr = df.corr(method=corm)
         plt.subplots(figsize=dim)
         plt.matshow(d_corr, vmin=-1, vmax=1, cmap=cmap)
         plt.colorbar()
         cols = list(df)
         ticks = list(range(0, len(list(df))))
-        plt.xticks(ticks, cols, fontsize=7, rotation=90)
-        plt.yticks(ticks, cols, fontsize=7)
-        general.get_figure(show, r, 'corr_mat.png')
+        plt.xticks(ticks, cols, fontsize=axlabelfontsize, fontname=axtickfontname, rotation=ar)
+        plt.yticks(ticks, cols, fontsize=axlabelfontsize, fontname=axtickfontname)
+        general.get_figure(show, r, figtype, 'corr_mat')
+
 
 class help:
     def __init__(self):
@@ -466,3 +531,6 @@ class help:
                """
 
         print(text)
+
+
+
