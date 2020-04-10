@@ -399,8 +399,6 @@ class stat():
         # coefficient  of determination
         r_sq = round(reg_out.score(self.X, self.Y), 4)
         # Correlation coefficient (r)
-        # need to delete this as this is not right formulae for negative correlation
-        # r = round(np.sqrt(r_sq), 4)
         # Adjusted r-Squared
         r_sq_adj = round(1 - (1 - r_sq) * ((n - 1)/(n-p-1)), 4)
         # RMSE
@@ -465,7 +463,7 @@ class stat():
         print(self.reg_eq)
         print("\nRegression Summary:")
         print(tabulate([["Dependent variables", x], ["Independent variables", y],
-                        ["Coefficient of determination (r-squared)", r_sq], ["Adjusted r-squared)", r_sq_adj],
+                        ["Coefficient of determination (r-squared)", r_sq], ["Adjusted r-squared", r_sq_adj],
                         ["Root Mean Square Error (RMSE)", rmse], ["Adjusted r-squared)", r_sq_adj],
                         ["Mean of Y", round(np.mean(self.Y), 4)], ["Residual standard error", round(np.sqrt(sigma_sq_hat), 4)],
                         ["No. of Observations", n]], "\n"))
