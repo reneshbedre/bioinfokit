@@ -464,7 +464,7 @@ class stat():
         print("\nRegression Summary:")
         print(tabulate([["Dependent variables", x], ["Independent variables", y],
                         ["Coefficient of determination (r-squared)", r_sq], ["Adjusted r-squared", r_sq_adj],
-                        ["Root Mean Square Error (RMSE)", rmse], 
+                        ["Root Mean Square Error (RMSE)", rmse],
                         ["Mean of Y", round(np.mean(self.Y), 4)], ["Residual standard error", round(np.sqrt(sigma_sq_hat), 4)],
                         ["No. of Observations", n]], "\n"))
         print("\nRegression Coefficients:\n")
