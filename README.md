@@ -154,7 +154,7 @@ Parameters | Description
 `dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 5)]        
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontsize` | Font size for axis ticks [float][default: 7]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 
 Returns:

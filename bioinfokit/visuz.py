@@ -182,8 +182,8 @@ class gene_exp():
 
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
            markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "red"), ar=90, figtype='png', axtickfontsize=9,
-               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-                axylabel=None, xlm=None, ylm=None):
+           axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
+           axylabel=None, xlm=None, ylm=None):
         _x, _y = 'A', 'M'
         df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
         df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[1]  # downregulated
@@ -452,81 +452,5 @@ class stat:
         plt.xticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname, rotation=ar)
         plt.yticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname)
         general.get_figure(show, r, figtype, 'corr_mat')
-
-
-class help:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def mhat():
-        text = """
-        Manhatten plot
-
-        bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, gfont, valpha)
-
-        Parameters:
-        ------------
-        df             : Pandas dataframe object with atleast SNP, chromosome, and P-values columns
-        chr            : Name of a column having chromosome numbers [string][default:None]
-        pv             : Name of a column having P-values. Must be numeric column [string][default:None]
-        color          : List the name of the colors to be plotted. It can accept two alternate colors or the number colors 
-                         equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each 
-                         chromosome [list][default:None]
-        dim            : Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-        r              : Figure resolution in dpi [int][default: 300]
-        ar             : Rotation of X-axis labels [float][default: 90]
-        gwas_sign_line : Plot statistical significant threshold line defined by option `gwasp` 
-                         [bool (True or False)][default: False]
-        gwasp          : Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
-        dotsize        : The size of the dots in the plot [float][default: 8]
-        markeridcol    : Name of a column having SNPs. This is necessary for plotting SNP names on the plot 
-                         [string][default: None]
-        markernames    : The list of the SNPs to display on the plot. These SNP should be present in SNP column. 
-                         Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set 
-                         to True, it will label all SNPs with P-value significant score defined by `gwasp` 
-                         [string, list, dict][default: True]
-        gfont          : Font size for SNP names to display on the plot [float][default: 8]
-        valpha         : Transparency of points on plot [float (between 0 and 1)][default: 1.0]
-
-        Returns:
-        Manhatten plot image in same directory (manhatten.png)
-
-        Working example: https://reneshbedre.github.io/blog/manhat.html
-        """
-
-        print(text)
-
-    def bardot():
-        text = """
-               Bar-dot plot
-
-               bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, valphadot)
-
-               Parameters:
-               ------------
-               df        : Pandas dataframe object
-               colorbar  : Color of bar graph [string or list][default:"#bbcfff"]
-               colordot  : Color of dots on bar [string or list][default:"#ee8972"]
-               bw        : Width of bar [float][default: 0.4]
-               dim       : Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-               r         : Figure resolution in dpi [int][default: 300]
-               ar        : Rotation of X-axis labels [float][default: 0]
-               hbsize    : Horizontal bar size for standard error bars [float][default: 4]
-               errorbar  : Draw standard error bars [bool (True or False)][default: True]
-               dotsize   : The size of the dots in the plot [float][default: 6]
-               markerdot : Shape of the dot marker. 
-                           See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-               valphabar : Transparency of bars on plot [float (between 0 and 1)][default: 1]
-               valphadot : Transparency of dots on plot [float (between 0 and 1)][default: 1]
-
-               Returns:
-               Bar-dot plot image in same directory (bardot.png)
-
-               Working example: https://reneshbedre.github.io/blog/bardot.html
-               """
-
-        print(text)
-
 
 
