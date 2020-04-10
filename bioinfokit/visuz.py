@@ -8,7 +8,7 @@ from matplotlib_venn import venn3, venn2
 from random import sample
 from functools import reduce
 import sys
-from adjustText import adjust_text
+
 
 
 def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
@@ -267,21 +267,17 @@ class marker():
             if markernames is not None and markernames is True:
                 for i in df[markeridcol].unique():
                     if df.loc[df[markeridcol] == i, pv].iloc[0] <= gwasp:
-                        texts = [plt.text((df.loc[df[markeridcol] == i, 'ind'].iloc[0]), df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                                 str(i), fontsize=gfont)]
-                        adjust_text(texts)
+                        plt.text((df.loc[df[markeridcol] == i, 'ind'].iloc[0]), df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                 str(i), fontsize=gfont)
             elif markernames is not None and type(markernames) is tuple:
                 for i in df[markeridcol].unique():
-                    if i in markernames:
-                        texts = [plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                                 str(i), fontsize=gfont)]
-                        adjust_text(texts)
+                    plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                 str(i), fontsize=gfont)
             elif markernames is not None and type(markernames) is dict:
                 for i in df[markeridcol].unique():
                     if i in markernames:
-                        texts = [plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                                 markernames[i], fontsize=gfont)]
-                        adjust_text(texts)
+                       plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                 markernames[i], fontsize=gfont)
         else:
             print("Error: provide 'markeridcol' parameter")
             sys.exit(1)
