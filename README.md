@@ -74,7 +74,7 @@ Volcano plot image in same directory (volcano.png)
 <b>MA plot</b>
 
 `bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
-    axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname, xlm, ylm)`
+    axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm)`
 
 Parameters | Description
 ------------ | -------------
@@ -94,7 +94,6 @@ Parameters | Description
 `axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 `xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
@@ -108,7 +107,7 @@ MA plot image in same directory (ma.png)
 <b>Inverted Volcano plot</b>
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
-    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname)`
+    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, axtickfontname)`
 
 Parameters | Description
 ------------ | -------------
@@ -132,7 +131,6 @@ Parameters | Description
 `axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 
@@ -371,7 +369,7 @@ ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 <b>Manhatten plot</b>
 
 `bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
-    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, ylm)`
+    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm)`
 
 Parameters | Description
 ------------ | -------------
@@ -394,7 +392,6 @@ Parameters | Description
 `axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
 `ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
 
 

@@ -628,6 +628,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/bardot/bardot.txt", sep="\t")
         elif data=='corr':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/corr/corr_dataset.csv")
+        elif data=='slr':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/reg/test_reg_uni.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 
