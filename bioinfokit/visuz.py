@@ -442,15 +442,15 @@ class stat:
             print ("Error: Provide standardized residual data")
 
     def corr_mat(df="dataframe", corm="pearson", cmap="seismic", r=300, show=False, dim=(6, 5), axtickfontname="Arial",
-                 axlabelfontsize=7, ar=90, figtype='png'):
+                 axtickfontsize=7, ar=90, figtype='png'):
         d_corr = df.corr(method=corm)
         plt.subplots(figsize=dim)
         plt.matshow(d_corr, vmin=-1, vmax=1, cmap=cmap)
         plt.colorbar()
         cols = list(df)
         ticks = list(range(0, len(list(df))))
-        plt.xticks(ticks, cols, fontsize=axlabelfontsize, fontname=axtickfontname, rotation=ar)
-        plt.yticks(ticks, cols, fontsize=axlabelfontsize, fontname=axtickfontname)
+        plt.xticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname, rotation=ar)
+        plt.yticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname)
         general.get_figure(show, r, figtype, 'corr_mat')
 
 

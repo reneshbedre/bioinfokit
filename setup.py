@@ -31,5 +31,5 @@ setup(name='bioinfokit',
        ],
 
       install_requires=['pandas', 'numpy', 'matplotlib', 'scipy', 'scikit-learn', 'seaborn', 'matplotlib_venn',
-                        'tabulate', 'termcolor', 'statsmodels', 'textwrap3', 'adjustText',],
+                        'tabulate', 'termcolor', 'statsmodels', 'textwrap3'],
       )

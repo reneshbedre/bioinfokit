@@ -5,6 +5,7 @@ v0.6 has the following updates and changes
 - In volcano plot, the typo for xlabel corrected (-log2(FoldChange) to log2(FoldChange))
 - `help` will be deprecated in future release
 - VIF calculation for MLR updated
+- adjustText removed
 
 v0.5 has the following updates and changes
 - Linear regression analysis added in `analys.stat` class
