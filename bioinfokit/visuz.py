@@ -177,6 +177,12 @@ class gene_exp():
         if axylabel:
             _y = axylabel
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        if xlm:
+            print('Error: xlm not compatible with involcano')
+            sys.exit(1)
+        if ylm:
+            print('Error: ylm not compatible with involcano')
+            sys.exit(1)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
         general.get_figure(show, r, figtype, 'involcano')
 

@@ -34,7 +34,7 @@ From Python package index,
 <b>Volcano plot</b>
 
 `bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
-    dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize,
+    dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname,
     xlm, ylm)`
 
 Parameters | Description
@@ -62,6 +62,7 @@ Parameters | Description
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `axlabelfontname` | Font name for axis labels [string][default: 'Arial']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 `xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 
@@ -73,7 +74,7 @@ Volcano plot image in same directory (volcano.png)
 <b>MA plot</b>
 
 `bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
-    axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, xlm, ylm)`
+    axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname, xlm, ylm)`
 
 Parameters | Description
 ------------ | -------------
@@ -85,7 +86,7 @@ Parameters | Description
 `color` | Tuple of two colors [tuple][default: ("green", "red")]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
+`valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
 `dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
@@ -95,6 +96,7 @@ Parameters | Description
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `axlabelfontname` | Font name for axis labels [string][default: 'Arial']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 `xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 
@@ -106,7 +108,7 @@ MA plot image in same directory (ma.png)
 <b>Inverted Volcano plot</b>
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
-    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize)`
+    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname)`
 
 Parameters | Description
 ------------ | -------------
@@ -132,6 +134,8 @@ Parameters | Description
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `axlabelfontname` | Font name for axis labels [string][default: 'Arial']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+
 
 Returns:
 
