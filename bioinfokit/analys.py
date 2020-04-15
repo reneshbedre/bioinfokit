@@ -9,7 +9,6 @@ import sys, csv
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from tabulate import tabulate
-from termcolor import colored
 from statsmodels.graphics.mosaicplot import mosaic
 from textwrap3 import wrap
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
@@ -17,6 +16,7 @@ from statsmodels.formula.api import ols
 import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
+from pathlib import Path
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -179,16 +179,7 @@ def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"
             print(sub_seq)
 
 def fastq_format_check(file="fastq_file"):
-    read_file = open(file, 'rU')
-    x = 0
-    for line in read_file:
-        header = line.rstrip()
-        if not header.startswith('@'):
-            x = 1
-        else:
-            x = 0
-        break
-    return x
+    general.depr_mes("bioinfokit.analys.fastq.fastq_format_check")
 
 def tcsv(file="tab_file"):
     tab_file = csv.reader(open(file, 'r'), dialect=csv.excel_tab)
@@ -208,8 +199,17 @@ class fastq:
     def __init__(self):
         pass
 
+    def fastq_reader(file="fastq_file"):
+        fastq_file = open(file, "r")
+        for line in fastq_file:
+            header_1 = line.rstrip()
+            read = next(fastq_file).rstrip()
+            header_2 = next(fastq_file).rstrip()
+            read_qual_asc = next(fastq_file).rstrip()
+            yield (header_1, read, header_2, read_qual_asc)
+
     def fastq_format_check(file="fastq_file"):
-        read_file = open(file, 'rU')
+        read_file = open(file, 'r')
         x = 0
         for line in read_file:
             header = line.rstrip()
@@ -249,13 +249,33 @@ class fastq:
         elif 64 > min_q >= 33 and max_q <= 73:
             return 3
 
+    def split_fastq(file="fastq_file"):
+        x = fastq.fastq_format_check(file)
+        if x == 1:
+            print("Error: Sequences are not in sanger fastq format")
+            sys.exit(1)
+        fastq_iter = fastq.fastq_reader(file)
+        out_file_name_1 = open(Path(file).stem+'_1.fastq', 'w')
+        out_file_name_2 = open(Path(file).stem+'_2.fastq', 'w')
+        i = 1
+        for record in fastq_iter:
+            header_1, read, header_2, read_qual_asc = record
+            if (i % 2) == 0:
+                out_file_name_2.write(header_1+'\n'+read+'\n'+header_2+'\n'+read_qual_asc+'\n')
+            else:
+                out_file_name_1.write(header_1+'\n'+read+'\n'+header_2+'\n'+read_qual_asc+'\n')
+            i += 1
+
+        out_file_name_1.close()
+        out_file_name_2.close()
+
 
 class format:
     def __init__(self):
         pass
 
     def fqtofa(file="fastq_file"):
-        x = fastq_format_check(file)
+        x = fastq.fastq_format_check(file)
         if x == 1:
             print("Error: Sequences are not in sanger fastq format")
             sys.exit(1)
@@ -540,7 +560,7 @@ class stat():
         # perform levene to check for equal variances
         w, pvalue = stats.levene(a_val, b_val)
         if pvalue < 0.05:
-            print(colored("Warning: the two group variance are not equal. Rerun the test with evar=False"))
+            print("Warning: the two group variance are not equal. Rerun the test with evar=False")
 
         if evar is True:
             # pooled variance
@@ -572,9 +592,9 @@ class stat():
                         ["P-value (one-tail)", oneside_pval], ["P-value (two-tail)", twoside_pval],
                         ["Lower 95%", diffci_low], ["Upper 95%", diffci_up]]), "\n")
         print("Parameter estimates\n")
-        print(tabulate([[levels[0], count[0], mean[0], sem[0], varci_low[0], varci_low[1]], [levels[1], count[1],
+        print(tabulate([[levels[0], count[0], mean[0], sem[0], varci_low[0], varci_up[0]], [levels[1], count[1],
                                                                                              mean[1], sem[1],
-                                                                                             varci_up[0], varci_up[1]]],
+                                                                                             varci_low[1], varci_up[1]]],
                        headers=["Level", "Number", "Mean", "Std Error",
                                 "Lower 95%", "Upper 95%"]), "\n")
 
@@ -608,6 +628,67 @@ class stat():
         plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
 
 
+class gff:
+    def __init__(self):
+        pass
+
+    def gff_to_gtf(file='gff_file'):
+        read_gff_file = open(file, 'r')
+        out_gtf_file = open(Path(file).stem+'.gtf', 'w')
+        gene_id = ''
+        transcript_id = ''
+        for line in read_gff_file:
+            if not line.startswith('#'):
+                line = re.split('\s+', line.strip())
+                if line[2]=='gene':
+                    attr = re.split(';', line[8])
+                    gene_id = attr[0].split('=')[1]
+                    gene_attr_gtf = 'gene_id "'+gene_id+'"; gene_name "'+attr[1].split('=')[1]+'"; gene_source "'+\
+                                    line[1]+'";'
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+                elif line[2]=='mRNA' or line[2]=='transcript':
+                    cds_i, exon_i, ftr_i, ttr_i = 1, 1, 1, 1
+                    attr = re.split(';', line[8])
+                    transcript_id = attr[0].split('=')[1]
+                    gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id +'"; gene_name "'+\
+                                    attr[1].split('=')[1]+ '"; gene_source "' + line[1] + '";'
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+                elif line[2]=='CDS':
+                    attr = re.split(';', line[8])
+                    transcript_id_temp = attr[1].split('=')[1]
+                    if transcript_id_temp == transcript_id:
+                        gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id +'"; cds_number "'\
+                                        +str(cds_i)+'"; gene_name "'+attr[1].split('=')[1]+ '"; gene_source "' + line[1] + '";'
+                        cds_i += 1
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+                elif line[2]=='exon':
+                    attr = re.split(';', line[8])
+                    transcript_id_temp = attr[1].split('=')[1]
+                    if transcript_id_temp == transcript_id:
+                        gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id +'"; exon_number "'\
+                                        +str(exon_i)+'"; gene_name "'+attr[1].split('=')[1]+ '"; gene_source "' + line[1] + '";'
+                        exon_i += 1
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+                elif line[2]=='five_prime_UTR':
+                    attr = re.split(';', line[8])
+                    transcript_id_temp = attr[1].split('=')[1]
+                    if transcript_id_temp == transcript_id:
+                        gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id +'"; five_prime_UTR_number "'\
+                                        +str(ftr_i)+'"; gene_name "'+attr[1].split('=')[1]+ '"; gene_source "' + line[1] + '";'
+                        ftr_i += 1
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+                elif line[2]=='three_prime_UTR':
+                    attr = re.split(';', line[8])
+                    transcript_id_temp = attr[1].split('=')[1]
+                    if transcript_id_temp == transcript_id:
+                        gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id +'"; three_prime_UTR_number "'\
+                                        +str(ttr_i)+'"; gene_name "'+attr[1].split('=')[1]+ '"; gene_source "' + line[1] + '";'
+                        ttr_i += 1
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+        read_gff_file.close()
+        out_gtf_file.close()
+
+
 class get_data:
     def __init__(self, data=None):
         if data=='mlr':
@@ -628,6 +709,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/corr/corr_dataset.csv")
         elif data=='slr':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/reg/test_reg_uni.csv")
+        elif data=='ttest':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/genotype.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 

@@ -1,3 +1,10 @@
+v0.7 has the following updates and changes
+- `split_fastq` function added for splitting individual (left and right) paired-end fastq files
+  from single interleaved paired-end file
+- GFF3 to GTF file conversion utility added under class `gff`
+- two-sample t-test updated for CI
+- module termcolor removed
+
 v0.6 has the following updates and changes
 - Programmatic access of dataset added (class `get_data`)
 - More features for figures added (`figtype`, `axtickfontsize`, `axtickfontname`, `axxlabel`, `axylabel`, `xlm`, `ylm`,
