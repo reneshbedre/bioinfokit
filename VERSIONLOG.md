@@ -2,8 +2,9 @@ v0.7 has the following updates and changes
 - `split_fastq` function added for splitting individual (left and right) paired-end fastq files
   from single interleaved paired-end file
 - GFF3 to GTF file conversion utility added under class `gff`
-- two-sample t-test updated for CI
+- two-sample and Welch's t-test updated for CI and alpha parameter added
 - module termcolor removed
+- Programmatic access of dataset for `ttsam` added
 
 v0.6 has the following updates and changes
 - Programmatic access of dataset added (class `get_data`)

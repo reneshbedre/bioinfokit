@@ -305,6 +305,7 @@ Parameters | Description
 `xfac` | Independent group column name with two levels [string][default: None]
 `res` | Response variable column name [string][default: None]
 `evar` | t-test with equal variance [bool (True or False)][default: True]
+`alpha` | Confidence level [float][default: 0.05]
 
 Returns:
 

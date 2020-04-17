@@ -525,33 +525,36 @@ class stat():
         print(vif)
         '''
 
-    def ttsam(df='dataframe', xfac=None, res=None, evar=True):
-        # d = pd.read_csv(table)
+    def ttsam(df='dataframe', xfac=None, res=None, evar=True, alpha=0.05):
+        # drop NaN
+        df = df.dropna()
         if xfac and res is None:
-            print("Error: xfac or res variable is missing")
-            sys.exit(1)
+            raise Exception("xfac or res variable is missing")
         levels = df[xfac].unique()
-        if len(levels) > 2:
-            print("Error: there must be only two levels")
-            sys.exit(1)
+        levels.sort()
+        if len(levels) != 2:
+            raise Exception("there must be only two levels")
         a_val = df.loc[df[xfac] == levels[0], res].to_numpy()
         b_val = df.loc[df[xfac] == levels[1], res].to_numpy()
         a_count, b_count = len(a_val), len(b_val)
         count = [a_count, b_count]
-        mean = df.groupby(xfac)[res].mean().to_numpy()
-        sem = df.groupby(xfac)[res].sem().to_numpy()
+        mean = [df.loc[df[xfac] == levels[0], res].mean(), df.loc[df[xfac] == levels[1], res].mean()]
+        sem = [df.loc[df[xfac] == levels[0], res].sem(), df.loc[df[xfac] == levels[1], res].sem()]
+        sd = [df.loc[df[xfac] == levels[0], res].std(), df.loc[df[xfac] == levels[1], res].std()]
+        ci = (1-alpha)*100
         # degree of freedom
         # a_count, b_count = np.split(count, 2)
         dfa = a_count - 1
         dfb = b_count - 1
         # sample variance
-        var_a = np.var(a_val, ddof=1)
-        var_b = np.var(b_val, ddof=1)
+        with np.errstate(invalid='ignore'):
+            var_a = np.nan_to_num(np.var(a_val, ddof=1))
+            var_b = np.nan_to_num(np.var(b_val, ddof=1))
         mean_diff = mean[0] - mean[1]
         # variable 95% CI
         varci_low = []
         varci_up = []
-        tcritvar = [(stats.t.ppf((1 + 0.95) / 2, dfa)), (stats.t.ppf((1 + 0.95) / 2, dfb))]
+        tcritvar = [(stats.t.ppf((1 + (1-alpha)) / 2, dfa)), (stats.t.ppf((1 + (1-alpha)) / 2, dfb))]
         for i in range(len(levels)):
             varci_low.append(mean[i] - (tcritvar[i] * sem[i]))
             varci_up.append(mean[i] + (tcritvar[i] * sem[i]))
@@ -559,7 +562,7 @@ class stat():
         var_test = 'equal'
         # perform levene to check for equal variances
         w, pvalue = stats.levene(a_val, b_val)
-        if pvalue < 0.05:
+        if pvalue < alpha:
             print("Warning: the two group variance are not equal. Rerun the test with evar=False")
 
         if evar is True:
@@ -571,6 +574,8 @@ class stat():
         else:
             # Welch's t-test for unequal variance
             # calculate se
+            if a_count == 1 or b_count == 1:
+                raise Exception('Not enough observation for either levels. The observations should be > 1 for both levels')
             a_temp = var_a / a_count
             b_temp = var_b / b_count
             dfr = ((a_temp + b_temp) ** 2) / ((a_temp ** 2) / (a_count - 1) + (b_temp ** 2) / (b_count - 1))
@@ -582,21 +587,21 @@ class stat():
         twoside_pval = oneside_pval * 2
         # 95% CI for diff
         # 2.306 t critical at 0.05
-        tcritdiff = stats.t.ppf((1 + 0.95) / 2, dfr)
+        tcritdiff = stats.t.ppf((1 + (1-alpha)) / 2, dfr)
         diffci_low = mean_diff - (tcritdiff * se)
         diffci_up = mean_diff + (tcritdiff * se)
 
         # print results
-        print("\ntwo sample", levels, "t-test with", var_test, "variance", "\n")
-        print(tabulate([["Mean diff", mean_diff], ["t", tval], ["std error", se], ["df", dfr],
+        print("\nTwo sample", levels, "t-test with", var_test, "variance", "\n")
+        print(tabulate([["Mean diff", mean_diff], ["t", tval], ["Std Error", se], ["df", dfr],
                         ["P-value (one-tail)", oneside_pval], ["P-value (two-tail)", twoside_pval],
-                        ["Lower 95%", diffci_low], ["Upper 95%", diffci_up]]), "\n")
+                        ["Lower "+str(ci)+"%", diffci_low], ["Upper "+str(ci)+"%", diffci_up]]), "\n")
         print("Parameter estimates\n")
-        print(tabulate([[levels[0], count[0], mean[0], sem[0], varci_low[0], varci_up[0]], [levels[1], count[1],
-                                                                                             mean[1], sem[1],
+        print(tabulate([[levels[0], count[0], mean[0], sd[0], sem[0], varci_low[0], varci_up[0]], [levels[1], count[1],
+                                                                                             mean[1], sd[1], sem[1],
                                                                                              varci_low[1], varci_up[1]]],
-                       headers=["Level", "Number", "Mean", "Std Error",
-                                "Lower 95%", "Upper 95%"]), "\n")
+                       headers=["Level", "Number", "Mean", "Std Dev", "Std Error",
+                                "Lower "+str(ci)+"%", "Upper "+str(ci)+"%"]), "\n")
 
         fig = plt.figure()
         df.boxplot(column=res, by=xfac, grid=False)
