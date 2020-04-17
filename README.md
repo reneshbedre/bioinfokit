@@ -295,9 +295,9 @@ Venn plot (venn3.png, venn2.png)
 
 <a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
-<b>Two sample t-test with equal and unequal variance</b>
+<b>Two sample and Welch's t-test </b>
 
-`bioinfokit.analys.stat.ttsam(table, xfac, res, evar)`
+`bioinfokit.analys.stat.ttsam(table, xfac, res, evar, alpha)`
 
 Parameters | Description
 ------------ | -------------
