@@ -1,3 +1,9 @@
+v0.7.1 has the following updates and changes (April 24, 2020)
+- `reg_lin` function updated for multiple regression
+- degree of freedom fixed for t-test for regression coefficients
+- VIF calculation for MLR updated
+- functions `fastq_reader` and `fqreadcounter` moved to `fastq` class
+
 v0.7 has the following updates and changes
 - `split_fastq` function added for splitting individual (left and right) paired-end fastq files
   from single interleaved paired-end file

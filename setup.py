@@ -6,7 +6,6 @@ with open("README.md", "r") as fh:
 
 setup(name='bioinfokit',
       version=bioinfokit.__version__,
-
       # metadata
       author='Renesh Bedre',
       author_email='reneshbe@gmail.com',
@@ -18,7 +17,10 @@ setup(name='bioinfokit',
       packages=['bioinfokit',],
       zip_safe=False,
       classifiers=[
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Unix",
         "Operating System :: MacOS",

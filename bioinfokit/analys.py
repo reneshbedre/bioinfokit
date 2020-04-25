@@ -17,14 +17,15 @@ import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from pathlib import Path
+from sklearn.metrics import mean_squared_error
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
-    x = fastq_format_check(file)
+    x = fastq.fastq_format_check(file)
     if x == 1:
         print("Error: Sequences are not in fastq format")
         sys.exit(1)
-    num_reads, total_len = fqreadcounter(file)
+    num_reads, total_len = fastq.fqreadcounter(file)
     # haploid genome_size must be in Mbp; convert in bp
     gs = gs * 1e6
     cov = round(float(total_len / gs), 2)
@@ -124,21 +125,7 @@ def extract_seq_nomatch(file="fasta_file", id="id_file"):
     id_file.close()
 
 def fqreadcounter(file="fastq_file"):
-    read_file = open(file, "rU")
-    num_lines = 0
-    total_len = 0
-    for line in read_file:
-        num_lines += 1
-        header_1 = line.rstrip()
-        read = next(read_file).rstrip()
-        len_read = len(read)
-        total_len += len_read
-        header_2 = next(read_file).rstrip()
-        read_qual = next(read_file).rstrip()
-    read_file.close()
-    num_reads = num_lines/4
-    return num_reads, total_len
-
+    general.depr_mes("bioinfokit.analys.fastq.fqreadcounter")
 
 def fasta_reader(file="fasta_file"):
     read_file = open(file, "rU")
@@ -207,6 +194,22 @@ class fastq:
             header_2 = next(fastq_file).rstrip()
             read_qual_asc = next(fastq_file).rstrip()
             yield (header_1, read, header_2, read_qual_asc)
+
+    def fqreadcounter(file="fastq_file"):
+        read_file = open(file, "rU")
+        num_lines = 0
+        total_len = 0
+        for line in read_file:
+            num_lines += 1
+            header_1 = line.rstrip()
+            read = next(read_file).rstrip()
+            len_read = len(read)
+            total_len += len_read
+            header_2 = next(read_file).rstrip()
+            read_qual = next(read_file).rstrip()
+        read_file.close()
+        num_reads = num_lines / 4
+        return num_reads, total_len
 
     def fastq_format_check(file="fastq_file"):
         read_file = open(file, 'r')
@@ -348,7 +351,45 @@ class format:
             sys.exit(1)
 
 
-class stat():
+class stat:
+    def __init__(self):
+        pass
+
+    def anova(self, df='dataframe', xfac=None, res=None):
+        # drop NaN
+        df = df.dropna()
+        df = df[[xfac[0], res]]
+        assert xfac and res is not None, "xfac or res variable is missing"
+        grand_mean = df[res].mean()
+        total_obs = df.count()[0]
+
+        if len(xfac) == 1:
+            levels = df[xfac[0]].unique()
+            assert len(levels) > 2, 'levels must be more than 2; use two-sample t-test for two levels'
+            levels.sort()
+            ss_trt_between = np.sum(df.groupby(xfac).count() * (df.groupby(xfac).mean()-grand_mean)**2)[0]
+            ss_err_within = 0
+            for name, group in df.groupby(xfac):
+                ss_err_within = ss_err_within + np.sum((group[res]-group[res].mean()) ** 2)
+            ss_total = ss_trt_between + ss_err_within
+            df_trt_between = len(levels)-1
+            df_err_within = total_obs-len(levels)
+            df_total = df_trt_between + df_err_within
+            ms_trt_between = ss_trt_between / df_trt_between
+            ms_err_within = ss_err_within / df_err_within
+            f_value = ms_trt_between / ms_err_within
+            p_value = '%.4E' % Decimal(stats.f.sf(f_value, df_trt_between, df_err_within))
+            anova_table = []
+            anova_table.append(
+                ["Model", df_trt_between, ss_trt_between, round(ms_trt_between, 4), round(f_value, 4), p_value])
+            anova_table.append(["Error", df_err_within, ss_err_within, round(ms_err_within, 4), "", ""])
+            anova_table.append(["Total", df_total, ss_total, "", "", ""])
+            print("\nANOVA Summary:\n")
+            print(tabulate(anova_table, headers=["Source", "Df", "Sum Squares", "Mean Squares", "F", "Pr(>F)"]),
+                  "\n")
+
+
+
     def oanova(table="table", res=None, xfac=None, ph=False, phalpha=0.05):
         # create and run model
         model = ols('{} ~ C({})'.format(res, xfac), data=table).fit()
@@ -397,16 +438,13 @@ class stat():
         print("Bartlett (P-value):", pvalue2, "\n")
 
     def lin_reg(self, df="dataframe", y=None, x=None):
-
-        if x is None or y is None:
-            print("Error:Provide proper column names for X and Y variables\n")
-            sys.exit(1)
-        if type(x) is not list or type(y) is not list:
-            print("Error:X or Y column names should be list\n")
-            sys.exit(1)
+        df = df.dropna()
+        assert x and y is not None, "Provide proper column names for X and Y variables"
+        assert type(x) is list or type(y) is list, "X or Y column names should be list"
+        # min data should be 4 or more
+        assert df.shape[0] >= 4, "Very few data"
         self.X = df[x].to_numpy()
         self.Y = df[y].to_numpy()
-
         # number of independent variables
         p = len(x)
         # number of parameter estimates (+1 for intercept and slopes)
@@ -430,19 +468,16 @@ class stat():
         self.y_hat = reg_out.predict(self.X)
         # residuals
         self.residuals = self.Y - self.y_hat
-
         # sum of squares
         regSS = np.sum((self.y_hat - np.mean(self.Y)) ** 2)  # variation explained by linear model
         residual_sse = np.sum((self.Y - self.y_hat) ** 2)  # remaining variation
         sst = np.sum((self.Y - np.mean(self.Y)) ** 2)  # total variation
-
 
         eq = ""
         for i in range(p):
             eq = eq+' + '+ '(' + str(round(reg_slopes[0][i], 4))+'*'+x[i] + ')'
 
         self.reg_eq = str(round(reg_intercept[0], 4)) + eq
-
 
         # variance and std error
         # Residual variance
@@ -469,7 +504,7 @@ class stat():
         for param in range(e):
             tabulate_list.append([params[param], estimates[param], standard_error[param],
                                   estimates[param]/standard_error[param],
-                                  '%.4E' % Decimal(stats.t.sf(np.abs(estimates[param]/standard_error[param]), n-1)*2)   ])
+                                  '%.4E' % Decimal(stats.t.sf(np.abs(estimates[param]/standard_error[param]), n-e)*2)   ])
 
         # anova
         anova_table = []
