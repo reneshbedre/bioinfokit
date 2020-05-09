@@ -32,25 +32,7 @@ def seqcov(file="fastq_file", gs="genome_size"):
     print("Sequence coverage for", file, "is", cov)
 
 def mergevcf(file="vcf_file_com_sep"):
-    vcf_files = file.split(",")
-    merge_vcf = open("merge_vcf.vcf", "w+")
-    file_count = 0
-    print("merging vcf files...")
-    for f in vcf_files:
-        if file_count == 0:
-            read_file = open(f, "rU")
-            for line in read_file:
-                merge_vcf.write(line)
-            read_file.close()
-        elif file_count > 0:
-            read_file = open(f, "rU")
-            for line in read_file:
-                if not line.startswith("#"):
-                    merge_vcf.write(line)
-            read_file.close()
-        file_count += 1
-    merge_vcf.close()
-
+    general.depr_mes("bioinfokit.analys.marker.mergevcf")
 
 def pca(table="p_df"):
     d = pd.DataFrame(data=table)
@@ -271,6 +253,54 @@ class fastq:
 
         out_file_name_1.close()
         out_file_name_2.close()
+
+
+class marker:
+
+    def __init__(self):
+        pass
+
+    def mergevcf(file="vcf_file_com_sep"):
+        vcf_files = file.split(",")
+        merge_vcf = open("merge_vcf.vcf", "w+")
+        file_count = 0
+        print("merging vcf files...")
+        for f in vcf_files:
+            if file_count == 0:
+                read_file = open(f, "rU")
+                for line in read_file:
+                    merge_vcf.write(line)
+                read_file.close()
+            elif file_count > 0:
+                read_file = open(f, "rU")
+                for line in read_file:
+                    if not line.startswith("#"):
+                        merge_vcf.write(line)
+                read_file.close()
+            file_count += 1
+        merge_vcf.close()
+
+    def splitvcf(file='vcf_file', id='#CHROM'):
+        read_vcf_file = open(file, 'r')
+        info_lines, headers = [], []
+        for line in read_vcf_file:
+            if line.startswith(id):
+                headers = line.strip().split('\t')
+            elif line.startswith('##'):
+                info_lines.append(line.strip())
+        read_vcf_file.close()
+        assert len(headers) != 0, "Non matching id parameter"
+        read_vcf_file_df = pd.read_csv(file, sep='\t', comment='#', header=None)
+        read_vcf_file_df.columns = headers
+        chrom_ids = read_vcf_file_df[id].unique()
+        for r in range(len(chrom_ids)):
+            sub_df = read_vcf_file_df[read_vcf_file_df[id]==chrom_ids[r]]
+            # out_vcf_file = open(chrom_ids[r]+'.vcf'
+            with open(chrom_ids[r]+'.vcf', 'w') as out_vcf_file:
+                for l in info_lines:
+                    out_vcf_file.write(l+'\n')
+            sub_df.to_csv(chrom_ids[r]+'.vcf', mode='a', sep='\t', index=False)
+            out_vcf_file.close()
 
 
 class format:

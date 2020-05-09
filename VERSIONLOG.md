@@ -1,3 +1,7 @@
+v0.7.2 has the following updates and changes (May 08, 2020)
+- `splitvcf` function added for splitting VCF file into individual VCF files for each chromosome
+- `mergevcf` moved to `analys.marker` class
+
 v0.7.1 has the following updates and changes (April 24, 2020)
 - `reg_lin` function updated for multiple regression
 - degree of freedom fixed for t-test for regression coefficients

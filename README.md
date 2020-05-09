@@ -167,11 +167,11 @@ Correlation matrix plot image in same directory (corr_mat.png)
 
 <b>Merge VCF files</b>
 
-`bioinfokit.analys.mergevcf(file)`
+`bioinfokit.analys.marker.mergevcf(file)`
 
 Parameters | Description
 ------------ | -------------
-`file` | Multiple vcf files and separate them by comma
+`file` | Multiple vcf files separated by comma
 
 Returns:
 
@@ -180,17 +180,21 @@ Merged VCF file (merge_vcf.vcf)
 <a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
 
 
-<b>Merge VCF files</b>
+<b>Split VCF file</b>
 
-`bioinfokit.analys.mergevcf(file)`
+`bioinfokit.analys.marker.splitvcf(file)`
+
+Split single VCF file containing variants for all chromosomes into individual file containing variants for each chromosome
 
 Parameters | Description
 ------------ | -------------
-`file` | Multiple vcf files and separate them by comma
+ `file` | VCF file to split
+ `id` | chromosome id column in VCF file [string][default='#CHROM']
+
 
 Returns:
 
-Merged VCF file (merge_vcf.vcf)
+VCF files for each chromosome
 
 <a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
 
@@ -538,6 +542,8 @@ References:
 - Wes McKinney. Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference, 51-56 (2010)
 
 bioinfokit cited by:
+- Jennifer Gribble, Andrea J. Pruijssers, Maria L. Agostini, Jordan Anderson-Daniels, James D. Chappell, Xiaotao Lu, Laura J. Stevens, Andrew L. Routh, Mark R. Denison
+  bioRxiv 2020.04.23.057786; doi: https://doi.org/10.1101/2020.04.23.057786
 - Greaney AM, Adams TS, Raredon MS, Gubbins E, Schupp JC, Engler AJ, Ghaedi M, Yuan Y, Kaminski N, Niklason LE. Platform 
   Effects on Regeneration by Pulmonary Basal Cells as Evaluated by Single-Cell RNA Sequencing. Cell Reports. 2020 Mar 
   24;30(12):4250-65.
