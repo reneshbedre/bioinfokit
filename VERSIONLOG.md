@@ -1,3 +1,8 @@
+v0.7.3 has the following updates and changes (May 14, 2020)
+- In manhatten plot (`visuz.marker.mhat`), the labeling issue with `markernames` parameter corrected (see issue # 4 on github for details;
+  thanks to mkirchler for reporting)
+- `gstyle` parameter added in manhatten plot for box style annotation
+
 v0.7.2 has the following updates and changes (May 08, 2020)
 - `splitvcf` function added for splitting VCF file into individual VCF files for each chromosome
 - `mergevcf` moved to `analys.marker` class

@@ -374,7 +374,7 @@ ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 <b>Manhatten plot</b>
 
 `bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
-    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm)`
+    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle)`
 
 Parameters | Description
 ------------ | -------------
@@ -386,8 +386,8 @@ Parameters | Description
 `gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markeridcol` | Name of a column having SNPs. This is necessary for plotting SNP names on the plot [string][default: None]
-`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, dict][default: True]
-`gfont` | Font size for SNP names to display on the plot [float][default: 8]
+`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, tuple, dict][default: True]
+`gfont` | Font size for SNP names to display on the plot [float][default: 8].  gfont not compatible with gstyle=2.
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
 `dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
 `r` | Figure resolution in dpi [int][default: 300]
@@ -398,6 +398,8 @@ Parameters | Description
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
+
 
 
 Returns:

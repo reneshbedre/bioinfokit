@@ -77,7 +77,9 @@ def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), v
     else:
         print("Error: check the set dataset")
 
-class gene_exp():
+
+class gene_exp:
+
     def __init__(self):
         pass
 
@@ -267,31 +269,55 @@ class general():
         print("This function is deprecated. Please use", func_name )
         print("Read docs at https://reneshbedre.github.io/blog/howtoinstall.html")
 
-class marker():
-    def geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax):
+
+class marker:
+
+    def __init__(self):
+        pass
+
+    def geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, gstyle, ax):
         if markeridcol is not None:
             if markernames is not None and markernames is True:
                 for i in df[markeridcol].unique():
                     if df.loc[df[markeridcol] == i, pv].iloc[0] <= gwasp:
-                        plt.text((df.loc[df[markeridcol] == i, 'ind'].iloc[0]), df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                                 str(i), fontsize=gfont)
-            elif markernames is not None and type(markernames) is tuple:
-                for i in df[markeridcol].unique():
-                    plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                                 str(i), fontsize=gfont)
-            elif markernames is not None and type(markernames) is dict:
+                        if gstyle == 1:
+                            plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                    str(i), fontsize=gfont)
+                        elif gstyle == 2:
+                            plt.annotate(i, xy=(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0]),
+                                         xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                         bbox=dict(boxstyle="round", alpha=0.2),
+                                         arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.2, relpos=(0, 0)))
+            elif markernames is not None and isinstance(markernames, (tuple, list)):
                 for i in df[markeridcol].unique():
                     if i in markernames:
-                       plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                        if gstyle == 1:
+                            plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
+                                str(i), fontsize=gfont)
+                        elif gstyle == 2:
+                            plt.annotate(i, xy=(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0]),
+                                         xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                         bbox=dict(boxstyle="round", alpha=0.2),
+                                         arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.2, relpos=(0, 0)))
+            elif markernames is not None and isinstance(markernames, dict):
+                for i in df[markeridcol].unique():
+                    if i in markernames:
+                        if gstyle == 1:
+                            plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
                                  markernames[i], fontsize=gfont)
+                        elif gstyle == 2:
+                            plt.annotate(markernames[i], xy=(
+                            df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0]),
+                                         xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                         bbox=dict(boxstyle="round", alpha=0.2),
+                                         arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.2, relpos=(0, 0)))
         else:
-            print("Error: provide 'markeridcol' parameter")
-            sys.exit(1)
+            raise Exception("provide 'markeridcol' parameter")
 
     def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
              gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False, figtype='png',
              axxlabel=None, axylabel=None, axlabelfontsize=9, axlabelfontname="Arial", axtickfontsize=9,
-             axtickfontname="Arial", ylm=None):
+             axtickfontname="Arial", ylm=None, gstyle=1):
 
         _x, _y = 'Chromosomes', r'$ -log_{10}(P)$'
         rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
@@ -316,7 +342,7 @@ class marker():
             if df[chr].nunique() % 2 == 0:
                 color_list = list(reduce(lambda x, y: x+y, zip(color_1, color_2)))
             elif df[chr].nunique() % 2 == 1:
-                color_list = list(reduce(lambda x, y: x + y, zip(color_1, color_2)))
+                color_list = list(reduce(lambda x, y: x+y, zip(color_1, color_2)))
                 color_list.append(color[0])
         elif color is not None and len(color) == df[chr].nunique():
             color_list = color
@@ -343,7 +369,7 @@ class marker():
         if gwas_sign_line is True:
             ax.axhline(y=-np.log10(gwasp), linestyle='--', color='#7d7d7d', linewidth=1)
         if markernames is not None:
-            marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, ax=ax)
+            marker.geneplot_mhat(df, markeridcol, chr, pv, gwasp, markernames, gfont, gstyle, ax=ax)
         ax.margins(x=0)
         ax.margins(y=0)
         ax.set_xticks(xticks)
