@@ -1,3 +1,6 @@
+v0.8 has the following updates and changes (May 24, 2020)
+- GFF3 to GTF file conversion utility added and updated under class `gff`
+
 v0.7.3 has the following updates and changes (May 14, 2020)
 - In manhatten plot (`visuz.marker.mhat`), the labeling issue with `markernames` parameter corrected (see issue # 4 on github for details;
   thanks to mkirchler for reporting)

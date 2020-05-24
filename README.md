@@ -525,7 +525,6 @@ Parameters | Description
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 
-
 Returns:
 
 Regression plot image in same directory (reg_plot.png)
@@ -533,6 +532,19 @@ Regression plot image in same directory (reg_plot.png)
 <a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
 
 
+<b>GFF3 to GTF file format conversion</b>
+
+`bioinfokit.analys.gff.gff_to_gtf(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | GFF3 genome annotation file
+
+Returns:
+
+GTF format genome annotation file (file.gtf will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/gffgtf.html" target="_blank">Working Example</a>
 
 
 References:
