@@ -18,6 +18,7 @@ from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from pathlib import Path
 from sklearn.metrics import mean_squared_error
+from collections import defaultdict
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -302,6 +303,242 @@ class marker:
             sub_df.to_csv(chrom_ids[r]+'.vcf', mode='a', sep='\t', index=False)
             out_vcf_file.close()
 
+    def vcfreader(file='vcf_file', id='#CHROM'):
+        read_vcf_file = open(file, 'r')
+        info_lines, headers = [], []
+        for line in read_vcf_file:
+            if line.startswith(id):
+                headers = line.strip().split('\t')
+            elif line.startswith('##'):
+                info_lines.append(line.strip())
+            else:
+                var_lines = line.strip().split('\t')
+                yield headers, info_lines, var_lines
+        read_vcf_file.close()
+        assert len(headers) != 0, "Non matching id parameter"
+
+
+    def vcf_anot(file='vcf_file', gff_file='gff_file', id='#CHROM', anot_attr=None):
+        gff_iter = gff.gffreader(gff_file)
+        gene_cord = defaultdict(list)
+        cds_cord = defaultdict(list)
+        exon_cord = defaultdict(list)
+        ftr_cord = defaultdict(list)
+        ttr_cord = defaultdict(list)
+        sc_cord = defaultdict(list)
+        st_cord = defaultdict(list)
+        igenic_cord = defaultdict(list)
+        intragenic_cord = defaultdict(list)
+        # also for introns between the exons
+        intragenic_cord_exon = defaultdict(list)
+        gene_id_dict = dict()
+        transcript_name_dict = dict()
+        transcript_strand_dict = dict()
+        chr_list = set([])
+        for record in gff_iter:
+            chr, gene_id, gene_name, transcript_id, source, feature_type, st, ende, strand, attr = record
+            if feature_type == 'gene':
+                if chr not in chr_list:
+                    gene_number_1 = 1
+                chr_list.add(chr)
+                gene_cord[(chr, gene_id, gene_number_1)]=[st, ende]
+                gene_id_dict[(chr, gene_number_1)] = gene_id
+                gene_number_1 += 1
+            elif feature_type == 'mRNA' or feature_type == 'transcript':
+                cds_cord[(chr, transcript_id)] = []
+                exon_cord[transcript_id] = []
+                ftr_cord[transcript_id] = []
+                ttr_cord[transcript_id] = []
+                sc_cord[transcript_id] = []
+                st_cord[transcript_id] = []
+                transcript_strand_dict[transcript_id] = strand
+                if anot_attr:
+                    transcript_name_dict[transcript_id] = re.search(anot_attr+'=(.+?)(;|$)',  attr).group(1)
+            elif feature_type == 'CDS':
+                cds_cord[(chr, transcript_id)].append([st, ende])
+            elif feature_type == 'exon':
+                exon_cord[(chr, transcript_id)].append([st, ende])
+            elif feature_type == 'five_prime_UTR':
+                ftr_cord[(chr, transcript_id)].append([st, ende])
+            elif feature_type == 'three_prime_UTR':
+                ttr_cord[(chr, transcript_id)].append([st, ende])
+            elif feature_type == 'start_codon':
+                sc_cord[(chr, transcript_id)].append([st, ende])
+            elif feature_type == 'stop_codon':
+                st_cord[(chr, transcript_id)].append([st, ende])
+
+        # get intergenic regions
+        for gene, cord in gene_cord.items():
+            chr, gene_id, gene_number = gene[0], gene[1], gene[2]
+            for x in chr_list:
+                if x == chr and gene_number == 1:
+                    igenic_cord[(chr, gene_id)] = [1, int(cord[0])-1]
+                elif x == chr and gene_number != 1:
+                    igenic_cord[(chr, gene_id)] = \
+                        [int(gene_cord[(chr, gene_id_dict[(chr, int(gene_number)-1)], int(gene_number)-1)][1])+1, int(cord[0])-1]
+
+        # get intragenic regions based on CDS
+        for transcript, cord in cds_cord.items():
+            chr, transcript_id = transcript[0], transcript[1]
+            intragenic_cord[(chr, transcript_id)] = []
+            for x in chr_list:
+                if x == chr:
+                    cord.sort(key=lambda k: k[0])
+                    if len(cord) > 1:
+                        for y in range(len(cord)-1):
+                            intragenic_cord[(chr, transcript_id)].append([int(cord[y][1])+1, int(cord[y+1][0])-1])
+
+        # get intragenic regions based on exon
+        for transcript, cord in exon_cord.items():
+            chr, transcript_id = transcript[0], transcript[1]
+            intragenic_cord_exon[(chr, transcript_id)] = []
+            for x in chr_list:
+                if x == chr:
+                    cord.sort(key=lambda k: k[0])
+                    if len(cord) > 1:
+                        for y in range(len(cord) - 1):
+                            intragenic_cord_exon[(chr, transcript_id)].append([int(cord[y][1]) + 1, int(cord[y + 1][0]) - 1])
+
+
+        def var_region_check(_dict, _chr,  _region, _anot_attr, _transcript_name_dict, _var_region, _transcript_name,
+                             _transcript_id, _transcript_strand):
+            for transcript, cord in _dict.items():
+                for i in range(len(cord)):
+                    if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                        _var_region = _region
+                        _transcript_id = transcript[1]
+                        _transcript_strand = transcript_strand_dict[_transcript_id]
+                        if anot_attr:
+                            _transcript_name = transcript_name_dict[_transcript_id]
+                        break
+                if _var_region:
+                    break
+            return _var_region, _transcript_name, _transcript_id, _transcript_strand
+
+        vcf_iter = marker.vcfreader(file, id)
+        vcf_out_anot = open(Path(file).stem+'_anot.vcf', 'a')
+        for_info_lines = 1
+        transcript_id=None
+        transcript_name=None
+        transcript_strand=None
+        transcript_name_return=transcript_name
+        transcript_id_return=transcript_id
+        transcript_strand_return=transcript_strand
+        for record in vcf_iter:
+            headers, info_lines, chr, var_pos = record[0], record[1], record[2][0], record[2][1]
+            if for_info_lines == 1:
+                for_info_lines = 0
+                for l in info_lines:
+                    vcf_out_anot.write(l+'\n')
+                headers.extend(['genomic region', 'transcript ID', 'transcript name'])
+                vcf_out_anot.write('\t'.join(x for x in headers) + '\n')
+
+            var_region = None
+            if var_region is None:
+                for transcript, cord in igenic_cord.items():
+                    if transcript[0] == chr and int(cord[0]) <= int(var_pos) <= int(cord[1]):
+                        var_region = 'Intergenic'
+                        transcript_id_return = None
+                        transcript_strand_return = None
+                        if anot_attr:
+                            transcript_name_return = None
+                        break
+            if var_region is None:
+                var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(cds_cord, chr, 'CDS',
+                    anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
+            if var_region is None:
+                var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(ftr_cord, chr,
+                    'five_prime_UTR', anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
+            if var_region is None:
+                var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(ttr_cord, chr,
+                    'three_prime_UTR', anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
+            if var_region is None:
+                var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(sc_cord, chr,
+                    'start_codon', anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
+            if var_region is None:
+                var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(st_cord, chr,
+                    'stop_codon', anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
+            if var_region is None:
+                var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(exon_cord, chr,
+                    'exon', anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
+
+            '''
+            if var_region is None:
+                for transcript, cord in cds_cord.items():
+                    for i in range(len(cord)):
+                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                            var_region = 'CDS'
+                            transcript_id = transcript[1]
+                            if anot_attr:
+                                transcript_name = transcript_name_dict[transcript_id]
+                            break
+                    if var_region:
+                        break
+            
+            if var_region is None:
+                for transcript, cord in ftr_cord.items():
+                    for i in range(len(cord)):
+                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                            var_region = 'five_prime_UTR'
+                            break
+                    if var_region:
+                        break
+                        
+            if var_region is None:
+                for transcript, cord in ttr_cord.items():
+                    for i in range(len(cord)):
+                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                            var_region = 'three_prime_UTR'
+                            break
+                    if var_region:
+                        break
+                        
+            if var_region is None:
+                for transcript, cord in sc_cord.items():
+                    for i in range(len(cord)):
+                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                            var_region = 'start_codon'
+                            break
+                    if var_region:
+                        break
+            if var_region is None:
+                for transcript, cord in st_cord.items():
+                    for i in range(len(cord)):
+                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                            var_region = 'stop_codon'
+                            break
+                    if var_region:
+                        break            
+            # keep exons at end as it also contains UTR part
+            if var_region is None:
+                for transcript, cord in exon_cord.items():
+                    for i in range(len(cord)):
+                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                            var_region = 'exon'
+                            break
+                    if var_region:
+                        break            
+            '''
+            if var_region is None:
+                for transcript, cord in intragenic_cord.items():
+                    transcript_strand_return = transcript_strand_dict[transcript[1]]
+                    transcript_id_return = transcript[1]
+                    if len(cord) >= 1:
+                        for i in range(len(cord)):
+                            if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                                var_region = 'Introns'
+                                break
+            if var_region is None:
+                for transcript, cord in intragenic_cord_exon.items():
+                    transcript_strand_return = transcript_strand_dict[transcript[1]]
+                    transcript_id_return = transcript[1]
+                    if len(cord) >= 1:
+                        for i in range(len(cord)):
+                            if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
+                                var_region = 'Introns'
+                                break
+            vcf_out_anot.write('\t'.join(str(x) for x in record[2])+'\t'+str(var_region)+'\t'+str(transcript_id_return)+
+                               '\t'+str(transcript_name_return)+'\t'+str(transcript_strand_return)+'\n')
 
 class format:
     def __init__(self):
@@ -978,6 +1215,89 @@ class gff:
         read_gff_file.close()
         out_gtf_file.close()
 
+    def gffreader(file='gff_file'):
+        read_gff_file = open(file, 'r')
+        transcript_id = ''
+        for line in read_gff_file:
+            if not line.startswith('#'):
+                line = re.split('\t', line.strip())
+                if line[2]=='gene':
+                    if 'ID=' in line[8]:
+                        gene_id = re.search('ID=(.+?)(;|$)',  line[8]).group(1)
+
+                    if 'Name=' in line[8]:
+                        gene_name = re.search('Name=(.+?)(;|$)',  line[8]).group(1)
+                    elif 'gene_name=' in line[8]:
+                        gene_name = re.search('gene_name=(.+?)(;|$)',  line[8]).group(1)
+                    elif 'gene_id=' in line[8]:
+                        gene_name = re.search('gene_id=(.+?)(;|$)',  line[8]).group(1)
+
+                    if 'ID=' not in line[8]:
+                        raise Exception("ID field required in GFF3 file in attribute field for gene feature type")
+                    yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+                elif line[2]=='mRNA' or line[2]=='transcript':
+                    if 'ID=' in line[8]:
+                        transcript_id = re.search('ID=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception("ID field required in GFF3 file in attribute field for mRNA/transcript"
+                                        " feature type")
+                    yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+                elif line[2]=='CDS':
+                    if 'Parent=' in line[8]:
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for CDS"
+                            " feature type")
+                    if transcript_id_temp == transcript_id:
+                        yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+                elif line[2]=='exon':
+                    if 'Parent=' in line[8]:
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for exon"
+                            " feature type")
+                    if transcript_id_temp == transcript_id:
+                        yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+                elif line[2]=='five_prime_UTR':
+                    if 'Parent=' in line[8]:
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for five_prime_UTR"
+                            " feature type")
+                    if transcript_id_temp == transcript_id:
+                        yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+                elif line[2]=='three_prime_UTR':
+                    if 'Parent=' in line[8]:
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for three_prime_UTR"
+                            " feature type")
+                    if transcript_id_temp == transcript_id:
+                        yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+                elif line[2]=='start_codon':
+                    if 'Parent=' in line[8]:
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for three_prime_UTR"
+                            " feature type")
+                    if transcript_id_temp == transcript_id:
+                        yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+
+                elif line[2]=='stop_codon':
+                    if 'Parent=' in line[8]:
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                    else:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for three_prime_UTR"
+                            " feature type")
+                    if transcript_id_temp == transcript_id:
+                        yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
+        read_gff_file.close()
 
 class get_data:
     def __init__(self, data=None):
@@ -1001,6 +1321,10 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/reg/test_reg_uni.csv")
         elif data=='ttest':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/genotype.csv")
+        elif data=='gexp':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/pca/cot_pca.csv")
+        elif data=='iris':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/pca/iris.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 

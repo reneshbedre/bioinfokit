@@ -10,7 +10,6 @@ from functools import reduce
 import sys
 
 
-
 def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
             geneid=None, genenames=None, gfont=8, dim=(6,4), r=300, ar=90, dotsize=8, markerdot="o", sign_line=False):
     general.depr_mes("bioinfokit.visuz.gene_exp.volcano")
@@ -230,7 +229,7 @@ class gene_exp:
             general.get_figure(show, r, figtype, 'heatmap')
 
 
-class general():
+class general:
     def __init__(self):
         pass
 
@@ -486,3 +485,107 @@ class stat:
         general.get_figure(show, r, figtype, 'corr_mat')
 
 
+class cluster:
+    def __init__(self):
+        pass
+
+    def screeplot(obj="pcascree", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
+                axylabel=None, figtype='png', r=300, show=False):
+        y = [x * 100 for x in obj[1]]
+        plt.bar(obj[0], y)
+        xlab='PCs'
+        ylab='Proportion of variance (%)'
+        if axxlabel:
+            xlab = axxlabel
+        if axylabel:
+            ylab = axylabel
+        plt.xticks(fontsize=7, rotation=70)
+        general.axis_labels(xlab, ylab, axlabelfontsize, axlabelfontname)
+        general.get_figure(show, r, figtype, 'screeplot')
+
+    def pcaplot(x=None, y=None, z=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9,
+                axlabelfontname="Arial", figtype='png', r=300, show=False):
+        if x is not None and y is not None and z is None:
+            assert var1 is not None and var2 is not None and labels is not None, "var1 or var2 variable or labels are missing"
+            for i, varnames in enumerate(labels):
+                plt.scatter(x[i], y[i])
+                plt.text(x[i], y[i], varnames, fontsize=10)
+            general.axis_labels("PC1 ({}%)".format(var1), "PC2 ({}%)".format(var2), axlabelfontsize, axlabelfontname)
+            general.get_figure(show, r, figtype, 'pcaplot_2d')
+        elif x is not None and y is not None and z is not None:
+            assert var1 and var2 and var3 and labels is not None, "var1 or var2 or var3 or labels are missing"
+            # for 3d plot
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            for i, varnames in enumerate(labels):
+                ax.scatter(x[i], y[i], z[i])
+                ax.text(x[i], y[i], z[i], varnames, fontsize=10)
+            ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=axlabelfontsize, fontname=axlabelfontname)
+            ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=axlabelfontsize, fontname=axlabelfontname)
+            ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=axlabelfontsize, fontname=axlabelfontname)
+            general.get_figure(show, r, figtype, 'pcaplot_3d')
+
+
+    # adapted from https://stackoverflow.com/questions/39216897/plot-pca-loadings-and-loading-in-biplot-in-sklearn-like-rs-autoplot
+    def biplot(cscore=None, loadings=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9, axlabelfontname="Arial",
+               figtype='png', r=300, show=False, markerdot="o", dotsize=6, valphadot=1, colordot='#4a4e4d', arrowcolor='#fe8a71',
+               valphaarrow=1, arrowlinestyle='-', arrowlinewidth=1.0, centerlines=True):
+        assert cscore is not None and loadings is not None and labels is not None and var1 is not None and var2 is not None, \
+            "cscore or loadings or labels or var1 or var2 are missing"
+        if var1 is not None and var2 is not None and var3 is None:
+            xscale = 1.0 / (cscore[:, 0].max() - cscore[:, 0].min())
+            yscale = 1.0 / (cscore[:, 1].max() - cscore[:, 1].min())
+            # zscale = 1.0 / (cscore[:, 2].max() - cscore[:, 2].min())
+            plt.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, color=colordot, s=dotsize, alpha=valphadot, marker=markerdot)
+            # plt.scatter(cscore[:, 0], cscore[:, 1], color=colordot, s=dotsize, alpha=valphadot,
+            #            marker=markerdot)
+            if centerlines:
+                plt.axhline(y=0, linestyle='--', color='#000000', linewidth=1)
+                plt.axvline(x=0, linestyle='--', color='#000000', linewidth=1)
+            for i in range(len(loadings)):
+                plt.arrow(0, 0, loadings[0][i], loadings[1][i], color=arrowcolor, alpha=valphaarrow, ls=arrowlinestyle,
+                          lw=arrowlinewidth)
+                plt.text(loadings[0][i], loadings[1][i], labels[i])
+                # adjust_text(t)
+            # plt.xlim(min(loadings[0]) - 0.1, max(loadings[0]) + 0.1)
+            # plt.ylim(min(loadings[1]) - 0.1, max(loadings[1]) + 0.1)
+            xlimit_max = np.max([np.max(cscore[:, 0]*xscale), np.max(loadings[0])])
+            xlimit_min = np.min([np.min(cscore[:, 0]*xscale), np.min(loadings[0])])
+            ylimit_max = np.max([np.max(cscore[:, 1]*yscale), np.max(loadings[1])])
+            ylimit_min = np.min([np.min(cscore[:, 1]*xscale), np.min(loadings[1])])
+            plt.xlim(xlimit_min-0.2, xlimit_max+0.2)
+            plt.ylim(ylimit_min-0.2, ylimit_max + 0.2)
+            general.axis_labels("PC1 ({}%)".format(var1), "PC2 ({}%)".format(var2), axlabelfontsize, axlabelfontname)
+            general.get_figure(show, r, figtype, 'biplot_2d')
+        # 3D
+        if var1 is not None and var2 is not None and var3 is not None:
+            xscale = 1.0 / (cscore[:, 0].max() - cscore[:, 0].min())
+            yscale = 1.0 / (cscore[:, 1].max() - cscore[:, 1].min())
+            zscale = 1.0 / (cscore[:, 2].max() - cscore[:, 2].min())
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, cscore[:, 2]*zscale, color=colordot, s=dotsize, alpha=valphadot,
+                        marker=markerdot)
+            # ax.scatter(cscore[:, 0], cscore[:, 1], cscore[:, 2], color=colordot, s=dotsize,
+            #           alpha=valphadot, marker=markerdot)
+            for i in range(len(loadings)):
+                ax.quiver(0, 0, 0, loadings[0][i], loadings[1][i], loadings[2][i], color=arrowcolor, alpha=valphaarrow, ls=arrowlinestyle,
+                          lw=arrowlinewidth)
+                ax.text(loadings[0][i], loadings[1][i], loadings[2][i],  labels[i])
+
+            xlimit_max = np.max([np.max(cscore[:, 0] * xscale), np.max(loadings[0])])
+            xlimit_min = np.min([np.min(cscore[:, 0] * xscale), np.min(loadings[0])])
+            ylimit_max = np.max([np.max(cscore[:, 1] * yscale), np.max(loadings[1])])
+            ylimit_min = np.min([np.min(cscore[:, 1] * xscale), np.min(loadings[1])])
+            zlimit_max = np.max([np.max(cscore[:, 2] * zscale), np.max(loadings[2])])
+            zlimit_min = np.min([np.min(cscore[:, 2] * zscale), np.min(loadings[2])])
+            # ax.set_xlim(min(loadings[0])-0.1, max(loadings[0])+0.1)
+            # ax.set_ylim(min(loadings[1])-0.1, max(loadings[1])+0.1)
+            # ax.set_zlim(min(loadings[2])-0.1, max(loadings[2])+0.1)
+            ax.set_xlim(xlimit_min-0.2, xlimit_max+0.2)
+            ax.set_ylim(ylimit_min-0.2, ylimit_max+0.2)
+            ax.set_zlim(zlimit_min-0.2, zlimit_max+0.2)
+            ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=axlabelfontsize, fontname=axlabelfontname)
+            ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=axlabelfontsize, fontname=axlabelfontname)
+            ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=axlabelfontsize, fontname=axlabelfontname)
+            general.get_figure(show, r, figtype, 'biplot_3d')

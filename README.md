@@ -524,6 +524,8 @@ Parameters | Description
 `ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`colordot` | Color of dots on plot [string ][default:"#4a4e4d"]
+
 
 Returns:
 
@@ -545,6 +547,91 @@ Returns:
 GTF format genome annotation file (file.gtf will be saved in same directory)
 
 <a href="https://reneshbedre.github.io/blog/gffgtf.html" target="_blank">Working Example</a>
+
+<b>Scree plot</b>
+
+`bioinfokit.visuz.cluster.screeplot(obj, axlabelfontsize, axlabelfontname, axxlabel, axylabel,
+    figtype, r, show)`
+
+Parameters | Description
+------------ | -------------
+`obj` | list of component name and component variance
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+
+Returns:
+
+Scree plot image (screeplot.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+
+
+<b>Principal component analysis (PCA) loadings plots</b>
+
+`bioinfokit.visuz.cluster.pcaplot(x, y, z, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
+    figtype, r, show)`
+
+Parameters | Description
+------------ | -------------
+`x` | loadings (correlation coefficient) for principal component 1 (PC1)
+`y` | loadings (correlation coefficient) for principal component 2 (PC2)
+`z` | loadings (correlation coefficient) for principal component 3 (PC2)
+`labels` | original variables labels from dataframe used for PCA
+`var1` | Proportion of PC1 variance [float (0 to 1)]
+`var2` | Proportion of PC2 variance [float (0 to 1)]
+`var3` | Proportion of PC3 variance [float (0 to 1)]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+
+Returns:
+
+PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+
+<b>Principal component analysis (PCA)  biplots</b>
+
+`bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
+    figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
+    centerlines)`
+
+Parameters | Description
+------------ | -------------
+`cscore` | principal component scores (obtained from PCA().fit_transfrom() function in sklearn.decomposition)
+`loadings` | loadings (correlation coefficient) for principal components
+`labels` | original variables labels from dataframe used for PCA
+`var1` | Proportion of PC1 variance [float (0 to 1)]
+`var2` | Proportion of PC2 variance [float (0 to 1)]
+`var3` | Proportion of PC3 variance [float (0 to 1)]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`colordot` | Color of dots on plot [string ][default:"#4a4e4d"]
+`arrowcolor` | Color of the arrow [string ][default:"#fe8a71"]
+`valphaarrow` | Transparency of the arrow [float (between 0 and 1)][default: 1]
+`arrowlinestyle` | line style of the arrow [string][default: '-']
+`arrowlinewidth`| line width of the arrow [float][default: 1.0]
+`centerlines`| draw center lines at x=0 and y=0 for 2D plot [bool (True or False)][default: True]
+
+
+Returns:
+
+PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
 
 
 References:

@@ -1,3 +1,9 @@
+v0.8.1 has the following updates and changes (May 31, 2020)
+- 2D and 3D loadings plot, biplot and scree plot functions added under the
+  `cluster` class for PCA
+- programmatic access to iris and cotton dataset added
+- `pca` function will be deprecated in future release
+
 v0.8 has the following updates and changes (May 24, 2020)
 - GFF3 to GTF file conversion utility added and updated under class `gff`
 
