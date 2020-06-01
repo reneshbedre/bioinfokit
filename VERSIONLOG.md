@@ -1,4 +1,4 @@
-v0.8.1 has the following updates and changes (May 31, 2020)
+v0.8.1 and v0.8.2  has the following updates and changes (May 31, 2020)
 - 2D and 3D loadings plot, biplot and scree plot functions added under the
   `cluster` class for PCA
 - programmatic access to iris and cotton dataset added
