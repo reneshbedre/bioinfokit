@@ -195,7 +195,7 @@ class gene_exp:
         df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
         df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[1]  # downregulated
         df['color'].fillna('grey', inplace=True)  # intermediate
-        df['A'] = np.log2((df[ct_count] + df[st_count]) / 2)
+        df['A'] = (np.log2(df[ct_count]) + np.log2(df[st_count])) / 2
         # plot
         plt.subplots(figsize=dim)
         plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)

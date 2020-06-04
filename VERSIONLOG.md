@@ -1,3 +1,8 @@
+v0.8.3  has the following updates and changes (June 03, 2020)
+- `ma` function updated for absolute expression counts
+- `svg` figures added
+- `pca` function will be deprecated in future release
+
 v0.8.1 and v0.8.2  has the following updates and changes (May 31, 2020)
 - 2D and 3D loadings plot, biplot and scree plot functions added under the
   `cluster` class for PCA

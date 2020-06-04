@@ -1308,7 +1308,7 @@ class get_data:
         elif data=='volcano':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/volcano/testvolcano.csv")
         elif data=='ma':
-            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ma/test_dataset.csv")
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ma/ma.csv")
         elif data=='hmap':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/heatmap/hm_cot.csv")
         elif data=='mhat':

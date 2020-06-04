@@ -78,7 +78,7 @@ Volcano plot image in same directory (volcano.png)
 
 Parameters | Description
 ------------ | -------------
-`table` |Pandas dataframe  table having atleast gene IDs, log fold change, and counts (control and treatment) columns
+`table` |Pandas dataframe  table having atleast gene IDs, log fold change, and normalized counts (control and treatment) columns
 `lfc` | Name of a column having log fold change values [default:logFC]
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
