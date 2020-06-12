@@ -8,6 +8,7 @@ from matplotlib_venn import venn3, venn2
 from random import sample
 from functools import reduce
 import sys
+from matplotlib.colors import ListedColormap
 
 
 def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
@@ -209,16 +210,28 @@ class gene_exp:
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
         general.get_figure(show, r, figtype, 'ma')
 
-    def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), clus=True, zscore=None, xlabel=True,
+    def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), rowclus=True, colclus=True, zscore=None, xlabel=True,
              ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png'):
         # df = df.set_index(d.columns[0])
         # plot heatmap without cluster
         # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
         # dim = dim
         fig, hm = plt.subplots(figsize=dim)
-        if clus:
+        if rowclus and colclus:
             hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
                                 figsize=dim)
+            hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
+            hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
+            general.get_figure(show, r, figtype, 'heatmap')
+        elif rowclus and colclus is False:
+            hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
+                                figsize=dim, row_cluster=True, col_cluster=False)
+            hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
+            hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
+            general.get_figure(show, r, figtype, 'heatmap')
+        elif colclus and rowclus is False:
+            hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
+                                figsize=dim, row_cluster=False, col_cluster=True)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
             general.get_figure(show, r, figtype, 'heatmap')
@@ -484,6 +497,23 @@ class stat:
         plt.yticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname)
         general.get_figure(show, r, figtype, 'corr_mat')
 
+    def multi_bar(df="dataframe", dim=(5, 4), colbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300, show=False,
+                  axtickfontname="Arial", axtickfontsize=7, ar=90, figtype='png', figname='multi_bar', valphabar=1,
+                  legendpos='best'):
+        xbar = np.arange(df.shape[0])
+        xbar_temp = xbar
+        fig, ax = plt.subplots(figsize=dim)
+        assert len(colbar) >= 2, "number of bar should be atleast 2"
+        assert len(colbar) == len(colorbar), "number of color should be equivalent to number of column bars"
+        if colbar is not None and isinstance(colbar, (tuple, list)):
+            for i in range(len(colbar)):
+                ax.bar(x=xbar_temp, height=df[colbar[i]], width=bw, color=colorbar[i], alpha=valphabar, label=colbar[i])
+                xbar_temp = xbar_temp+bw
+        ax.set_xticks(xbar+( (bw*(len(colbar)-1)) / (1+(len(colbar)-1)) ))
+        ax.set_xticklabels(df[xbarcol], fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        plt.legend(loc=legendpos)
+        general.get_figure(show, r, figtype, figname)
+
 
 class cluster:
     def __init__(self):
@@ -504,12 +534,13 @@ class cluster:
         general.get_figure(show, r, figtype, 'screeplot')
 
     def pcaplot(x=None, y=None, z=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9,
-                axlabelfontname="Arial", figtype='png', r=300, show=False):
+                axlabelfontname="Arial", figtype='png', r=300, show=False, plotlabels=True):
         if x is not None and y is not None and z is None:
             assert var1 is not None and var2 is not None and labels is not None, "var1 or var2 variable or labels are missing"
             for i, varnames in enumerate(labels):
                 plt.scatter(x[i], y[i])
-                plt.text(x[i], y[i], varnames, fontsize=10)
+                if plotlabels:
+                    plt.text(x[i], y[i], varnames, fontsize=10)
             general.axis_labels("PC1 ({}%)".format(var1), "PC2 ({}%)".format(var2), axlabelfontsize, axlabelfontname)
             general.get_figure(show, r, figtype, 'pcaplot_2d')
         elif x is not None and y is not None and z is not None:
@@ -519,29 +550,52 @@ class cluster:
             ax = fig.add_subplot(111, projection='3d')
             for i, varnames in enumerate(labels):
                 ax.scatter(x[i], y[i], z[i])
-                ax.text(x[i], y[i], z[i], varnames, fontsize=10)
+                if plotlabels:
+                    ax.text(x[i], y[i], z[i], varnames, fontsize=10)
             ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=axlabelfontsize, fontname=axlabelfontname)
             ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=axlabelfontsize, fontname=axlabelfontname)
             ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=axlabelfontsize, fontname=axlabelfontname)
             general.get_figure(show, r, figtype, 'pcaplot_3d')
 
-
     # adapted from https://stackoverflow.com/questions/39216897/plot-pca-loadings-and-loading-in-biplot-in-sklearn-like-rs-autoplot
     def biplot(cscore=None, loadings=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9, axlabelfontname="Arial",
                figtype='png', r=300, show=False, markerdot="o", dotsize=6, valphadot=1, colordot='#4a4e4d', arrowcolor='#fe8a71',
-               valphaarrow=1, arrowlinestyle='-', arrowlinewidth=1.0, centerlines=True):
+               valphaarrow=1, arrowlinestyle='-', arrowlinewidth=1.0, centerlines=True, colorlist=None, legendpos='best',
+               datapoints=True):
         assert cscore is not None and loadings is not None and labels is not None and var1 is not None and var2 is not None, \
             "cscore or loadings or labels or var1 or var2 are missing"
         if var1 is not None and var2 is not None and var3 is None:
             xscale = 1.0 / (cscore[:, 0].max() - cscore[:, 0].min())
             yscale = 1.0 / (cscore[:, 1].max() - cscore[:, 1].min())
             # zscale = 1.0 / (cscore[:, 2].max() - cscore[:, 2].min())
-            plt.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, color=colordot, s=dotsize, alpha=valphadot, marker=markerdot)
-            # plt.scatter(cscore[:, 0], cscore[:, 1], color=colordot, s=dotsize, alpha=valphadot,
-            #            marker=markerdot)
+            # colorlist is an array of classes from dataframe column
+            if datapoints:
+                if colorlist is not None:
+                    unique_class = set(colorlist)
+                    # color_dict = dict()
+                    assign_values = {col: i for i, col in enumerate(unique_class)}
+                    color_result_num = [assign_values[i] for i in colorlist]
+                    if colordot and isinstance(colordot, (tuple, list)):
+                        colour_map = ListedColormap(colordot)
+                        # for i in range(len(list(unique_class))):
+                        #    color_dict[list(unique_class)[i]] = colordot[i]
+                        # color_result = [color_dict[i] for i in colorlist]
+                        s = plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, c=color_result_num, cmap=colour_map,
+                                        s=dotsize, alpha=valphadot, marker=markerdot)
+                        plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
+                    elif colordot and not isinstance(colordot, (tuple, list)):
+                        # s = plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, color=color_result, s=dotsize,
+                        #                alpha=valphadot, marker=markerdot)
+                        # plt.legend(handles=s.legend_elements()[0], labels=list(unique_class))
+                        s = plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, c=color_result, s=dotsize,
+                                    alpha=valphadot, marker=markerdot)
+                        plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
+                else:
+                    plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, color=colordot, s=dotsize,
+                                    alpha=valphadot, marker=markerdot)
             if centerlines:
-                plt.axhline(y=0, linestyle='--', color='#000000', linewidth=1)
-                plt.axvline(x=0, linestyle='--', color='#000000', linewidth=1)
+                plt.axhline(y=0, linestyle='--', color='#7d7d7d', linewidth=1)
+                plt.axvline(x=0, linestyle='--', color='#7d7d7d', linewidth=1)
             for i in range(len(loadings)):
                 plt.arrow(0, 0, loadings[0][i], loadings[1][i], color=arrowcolor, alpha=valphaarrow, ls=arrowlinestyle,
                           lw=arrowlinewidth)
@@ -564,13 +618,26 @@ class cluster:
             zscale = 1.0 / (cscore[:, 2].max() - cscore[:, 2].min())
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
-            ax.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, cscore[:, 2]*zscale, color=colordot, s=dotsize, alpha=valphadot,
-                        marker=markerdot)
-            # ax.scatter(cscore[:, 0], cscore[:, 1], cscore[:, 2], color=colordot, s=dotsize,
-            #           alpha=valphadot, marker=markerdot)
+            if datapoints:
+                if colorlist is not None:
+                    unique_class = set(colorlist)
+                    assign_values = {col: i for i, col in enumerate(unique_class)}
+                    color_result_num = [assign_values[i] for i in colorlist]
+                    if colordot and isinstance(colordot, (tuple, list)):
+                        colour_map = ListedColormap(colordot)
+                        s = ax.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, cscore[:, 2]*zscale, c=color_result_num,
+                                       cmap=colour_map, s=dotsize, alpha=valphadot, marker=markerdot)
+                        plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
+                    elif colordot and not isinstance(colordot, (tuple, list)):
+                        s = plt.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, cscore[:, 2]*zscale, c=color_result_num,
+                                        s=dotsize, alpha=valphadot, marker=markerdot)
+                        plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
+                else:
+                    ax.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, cscore[:, 2] * zscale, color=colordot,
+                               s=dotsize, alpha=valphadot, marker=markerdot)
             for i in range(len(loadings)):
-                ax.quiver(0, 0, 0, loadings[0][i], loadings[1][i], loadings[2][i], color=arrowcolor, alpha=valphaarrow, ls=arrowlinestyle,
-                          lw=arrowlinewidth)
+                ax.quiver(0, 0, 0, loadings[0][i], loadings[1][i], loadings[2][i], color=arrowcolor, alpha=valphaarrow,
+                          ls=arrowlinestyle, lw=arrowlinewidth)
                 ax.text(loadings[0][i], loadings[1][i], loadings[2][i],  labels[i])
 
             xlimit_max = np.max([np.max(cscore[:, 0] * xscale), np.max(loadings[0])])

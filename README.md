@@ -590,6 +590,8 @@ Parameters | Description
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `r` | Figure resolution in dpi [int][default: 300]
 `show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`plotlabels` | Plot labels as defined by labels parameter [True or False][default:True]
+
 
 Returns:
 
@@ -601,7 +603,7 @@ PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be sav
 
 `bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
-    centerlines)`
+    centerlines, datapoints, legendpos)`
 
 Parameters | Description
 ------------ | -------------
@@ -622,9 +624,12 @@ Parameters | Description
 `colordot` | Color of dots on plot [string ][default:"#4a4e4d"]
 `arrowcolor` | Color of the arrow [string ][default:"#fe8a71"]
 `valphaarrow` | Transparency of the arrow [float (between 0 and 1)][default: 1]
-`arrowlinestyle` | line style of the arrow [string][default: '-']
+`arrowlinestyle` | line style of the arrow. check more styles at https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html [string][default: '-']
 `arrowlinewidth`| line width of the arrow [float][default: 1.0]
 `centerlines`| draw center lines at x=0 and y=0 for 2D plot [bool (True or False)][default: True]
+`datapoints`| plot data points on graph [bool (True or False)][default: True]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+
 
 
 Returns:
@@ -632,6 +637,27 @@ Returns:
 PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in same directory)
 
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+
+<b>Grouped bar plot</b>
+
+`bioinfokit.visuz.stat.multi_bar(df, colbar, bw, colorbar, xbarcol, axtickfontsize, axtickfontname,
+    figtype, r, show, valphabar, figname, legendpos)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe
+`colbar` | name of columns in dataframe to plot as grouped bar [list or tuple][default: None]
+`bw` | width of bar [float][default: 0.4]
+`colorbar` | color list equivalent to number of columns in cobar [list or tuple][default: None]
+`xbarcol` | name of column in dataframe for plotting tick label on X-axis  [string][default: None]
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
+`figname` | name of figure [string ][default:"multi_bar"]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 
 
 References:
