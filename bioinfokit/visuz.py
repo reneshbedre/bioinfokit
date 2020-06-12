@@ -211,7 +211,7 @@ class gene_exp:
         general.get_figure(show, r, figtype, 'ma')
 
     def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), rowclus=True, colclus=True, zscore=None, xlabel=True,
-             ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png'):
+             ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png', figname='heatmap'):
         # df = df.set_index(d.columns[0])
         # plot heatmap without cluster
         # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
@@ -222,24 +222,24 @@ class gene_exp:
                                 figsize=dim)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, 'heatmap')
+            general.get_figure(show, r, figtype, figname)
         elif rowclus and colclus is False:
             hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
                                 figsize=dim, row_cluster=True, col_cluster=False)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, 'heatmap')
+            general.get_figure(show, r, figtype, figname)
         elif colclus and rowclus is False:
             hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
                                 figsize=dim, row_cluster=False, col_cluster=True)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, 'heatmap')
+            general.get_figure(show, r, figtype, figname)
         else:
             hm = sns.heatmap(df, cmap=cmap, cbar=scale, xticklabels=xlabel, yticklabels=ylabel)
             plt.xticks(fontsize=tickfont[0])
             plt.yticks(fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, 'heatmap')
+            general.get_figure(show, r, figtype, figname)
 
 
 class general:
