@@ -40,9 +40,9 @@ From Python package index,
 Parameters | Description
 ------------ | -------------
 `table` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
-`lfc` | Name of a column having log fold change values [string][default:logFC]
+`lfc` | Name of a column having log or absolute fold change values [string][default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [float][default:1.0]
+`lfc_thr` | Log or absolute fold change cutoff for up and downregulated genes [float][default:1.0]
 `pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [float][default:0.05]
 `color` | Tuple of two colors [tuple][default: ("green", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
@@ -258,8 +258,10 @@ CSV delimited file (out.csv)
 
 <b>Heatmap</b>
 
+`latest update v0.8.4`
+
 `bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), clus=True, zscore=None, xlabel=True, ylabel=True, 
-    tickfont=(12, 12), show, r, figtype)`
+    tickfont=(12, 12), show, r, figtype, figname)`
 
 Parameters | Description
 ------------ | -------------
@@ -275,6 +277,8 @@ Parameters | Description
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`figname` | name of figure [string ][default:"heatmap"]
+
 
 Returns:
 
@@ -601,9 +605,11 @@ PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be sav
 
 <b>Principal component analysis (PCA)  biplots</b>
 
+`latest update v0.8.4`
+
 `bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
-    centerlines, datapoints, legendpos)`
+    centerlines, datapoints, legendpos, colorlist)`
 
 Parameters | Description
 ------------ | -------------
@@ -621,7 +627,7 @@ Parameters | Description
 `markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `dotsize`| The size of the dots in the plot [float][default: 6]
 `valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
-`colordot` | Color of dots on plot [string ][default:"#4a4e4d"]
+`colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
 `arrowcolor` | Color of the arrow [string ][default:"#fe8a71"]
 `valphaarrow` | Transparency of the arrow [float (between 0 and 1)][default: 1]
 `arrowlinestyle` | line style of the arrow. check more styles at https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html [string][default: '-']
@@ -629,8 +635,7 @@ Parameters | Description
 `centerlines`| draw center lines at x=0 and y=0 for 2D plot [bool (True or False)][default: True]
 `datapoints`| plot data points on graph [bool (True or False)][default: True]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-
-
+`colorlist` | list of the categories to assign the color [list][default:None]
 
 Returns:
 
@@ -638,7 +643,10 @@ PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in sam
 
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
 
+<!--
 <b>Grouped bar plot</b>
+
+`latest update v0.8.4`
 
 `bioinfokit.visuz.stat.multi_bar(df, colbar, bw, colorbar, xbarcol, axtickfontsize, axtickfontname,
     figtype, r, show, valphabar, figname, legendpos)`
@@ -659,6 +667,57 @@ Parameters | Description
 `figname` | name of figure [string ][default:"multi_bar"]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 
+
+<b>t-SNE plot</b>
+
+`latest update v0.8.4`
+
+`bioinfokit.visuz.cluster.tsneplot(score, colorlist, axlabelfontsize, axlabelfontname,
+    figtype, r, show, markerdot, dotsize, valphadot, colordot, dim, figname, legendpos,
+    legendanchor)`
+
+Parameters | Description
+------------ | -------------
+`score` | t-SNE component embeddings (obtained from TSNE().fit_transfrom() function in sklearn.manifold)
+`colorlist` | list of the categories to assign the color [list][default:None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`figname` | name of figure [string ][default:"tsne_2d"]
+
+Returns:
+
+t-SNE 2D image (tsne_2d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
+
+<b>VCF annotation (assign genetic features and function to the markers
+in VCF file)</b>
+
+`bioinfokit.analys.marker.mergevcf(file, id, gff_file, anot_attr)`
+
+Parameters | Description
+------------ | -------------
+`file` | VCF file
+`id` | chromosome id column in VCF file [string][default='#CHROM']
+`gff_file` | GFF3 genome annotation file
+`anot_attr` | Gene function tag in attributes field of GFF3 file
+
+Returns:
+
+VCF file with annotation (tsne_2d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
+-->
 
 References:
 - Travis E. Oliphant. A guide to NumPy, USA: Trelgol Publishing, (2006).

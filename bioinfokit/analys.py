@@ -110,6 +110,7 @@ def extract_seq_nomatch(file="fasta_file", id="id_file"):
 def fqreadcounter(file="fastq_file"):
     general.depr_mes("bioinfokit.analys.fastq.fqreadcounter")
 
+
 def fasta_reader(file="fasta_file"):
     read_file = open(file, "rU")
     fasta_iter = (rec[1] for rec in groupby(read_file, lambda line: line[0] == ">"))
@@ -118,6 +119,7 @@ def fasta_reader(file="fasta_file"):
         fasta_header = re.split("\s+", fasta_header)[0]
         seq = "".join(s.strip() for s in fasta_iter.__next__())
         yield (fasta_header, seq)
+
 
 def rev_com(seq=None, file=None):
     if seq is not None:
@@ -134,6 +136,7 @@ def rev_com(seq=None, file=None):
             out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
         out_file.close()
 
+
 # extract subseq from genome sequence
 def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
     fasta_iter = fasta_reader(file)
@@ -148,8 +151,10 @@ def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"
             sub_seq = seq[int(st-1):int(end)]
             print(sub_seq)
 
+
 def fastq_format_check(file="fastq_file"):
     general.depr_mes("bioinfokit.analys.fastq.fastq_format_check")
+
 
 def tcsv(file="tab_file"):
     tab_file = csv.reader(open(file, 'r'), dialect=csv.excel_tab)
@@ -158,11 +163,43 @@ def tcsv(file="tab_file"):
     for record in tab_file:
         csv_file.writerow(record)
 
+
 def ttsam(df='dataframe', xfac=None, res=None, evar=True):
     general.depr_mes("bioinfokit.visuz.stat.ttsam")
 
+
 def chisq(table="table"):
     general.depr_mes("bioinfokit.visuz.stat.chisq")
+
+
+class fasta:
+    def __init__(self):
+        pass
+
+    # adapted from https://www.biostars.org/p/710/
+    def fasta_reader(file="fasta_file"):
+        read_file = open(file, "rU")
+        fasta_iter = (rec[1] for rec in groupby(read_file, lambda line: line[0] == ">"))
+        for record in fasta_iter:
+            fasta_header = record.__next__()[1:].strip()
+            fasta_header = re.split("\s+", fasta_header)[0]
+            seq = "".join(s.strip() for s in fasta_iter.__next__())
+            yield fasta_header, seq
+
+    def rev_com(seq=None, file=None):
+        if seq is not None:
+            rev_seq = seq[::-1]
+            rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
+            return rev_seq
+        elif file is not None:
+            out_file = open("output_revcom.fasta", 'w')
+            fasta_iter = fasta_reader(file)
+            for record in fasta_iter:
+                fasta_header, seq = record
+                rev_seq = seq[::-1]
+                rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
+                out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
+            out_file.close()
 
 
 class fastq:
@@ -176,7 +213,7 @@ class fastq:
             read = next(fastq_file).rstrip()
             header_2 = next(fastq_file).rstrip()
             read_qual_asc = next(fastq_file).rstrip()
-            yield (header_1, read, header_2, read_qual_asc)
+            yield header_1, read, header_2, read_qual_asc
 
     def fqreadcounter(file="fastq_file"):
         read_file = open(file, "rU")
@@ -346,7 +383,7 @@ class marker:
                 gene_number_1 += 1
             elif feature_type == 'mRNA' or feature_type == 'transcript':
                 cds_cord[(chr, transcript_id)] = []
-                exon_cord[transcript_id] = []
+                exon_cord[(chr, transcript_id)] = []
                 ftr_cord[transcript_id] = []
                 ttr_cord[transcript_id] = []
                 sc_cord[transcript_id] = []
@@ -398,7 +435,6 @@ class marker:
                     if len(cord) > 1:
                         for y in range(len(cord) - 1):
                             intragenic_cord_exon[(chr, transcript_id)].append([int(cord[y][1]) + 1, int(cord[y + 1][0]) - 1])
-
 
         def var_region_check(_dict, _chr,  _region, _anot_attr, _transcript_name_dict, _var_region, _transcript_name,
                              _transcript_id, _transcript_strand):
@@ -539,6 +575,7 @@ class marker:
                                 break
             vcf_out_anot.write('\t'.join(str(x) for x in record[2])+'\t'+str(var_region)+'\t'+str(transcript_id_return)+
                                '\t'+str(transcript_name_return)+'\t'+str(transcript_strand_return)+'\n')
+
 
 class format:
     def __init__(self):
@@ -1325,6 +1362,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/pca/cot_pca.csv")
         elif data=='iris':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/pca/iris.csv")
+        elif data=='digits':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/digits.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 
