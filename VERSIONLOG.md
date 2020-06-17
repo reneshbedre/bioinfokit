@@ -1,3 +1,9 @@
+v0.8.4  has the following updates and changes (June 17, 2020)
+- `fasta_reader` and `rev_com` moved to newly created `fasta` class
+- `tsneplot` and  `vcf_anot` initialized for future release
+- more parameters added in `biplot` (cluster coloring, datapoints)
+- `figname` added in `hmap` 
+
 v0.8.3  has the following updates and changes (June 03, 2020)
 - `ma` function updated for absolute expression counts
 - `svg` figures added
