@@ -260,8 +260,8 @@ CSV delimited file (out.csv)
 
 `latest update v0.8.4`
 
-`bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), clus=True, zscore=None, xlabel=True, ylabel=True, 
-    tickfont=(12, 12), show, r, figtype, figname)`
+`bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), rowclus=True, colclus=True, zscore=None, 
+    xlabel=True, ylabel=True, tickfont=(12, 12), show, r, figtype, figname)`
 
 Parameters | Description
 ------------ | -------------
@@ -269,7 +269,8 @@ Parameters | Description
 `cmap` | Color Palette for heatmap [string][default: 'seismic']
 `scale` | Draw a color key with heatmap [boolean (True or False)][default: True]
 `dim` | heatmap figure size [tuple of two floats (width, height) in inches][default: (6, 8)]
-`clus` | Draw hierarchical clustering with heatmap [boolean (True or False)][default: True]
+`rowclus` | Draw hierarchical clustering for rows  [boolean (True or False)][default: True]
+`colclus` | Draw hierarchical clustering for columns [boolean (True or False)][default: True]
 `zscore` | Z-score standardization of row (0) or column (1). It works when clus is True. [None, 0, 1][default: None]
 `xlable` | Plot X-label [boolean (True or False)][default: True]
 `ylable` | Plot Y-label [boolean (True or False)][default: True]
