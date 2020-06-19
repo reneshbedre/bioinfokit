@@ -272,8 +272,8 @@ Parameters | Description
 `rowclus` | Draw hierarchical clustering for rows  [boolean (True or False)][default: True]
 `colclus` | Draw hierarchical clustering for columns [boolean (True or False)][default: True]
 `zscore` | Z-score standardization of row (0) or column (1). It works when clus is True. [None, 0, 1][default: None]
-`xlable` | Plot X-label [boolean (True or False)][default: True]
-`ylable` | Plot Y-label [boolean (True or False)][default: True]
+`xlabel` | Plot X-label [boolean (True or False)][default: True]
+`ylabel` | Plot Y-label [boolean (True or False)][default: True]
 `tickfont` | Fontsize for X and Y-axis tick labels [tuple of two floats][default: (14, 14)]
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
