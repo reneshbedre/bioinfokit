@@ -1,3 +1,8 @@
+v0.8.5  has the following updates and changes (June 22, 2020)
+- `tsneplot` added for t-SNE visualization
+- in `bardot` drop NA value function added to ignore missing values to plot dots
+- scRNA-seq dataset added (PBMC and Arabidopsis root cells)
+
 v0.8.4  has the following updates and changes (June 17, 2020)
 - `fasta_reader` and `rev_com` moved to newly created `fasta` class
 - `tsneplot` and  `vcf_anot` initialized for future release
