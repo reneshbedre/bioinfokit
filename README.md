@@ -428,6 +428,8 @@ Extracted sequences in FASTA format file in same directory (out.fasta)
 
 <b>Bar-dot plot</b>
 
+`latest update v0.8.5`
+
 `bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, 
     valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, ylm, axtickfontsize, axtickfontname,
     yerrlw, yerrcw)`
@@ -667,11 +669,11 @@ Parameters | Description
 `valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
 `figname` | name of figure [string ][default:"multi_bar"]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-
+-->
 
 <b>t-SNE plot</b>
 
-`latest update v0.8.4`
+`latest update v0.8.5`
 
 `bioinfokit.visuz.cluster.tsneplot(score, colorlist, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, dim, figname, legendpos,
@@ -701,6 +703,7 @@ t-SNE 2D image (tsne_2d.png will be saved in same directory)
 
 <a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
 
+<!--
 <b>VCF annotation (assign genetic features and function to the markers
 in VCF file)</b>
 

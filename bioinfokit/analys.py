@@ -564,6 +564,9 @@ class marker:
                             if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
                                 var_region = 'Introns'
                                 break
+                    if var_region:
+                        break
+
             if var_region is None:
                 for transcript, cord in intragenic_cord_exon.items():
                     transcript_strand_return = transcript_strand_dict[transcript[1]]
@@ -573,6 +576,9 @@ class marker:
                             if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
                                 var_region = 'Introns'
                                 break
+                    if var_region:
+                        break
+
             vcf_out_anot.write('\t'.join(str(x) for x in record[2])+'\t'+str(var_region)+'\t'+str(transcript_id_return)+
                                '\t'+str(transcript_name_return)+'\t'+str(transcript_strand_return)+'\n')
 
@@ -1364,6 +1370,10 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/pca/iris.csv")
         elif data=='digits':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/digits.csv")
+        elif data=='pbmc':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/pbmc_seurat_processes.csv")
+        elif data=='ath_root':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/ath_root_sub_seurat_processes.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 
