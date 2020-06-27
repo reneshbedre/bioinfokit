@@ -191,7 +191,7 @@ class gene_exp:
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
            markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "red"), ar=90, figtype='png', axtickfontsize=9,
            axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-           axylabel=None, xlm=None, ylm=None):
+           axylabel=None, xlm=None, ylm=None, fclines=False, fclinescolor='#2660a4'):
         _x, _y = 'A', 'M'
         df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
         df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[1]  # downregulated
@@ -202,6 +202,10 @@ class gene_exp:
         plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
         # draw a central line at M=0
         plt.axhline(y=0, color='#7d7d7d', linestyle='--')
+        # draw lfc threshold lines
+        if fclines:
+            plt.axhline(y=lfc_thr, color=fclinescolor, linestyle='--')
+            plt.axhline(y=-lfc_thr, color=fclinescolor, linestyle='--')
         if axxlabel:
             _x = axxlabel
         if axylabel:

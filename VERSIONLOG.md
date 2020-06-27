@@ -1,3 +1,6 @@
+v0.8.6  has the following updates and changes (June 27, 2020)
+- the parameter for log fold change threshold lines added in MA plot 
+
 v0.8.5  has the following updates and changes (June 22, 2020)
 - `tsneplot` added for t-SNE visualization
 - in `bardot` drop NA value function added to ignore missing values to plot dots

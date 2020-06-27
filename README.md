@@ -73,8 +73,10 @@ Volcano plot image in same directory (volcano.png)
 
 <b>MA plot</b>
 
+latest update v0.8.6
+
 `bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
-    axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm)`
+    axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor)`
 
 Parameters | Description
 ------------ | -------------
@@ -98,6 +100,8 @@ Parameters | Description
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 `xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
+`fclines`  | draw log fold change threshold lines as defines by `lfc`  [True or False][default:False]
+`fclinescolor`  | color of fclines  [string][default: '#2660a4']
 
 Returns:
 
@@ -198,7 +202,7 @@ VCF files for each chromosome
 
 <a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
 
-
+<!--
 <b>PCA</b>
 
 `bioinfokit.analys.pca(table)`
@@ -212,7 +216,7 @@ Returns:
 PCA summary, scree plot (screepca.png), and 2D/3D pca plots (pcaplot_2d.png and pcaplot_3d.png)
 
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
-
+-->
 
 <b>Reverse complement of DNA sequence</b>
 
