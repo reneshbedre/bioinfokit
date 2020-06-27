@@ -189,17 +189,26 @@ class gene_exp:
         general.get_figure(show, r, figtype, 'involcano')
 
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
-           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "red"), ar=90, figtype='png', axtickfontsize=9,
+           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "grey", "red"), ar=90, figtype='png', axtickfontsize=9,
            axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-           axylabel=None, xlm=None, ylm=None, fclines=False, fclinescolor='#2660a4'):
+           axylabel=None, xlm=None, ylm=None, fclines=False, fclinescolor='#2660a4', legendpos='best',
+           figname='ma', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down']):
         _x, _y = 'A', 'M'
+        assert len(set(color)) == 3, 'unique color must be size of 3'
         df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
-        df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[1]  # downregulated
-        df['color'].fillna('grey', inplace=True)  # intermediate
+        df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[2]  # downregulated
+        df['color'].fillna(color[1], inplace=True)  # intermediate
         df['A'] = (np.log2(df[ct_count]) + np.log2(df[st_count])) / 2
         # plot
+        assign_values = {col: i for i, col in enumerate(color)}
+        color_result_num = [assign_values[i] for i in df['color']]
         plt.subplots(figsize=dim)
-        plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
+        # plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
+        s = plt.scatter(df['A'], df[lfc], c=color_result_num, cmap=ListedColormap(color),
+                        alpha=valpha, s=dotsize, marker=markerdot)
+        assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+        plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
+                           bbox_to_anchor=legendanchor)
         # draw a central line at M=0
         plt.axhline(y=0, color='#7d7d7d', linestyle='--')
         # draw lfc threshold lines
@@ -212,7 +221,7 @@ class gene_exp:
             _y = axylabel
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
-        general.get_figure(show, r, figtype, 'ma')
+        general.get_figure(show, r, figtype, figname)
 
     def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), rowclus=True, colclus=True, zscore=None, xlabel=True,
              ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png', figname='heatmap'):
