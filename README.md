@@ -86,7 +86,7 @@ Parameters | Description
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-`color` | Tuple of two colors [tuple][default: ("green", "red")]
+`color` | Tuple of three colors [tuple][default: ("green", "grey", "red")]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
