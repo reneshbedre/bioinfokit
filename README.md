@@ -15,6 +15,7 @@ bioinfokit requires
 - pandas
 - matplotlib
 - SciPy 
+- matplotlib_venn
 
 ```
 git clone https://github.com/reneshbedre/bioinfokit.git
