@@ -1,4 +1,7 @@
-v0.8.7  has the following updates and changes (June 27, 2020)
+v0.8.8  has the following updates and changes (July 02, 2020)
+- check for lfc_thr and pv_thr added
+
+v0.8.7  has the following updates and changes (July 01, 2020)
 - legend labels, position, and figname parameters added in volcano plot
 - utility to check the non-numeric values added for `ma`, `volcano` and `involcano`
 - plotlegend parameter added to `ma`

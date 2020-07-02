@@ -34,7 +34,7 @@ From Python package index,
 
 <b>Volcano plot</b>
 
-latest update v0.8.7
+latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname,
@@ -82,7 +82,7 @@ Volcano plot image in same directory (volcano.png)
 
 <b>MA plot</b>
 
-latest update v0.8.7
+latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
@@ -126,7 +126,7 @@ MA plot image in same directory (ma.png)
 
 <b>Inverted Volcano plot</b>
 
-latest update v0.8.7
+latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
     dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
