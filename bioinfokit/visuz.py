@@ -9,6 +9,7 @@ from random import sample
 from functools import reduce
 import sys
 from matplotlib.colors import ListedColormap
+import gc
 
 
 def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
@@ -89,10 +90,10 @@ class gene_exp:
                 if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr) or \
                         (d.loc[d[geneid] == i, lfc].iloc[0] <= -lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr):
                     if gstyle==1:
-                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i,
+                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0], i,
                                       fontsize=gfont)
                     elif gstyle==2:
-                        plt.annotate(i, xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0]),
+                        plt.annotate(i, xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0]),
                                      xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
                                      bbox=dict(boxstyle="round", alpha=0.1),
                                      arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.1, relpos=(0, 0)))
@@ -103,10 +104,10 @@ class gene_exp:
             for i in d[geneid].unique():
                 if i in genenames:
                     if gstyle==1:
-                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0], i,
+                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0], i,
                                       fontsize=gfont)
                     elif gstyle==2:
-                        plt.annotate(i, xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0]),
+                        plt.annotate(i, xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0]),
                                      xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
                                      bbox=dict(boxstyle="round", alpha=0.1),
                                      arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.1, relpos=(0, 0)))
@@ -117,10 +118,10 @@ class gene_exp:
             for i in d[geneid].unique():
                 if i in genenames:
                     if gstyle==1:
-                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0],
+                        plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0],
                                       genenames[i], fontsize=gfont)
                     elif gstyle == 2:
-                        plt.annotate(genenames[i], xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv'].iloc[0]),
+                        plt.annotate(genenames[i], xy=(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0]),
                                      xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
                                      bbox=dict(boxstyle="round", alpha=0.1),
                                      arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.1, relpos=(0, 0)))
@@ -128,51 +129,88 @@ class gene_exp:
                         print("Error: invalid gstyle choice")
                         sys.exit(1)
 
-    def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
+    def volcano(df="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "grey", "red"), valpha=1,
                 geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
-               axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-                axylabel=None, xlm=None, ylm=None):
+                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
+                axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
+                figname='volcano', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down']):
         _x = r'$ log_{2}(Fold Change)$'
         _y = r'$ -log_{10}(P-value)$'
         color = color
-        d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
-        d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
-        d['color'].fillna('grey', inplace=True)  # intermediate
-        d['logpv'] = -(np.log10(d[pv]))
+        # check if dataframe contains any non-numeric character
+        assert general.check_for_nonnumeric(df[lfc]) == 0, 'dataframe contains non-numeric values in lfc column'
+        assert general.check_for_nonnumeric(df[pv]) == 0, 'dataframe contains non-numeric values in pv column'
+        # this is important to check if color or logpv exists and drop them as if you run multiple times same command
+        # it may update old instance of df
+        df = df.drop(['color_add_axy', 'logpv_add_axy'], axis=1, errors='ignore')
+        assert len(set(color)) == 3, 'unique color must be size of 3'
+        df.loc[(df[lfc] >= lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[0]  # upregulated
+        df.loc[(df[lfc] <= -lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[2]  # downregulated
+        df['color_add_axy'].fillna(color[1], inplace=True)  # intermediate
+        df['logpv_add_axy'] = -(np.log10(df[pv]))
+        # print(df[df['color']==color[0]].count(), 'zzzz')
         # plot
+        assign_values = {col: i for i, col in enumerate(color)}
+        color_result_num = [assign_values[i] for i in df['color_add_axy']]
         plt.subplots(figsize=dim)
-        plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha, s=dotsize, marker=markerdot)
+        if plotlegend:
+            s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha, s=dotsize,
+                    marker=markerdot)
+            assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+            plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
+                   bbox_to_anchor=legendanchor)
+        else:
+            plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha, s=dotsize,
+                        marker=markerdot)
         if sign_line:
             plt.axhline(y=-np.log10(pv_thr), linestyle='--', color='#7d7d7d', linewidth=1)
             plt.axvline(x=lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
             plt.axvline(x=-lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
-        gene_exp.geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+        gene_exp.geneplot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+
         if axxlabel:
             _x = axxlabel
         if axylabel:
             _y = axylabel
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
-        general.get_figure(show, r, figtype, 'volcano')
+        general.get_figure(show, r, figtype, figname)
 
-    def involcano(d="dataframe", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "red"),
+    def involcano(df="dataframe", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "grey", "red"),
                   valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-                axylabel=None, xlm=None, ylm=None):
+                axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
+                figname='involcano', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down']):
         _x = r'$ log_{2}(Fold Change)$'
         _y = r'$ -log_{10}(P-value)$'
         color = color
-        d.loc[(d[lfc] >= lfc_thr) & (d[pv] < pv_thr), 'color'] = color[0]  # upregulated
-        d.loc[(d[lfc] <= -lfc_thr) & (d[pv] < pv_thr), 'color'] = color[1]  # downregulated
-        d['color'].fillna('grey', inplace=True)  # intermediate
-        d['logpv'] = -(np.log10(d[pv]))
+        assert general.check_for_nonnumeric(df[lfc]) == 0, 'dataframe contains non-numeric values in lfc column'
+        assert general.check_for_nonnumeric(df[pv]) == 0, 'dataframe contains non-numeric values in pv column'
+        # this is important to check if color or logpv exists and drop them as if you run multiple times same command
+        # it may update old instance of df
+        df = df.drop(['color_add_axy', 'logpv_add_axy'], axis=1, errors='ignore')
+        assert len(set(color)) == 3, 'unique color must be size of 3'
+        df.loc[(df[lfc] >= lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[0]  # upregulated
+        df.loc[(df[lfc] <= -lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[2]  # downregulated
+        df['color_add_axy'].fillna(color[1], inplace=True)  # intermediate
+        df['logpv_add_axy'] = -(np.log10(df[pv]))
 
         # plot
+        assign_values = {col: i for i, col in enumerate(color)}
+        color_result_num = [assign_values[i] for i in df['color_add_axy']]
         plt.subplots(figsize=dim)
-        plt.scatter(d[lfc], d['logpv'], c=d['color'], alpha=valpha, s=dotsize, marker=markerdot)
-        gene_exp.geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+        if plotlegend:
+            s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
+                    s=dotsize, marker=markerdot)
+            assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+            plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
+                       bbox_to_anchor=legendanchor)
+        else:
+            plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
+                        s=dotsize, marker=markerdot)
+        gene_exp.geneplot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
         plt.gca().invert_yaxis()
         if axxlabel:
             _x = axxlabel
@@ -186,29 +224,42 @@ class gene_exp:
             print('Error: ylm not compatible with involcano')
             sys.exit(1)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
-        general.get_figure(show, r, figtype, 'involcano')
+        general.get_figure(show, r, figtype, figname)
 
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
            markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "grey", "red"), ar=90, figtype='png', axtickfontsize=9,
            axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
            axylabel=None, xlm=None, ylm=None, fclines=False, fclinescolor='#2660a4', legendpos='best',
-           figname='ma', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down']):
+           figname='ma', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down'],
+           plotlegend=False):
         _x, _y = 'A', 'M'
+        assert general.check_for_nonnumeric(df[lfc]) == 0, 'dataframe contains non-numeric values in lfc column'
+        assert general.check_for_nonnumeric(df[ct_count]) == 0, \
+            'dataframe contains non-numeric values in ct_count column'
+        assert general.check_for_nonnumeric(
+            df[st_count]) == 0, 'dataframe contains non-numeric values in ct_count column'
+        # this is important to check if color or A exists and drop them as if you run multiple times same command
+        # it may update old instance of df
+        df = df.drop(['color_add_axy', 'A_add_axy'], axis=1, errors='ignore')
         assert len(set(color)) == 3, 'unique color must be size of 3'
-        df.loc[(df[lfc] >= lfc_thr), 'color'] = color[0]  # upregulated
-        df.loc[(df[lfc] <= -lfc_thr), 'color'] = color[2]  # downregulated
-        df['color'].fillna(color[1], inplace=True)  # intermediate
-        df['A'] = (np.log2(df[ct_count]) + np.log2(df[st_count])) / 2
+        df.loc[(df[lfc] >= lfc_thr), 'color_add_axy'] = color[0]  # upregulated
+        df.loc[(df[lfc] <= -lfc_thr), 'color_add_axy'] = color[2]  # downregulated
+        df['color_add_axy'].fillna(color[1], inplace=True)  # intermediate
+        df['A_add_axy'] = (np.log2(df[ct_count]) + np.log2(df[st_count])) / 2
         # plot
         assign_values = {col: i for i, col in enumerate(color)}
-        color_result_num = [assign_values[i] for i in df['color']]
+        color_result_num = [assign_values[i] for i in df['color_add_axy']]
         plt.subplots(figsize=dim)
         # plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
-        s = plt.scatter(df['A'], df[lfc], c=color_result_num, cmap=ListedColormap(color),
+        if plotlegend:
+            s = plt.scatter(df['A_add_axy'], df[lfc], c=color_result_num, cmap=ListedColormap(color),
                         alpha=valpha, s=dotsize, marker=markerdot)
-        assert len(legendlabels) == 3, 'legendlabels must be size of 3'
-        plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
+            assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+            plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
                            bbox_to_anchor=legendanchor)
+        else:
+            plt.scatter(df['A_add_axy'], df[lfc], c=color_result_num, cmap=ListedColormap(color),
+                        alpha=valpha, s=dotsize, marker=markerdot)
         # draw a central line at M=0
         plt.axhline(y=0, color='#7d7d7d', linestyle='--')
         # draw lfc threshold lines
@@ -293,6 +344,12 @@ class general:
     def depr_mes(func_name):
         print("This function is deprecated. Please use", func_name )
         print("Read docs at https://reneshbedre.github.io/blog/howtoinstall.html")
+
+    def check_for_nonnumeric(pd_series=None):
+        if pd.to_numeric(pd_series, errors='coerce').isna().sum() == 0:
+            return 0
+        else:
+            return 1
 
 
 class marker:

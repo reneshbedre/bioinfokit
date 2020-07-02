@@ -1,3 +1,8 @@
+v0.8.7  has the following updates and changes (June 27, 2020)
+- legend labels, position, and figname parameters added in volcano plot
+- utility to check the non-numeric values added for `ma`, `volcano` and `involcano`
+- plotlegend parameter added to `ma`
+
 v0.8.6  has the following updates and changes (June 27, 2020)
 - the parameter for log fold change threshold lines added in MA plot 
 - legend labels, position, and figname parameters added in MA plot

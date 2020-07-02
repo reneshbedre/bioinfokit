@@ -33,9 +33,11 @@ From Python package index,
 
 <b>Volcano plot</b>
 
+latest update v0.8.7
+
 `bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname,
-    xlm, ylm)`
+    xlm, ylm, plotlegend, legendpos, legendanchor, figname, legendlabels)`
 
 Parameters | Description
 ------------ | -------------
@@ -44,7 +46,7 @@ Parameters | Description
 `pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
 `lfc_thr` | Log or absolute fold change cutoff for up and downregulated genes [float][default:1.0]
 `pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [float][default:0.05]
-`color` | Tuple of two colors [tuple][default: ("green", "red")]
+`color` | Tuple of three colors [tuple or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
@@ -65,6 +67,12 @@ Parameters | Description
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 `xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
+`plotlegend` | plot legend on volcano plot  [True or False][default:False]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`figname` | name of figure [string ][default:"ma"]
+`legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
+
 
 Returns:
 
@@ -73,11 +81,11 @@ Volcano plot image in same directory (volcano.png)
 
 <b>MA plot</b>
 
-latest update v0.8.6
+latest update v0.8.7
 
 `bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
-    figname, legendlabels)`
+    figname, legendlabels, plotlegend)`
 
 Parameters | Description
 ------------ | -------------
@@ -86,7 +94,7 @@ Parameters | Description
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-`color` | Tuple of three colors [tuple][default: ("green", "grey", "red")]
+`color` | Tuple of three colors [tuple or list][default: ("green", "grey", "red")]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
@@ -103,6 +111,7 @@ Parameters | Description
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 `fclines`  | draw log fold change threshold lines as defines by `lfc`  [True or False][default:False]
 `fclinescolor`  | color of fclines  [string][default: '#2660a4']
+`plotlegend` | plot legend on MA plot  [True or False][default:False]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `figname` | name of figure [string ][default:"ma"]
@@ -116,8 +125,11 @@ MA plot image in same directory (ma.png)
 
 <b>Inverted Volcano plot</b>
 
+latest update v0.8.7
+
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
-    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, axtickfontname)`
+    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
+    axtickfontname, plotlegend, legendpos, legendanchor, figname, legendlabels)`
 
 Parameters | Description
 ------------ | -------------
@@ -126,7 +138,7 @@ Parameters | Description
 `pv` | Name of a column having P-values or adjusted P-values [default:p_values]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
 `pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [default:0.05]
-`color` | Tuple of two colors [tuple][default: ("green", "red")]
+`color` | Tuple of three colors [tuple or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
@@ -143,6 +155,12 @@ Parameters | Description
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`plotlegend` | plot legend on inverted volcano plot  [True or False][default:False]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`figname` | name of figure [string ][default:"involcano"]
+`legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
+
 
 
 Returns:
