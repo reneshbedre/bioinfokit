@@ -747,6 +747,9 @@ Returns:
 
 RPM or CPM normalized Pandas dataframe
 
+<a href="https://reneshbedre.github.io/blog/expression_units.html" target="_blank">Working Example</a>
+
+
 <!--
 <b>VCF annotation (assign genetic features and function to the markers
 in VCF file)</b>
