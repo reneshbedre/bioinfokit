@@ -1,3 +1,7 @@
+v0.8.9  has the following updates and changes (July 28, 2020)
+- gene expression raw count normalization class added as 'analys.norm'
+- CPM normalization function added
+
 v0.8.8  has the following updates and changes (July 02, 2020)
 - check for lfc_thr and pv_thr added
 

@@ -732,6 +732,21 @@ t-SNE 2D image (tsne_2d.png will be saved in same directory)
 
 <a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
 
+
+<b>RPM or CPM normalization</b>
+
+Normalize raw gene expression counts into Reads per million mapped reads (RPM) or Counts per million mapped reads (CPM)
+
+`bioinfokit.analys.norm.cpm(df)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression values (NA) will be dropped.
+
+Returns:
+
+RPM or CPM normalized Pandas dataframe
+
 <!--
 <b>VCF annotation (assign genetic features and function to the markers
 in VCF file)</b>

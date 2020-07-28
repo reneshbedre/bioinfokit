@@ -9,7 +9,7 @@ from random import sample
 from functools import reduce
 import sys
 from matplotlib.colors import ListedColormap
-import gc
+from adjustText import adjust_text
 
 
 def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,
@@ -573,9 +573,10 @@ class stat:
         plt.yticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname)
         general.get_figure(show, r, figtype, 'corr_mat')
 
-    def multi_bar(df="dataframe", dim=(5, 4), colbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300, show=False,
-                  axtickfontname="Arial", axtickfontsize=7, ar=90, figtype='png', figname='multi_bar', valphabar=1,
-                  legendpos='best'):
+    # for data with pre-calculated mean and SE
+    def multi_bar(df="dataframe", dim=(5, 4), colbar=None, colerrorbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300, show=False,
+                  axtickfontname="Arial", axtickfontsize=9, ar=90, figtype='png', figname='multi_bar', valphabar=1,
+                  legendpos='best', errorbar=False, yerrlw=None, yerrcw=None, plotlegend=False, hbsize=4, ylm=None):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -583,12 +584,55 @@ class stat:
         assert len(colbar) == len(colorbar), "number of color should be equivalent to number of column bars"
         if colbar is not None and isinstance(colbar, (tuple, list)):
             for i in range(len(colbar)):
-                ax.bar(x=xbar_temp, height=df[colbar[i]], width=bw, color=colorbar[i], alpha=valphabar, label=colbar[i])
-                xbar_temp = xbar_temp+bw
+                if errorbar:
+                    ax.bar(x=xbar_temp, height=df[colbar[i]], yerr=df[colerrorbar[i]], width=bw, color=colorbar[i],
+                           alpha=valphabar, capsize=hbsize, label=colbar[i], error_kw={'elinewidth': yerrlw,
+                                                                                       'capthick': yerrcw})
+                    xbar_temp = xbar_temp+bw
+                else:
+                    ax.bar(x=xbar_temp, height=df[colbar[i]], width=bw, color=colorbar[i], alpha=valphabar,
+                           label=colbar[i])
+                    xbar_temp = xbar_temp + bw
         ax.set_xticks(xbar+( (bw*(len(colbar)-1)) / (1+(len(colbar)-1)) ))
         ax.set_xticklabels(df[xbarcol], fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
-        plt.legend(loc=legendpos)
+        # ylm must be tuple of start, end, interval
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+        if plotlegend:
+            plt.legend(loc=legendpos)
         general.get_figure(show, r, figtype, figname)
+
+    # for data with replicates
+    def singlebar(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", hbsize=4, r=300, ar=0,
+                valphabar=1, errorbar=True, show=False, ylm=None, axtickfontsize=9, axtickfontname="Arial",
+                axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
+                axylabel=None, figtype='png'):
+        # set axis labels to None
+        _x = None
+        _y = None
+        xbar = np.arange(len(df.columns.to_numpy()))
+        color_list_bar = colorbar
+        plt.subplots(figsize=dim)
+        if errorbar:
+            plt.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar,
+                    capsize=hbsize, alpha=valphabar, error_kw={'elinewidth': yerrlw, 'capthick': yerrcw})
+        else:
+            plt.bar(x=xbar, height=df.describe().loc['mean'], width=bw, color=color_list_bar,
+                   capsize=hbsize, alpha=valphabar)
+
+        plt.xticks(xbar, df.columns.to_numpy(), fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        # ylm must be tuple of start, end, interval
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+        plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        general.get_figure(show, r, figtype, 'singlebar')
 
 
 class cluster:

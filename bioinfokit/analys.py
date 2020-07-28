@@ -909,7 +909,7 @@ class stat:
         # perform levene to check for equal variances
         w, pvalue = stats.levene(a_val, b_val)
         if pvalue < alpha:
-            print("Warning: the two group variance are not equal. Rerun the test with evar=False")
+            print("\nWarning: the two group variance are not equal. Rerun the test with evar=False")
 
         if evar is True:
             # pooled variance
@@ -1342,6 +1342,21 @@ class gff:
                         yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
         read_gff_file.close()
 
+
+class norm:
+    def __init__(self):
+        pass
+
+    def cpm(self, df="dataframe"):
+        df = df.dropna()
+        # check for non-numeric values
+        for i in df.columns:
+            assert general.check_for_nonnumeric(df[i]) == 0, \
+                'dataframe contains non-numeric values in {} column'.format(i)
+        self.lib_size = df.sum()
+        self.cpm_norm = (df * 1e6) / df.sum()
+
+
 class get_data:
     def __init__(self, data=None):
         if data=='mlr':
@@ -1374,6 +1389,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/pbmc_seurat_processes.csv")
         elif data=='ath_root':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/ath_root_sub_seurat_processes.csv")
+        elif data=='sc_exp':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/gexp/df_sc.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 
