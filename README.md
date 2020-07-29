@@ -787,6 +787,11 @@ VCF file with annotation (tsne_2d.png will be saved in same directory)
 <a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
 -->
 
+How to cite bioinfokit?
+- Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
+  Zenodo. http://doi.org/10.5281/zenodo.3965241 
+- Additionally check <a href='https://zenodo.org/record/3841708#.XyCfi-dOmUk' target='_blank'>Zenodo</a> to cite specific version of bioinfokit
+
 References:
 - Travis E. Oliphant. A guide to NumPy, USA: Trelgol Publishing, (2006).
 - John D. Hunter. Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering, 9, 90-95 (2007), DOI:10.1109/MCSE.2007.55 (publisher link)
