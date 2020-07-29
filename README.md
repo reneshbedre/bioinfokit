@@ -745,10 +745,27 @@ Parameters | Description
 
 Returns:
 
-RPM or CPM normalized Pandas dataframe
+RPM or CPM normalized Pandas dataframe as class attributes (cpm_norm)
 
-<a href="https://reneshbedre.github.io/blog/expression_units.html" target="_blank">Working Example</a>
+<a href="https://reneshbedre.github.io/blog/expression_units.html#rpm-or-cpm-reads-per-million-mapped-reads-or-counts-per-million-mapped-reads-" target="_blank">Working Example</a>
 
+<b>RPKM or FPKM normalization</b>
+
+Normalize raw gene expression counts into Reads per kilo base per million mapped reads (RPKM) or 
+Fragments per kilo base per million mapped reads (FPKM)
+
+`bioinfokit.analys.norm.rpkm(df, gl)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression or gene length values (NA) will be dropped.
+`gl` | Name of a column having gene length in bp [string][default: None]
+
+Returns:
+
+RPKM or FPKM normalized Pandas dataframe as class attributes (rpkm_norm)
+
+<a href="https://reneshbedre.github.io/blog/expression_units.html#rpkm-reads-per-kilo-base-per-million-mapped-reads" target="_blank">Working Example</a>
 
 <!--
 <b>VCF annotation (assign genetic features and function to the markers

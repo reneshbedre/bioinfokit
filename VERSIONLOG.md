@@ -1,3 +1,6 @@
+v0.9  has the following updates and changes (July 28, 2020)
+- RPKM normalization function added
+
 v0.8.9  has the following updates and changes (July 28, 2020)
 - gene expression raw count normalization class added as 'analys.norm'
 - CPM normalization function added

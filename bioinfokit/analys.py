@@ -1356,6 +1356,16 @@ class norm:
         self.lib_size = df.sum()
         self.cpm_norm = (df * 1e6) / df.sum()
 
+    def rpkm(self, df="dataframe", gl=None):
+        df = df.dropna()
+        assert gl is not None, "Provide column name for gene length in bp"
+        # check for non-numeric values
+        for i in df.columns:
+            assert general.check_for_nonnumeric(df[i]) == 0, \
+                'dataframe contains non-numeric values in {} column'.format(i)
+        self.rpkm_norm = (df.div(df[gl], axis=0) * 1e9) / df.sum()
+        self.rpkm_norm = self.rpkm_norm.drop([gl], axis=1)
+
 
 class get_data:
     def __init__(self, data=None):
