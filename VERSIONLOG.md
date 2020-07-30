@@ -1,3 +1,6 @@
+v0.9.1  has the following updates and changes (July 30, 2020)
+- TPM normalization function added
+
 v0.9  has the following updates and changes (July 28, 2020)
 - RPKM normalization function added
 

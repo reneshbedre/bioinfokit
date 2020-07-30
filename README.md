@@ -768,6 +768,35 @@ RPKM or FPKM normalized Pandas dataframe as class attributes (rpkm_norm)
 
 <a href="https://reneshbedre.github.io/blog/expression_units.html#rpkm-reads-per-kilo-base-per-million-mapped-reads" target="_blank">Working Example</a>
 
+
+<b>TPM normalization</b>
+
+Normalize raw gene expression counts into Transcript per million (TPM) 
+
+`bioinfokit.analys.norm.tpm(df, gl)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression or gene length values (NA) will be dropped.
+`gl` | Name of a column having gene length in bp [string][default: None]
+
+Returns:
+
+TPM normalized Pandas dataframe as class attributes (tpm_norm)
+
+<a href="https://reneshbedre.github.io/blog/expression_units.html#tpm-transcript-per-million" target="_blank">Working Example</a>
+
+
+
+
+
+
+
+
+
+
+
+
 <!--
 <b>VCF annotation (assign genetic features and function to the markers
 in VCF file)</b>

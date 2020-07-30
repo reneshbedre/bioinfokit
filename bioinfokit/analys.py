@@ -32,37 +32,13 @@ def seqcov(file="fastq_file", gs="genome_size"):
     cov = round(float(total_len / gs), 2)
     print("Sequence coverage for", file, "is", cov)
 
+
 def mergevcf(file="vcf_file_com_sep"):
     general.depr_mes("bioinfokit.analys.marker.mergevcf")
 
+
 def pca(table="p_df"):
-    d = pd.DataFrame(data=table)
-    d_cols = list(d.columns.values)
-    pca_out = PCA()
-    pca_out.fit(d)
-    prop_var = pca_out.explained_variance_ratio_
-    cum_prop_var = np.cumsum(prop_var)
-    rotation = pca_out.components_
-    num_pc = pca_out.n_features_
-    pc_list = list(range(1, num_pc+1))
-    pc_list = ["PC"+str(w) for w in pc_list]
-    pca_df_var = [prop_var, cum_prop_var]
-    pca_df_out = pd.DataFrame.from_dict(dict(zip(pc_list, zip(*pca_df_var))))
-    pca_df_rot_out = pd.DataFrame.from_dict(dict(zip(pc_list, rotation)))
-    pca_df_out.rename(index={0: "Proportion of Variance", 1: "Cumulative proportion"}, inplace=True)
-    print("Component summary\n")
-    print(pca_df_out)
-    print("\nLoadings\n")
-    pca_df_rot_out['sample'] = d_cols
-    pca_df_rot_out = pca_df_rot_out.set_index('sample')
-    del pca_df_rot_out.index.name
-    print(pca_df_rot_out)
-    pcascree = [pc_list, prop_var]
-    # screeplot
-    screeplot(obj=pcascree)
-    # for pcaplot; take PC1 and PC2 loadings
-    pcaplot(x=rotation[0], y=rotation[1], z=rotation[2], labels=d_cols, var1=round(prop_var[0]*100, 2), var2=round(prop_var[1]*100, 2),
-            var3=round(prop_var[2] * 100, 2))
+    print("This function is deprecated")
 
 
 def extract_seq(file="fasta_file", id="id_file"):
@@ -106,6 +82,7 @@ def extract_seq_nomatch(file="fasta_file", id="id_file"):
             out_file.write(">"+fasta_header+"\n"+seq+"\n")
     out_file.close()
     id_file.close()
+
 
 def fqreadcounter(file="fastq_file"):
     general.depr_mes("bioinfokit.analys.fastq.fqreadcounter")
@@ -1365,6 +1342,18 @@ class norm:
                 'dataframe contains non-numeric values in {} column'.format(i)
         self.rpkm_norm = (df.div(df[gl], axis=0) * 1e9) / df.sum()
         self.rpkm_norm = self.rpkm_norm.drop([gl], axis=1)
+
+    def tpm(self, df="dataframe", gl=None):
+        df = df.dropna()
+        assert gl is not None, "Provide column name for gene length in bp"
+        # check for non-numeric values
+        for i in df.columns:
+            assert general.check_for_nonnumeric(df[i]) == 0, \
+                'dataframe contains non-numeric values in {} column'.format(i)
+        # gene length must be in bp
+        self.a = df.div(df[gl], axis=0) * 1e3
+        self.tpm_norm = (self.a * 1e6) / self.a.sum()
+        self.tpm_norm = self.tpm_norm.drop([gl], axis=1)
 
 
 class get_data:
