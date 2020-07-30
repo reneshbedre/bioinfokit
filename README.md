@@ -1,5 +1,6 @@
 
 [![DOI](https://zenodo.org/badge/174428856.svg)](https://zenodo.org/badge/latestdoi/174428856)
+[![Downloads](https://pepy.tech/badge/bioinfokit/month)](https://pepy.tech/project/bioinfokit/month)
 
 
 The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
