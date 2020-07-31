@@ -1,3 +1,7 @@
+v0.9.2  has the following updates and changes (July 30, 2020)
+- The manhatten plot updated to add the lables in sorted order for numerical strings 
+- The manhatten plot updated to add figname option 
+
 v0.9.1  has the following updates and changes (July 30, 2020)
 - TPM normalization function added
 

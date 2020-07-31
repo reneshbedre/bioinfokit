@@ -405,22 +405,20 @@ class marker:
     def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
              gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False, figtype='png',
              axxlabel=None, axylabel=None, axlabelfontsize=9, axlabelfontname="Arial", axtickfontsize=9,
-             axtickfontname="Arial", ylm=None, gstyle=1):
+             axtickfontname="Arial", ylm=None, gstyle=1, figname='manhatten'):
 
         _x, _y = 'Chromosomes', r'$ -log_{10}(P)$'
         rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
                        '#6465a5', '#00743f', '#be9063', '#de8cf0', '#888c46', '#c0334d', '#270101', '#8d2f23',
                        '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
-                       '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
-        '''
-         rand_colors = ('#f67280', '#00a8cc', '#ffd082', '#fb8d62', '#6e5773', '#21bf73', '#d5c455', '#c9753d',
-                       '#ad62aa','#d77fa1', '#a0855b', '#ffd800', '#da2d2d', '#6f9a8d', '#a8ff3e', '#b2fcff',
-                       '#a0c334', '#b5525c', '#c06c84', '#3a3535', '#9b45e4', '#f6da63', '#9dab86', '#0c093c',
-                       '#f6f078', '#64c4ed', '#da4302', '#5edfff', '#08ffc8', '#ca3e47', '#f7ff56', '#6c5ce7')
-        '''
+                       '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7',
+                       '#a997df', '#513b56', '#590925', '#007fff', '#bf1363', '#f39237', '#0a3200', '#8c271e')
+
         # minus log10 of P-value
         df['tpval'] = -np.log10(df[pv])
-        df = df.sort_values(chr)
+        # df = df.sort_values(chr)
+        # if the column contains numeric strings
+        df = df.loc[pd.to_numeric(df[chr], errors='coerce').sort_values().index]
         # add indices
         df['ind'] = range(len(df))
         df_group = df.groupby(chr)
@@ -475,7 +473,7 @@ class marker:
             _y = axylabel
         ax.set_xlabel(_x, fontsize=axlabelfontsize, fontname=axlabelfontname)
         ax.set_ylabel(_y, fontsize=axlabelfontsize, fontname=axlabelfontname)
-        general.get_figure(show, r, figtype, 'manhatten')
+        general.get_figure(show, r, figtype, figname)
 
 
 class stat:

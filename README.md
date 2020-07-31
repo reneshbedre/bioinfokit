@@ -409,7 +409,7 @@ ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 <b>Manhatten plot</b>
 
 `bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
-    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle)`
+    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname)`
 
 Parameters | Description
 ------------ | -------------
@@ -434,8 +434,7 @@ Parameters | Description
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
 `gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
-
-
+`figname` | name of figure [string ][default:"manhatten"]
 
 Returns:
 
