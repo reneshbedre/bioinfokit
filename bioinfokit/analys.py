@@ -1,11 +1,13 @@
 from sklearn.decomposition import PCA
 import pandas as pd
 import re
+import os
 import numpy as np
 from bioinfokit.visuz import screeplot, pcaplot, general
 from itertools import groupby, chain, combinations
 import string
-import sys, csv
+import sys
+import csv
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from tabulate import tabulate
@@ -429,6 +431,10 @@ class marker:
             return _var_region, _transcript_name, _transcript_id, _transcript_strand
 
         vcf_iter = marker.vcfreader(file, id)
+        try:
+            os.remove(Path(file).stem+'_anot.vcf')
+        except OSError:
+            pass
         vcf_out_anot = open(Path(file).stem+'_anot.vcf', 'a')
         for_info_lines = 1
         transcript_id=None
@@ -443,7 +449,7 @@ class marker:
                 for_info_lines = 0
                 for l in info_lines:
                     vcf_out_anot.write(l+'\n')
-                headers.extend(['genomic region', 'transcript ID', 'transcript name'])
+                headers.extend(['genomic region', 'transcript ID', 'transcript name', 'strand'])
                 vcf_out_anot.write('\t'.join(x for x in headers) + '\n')
 
             var_region = None

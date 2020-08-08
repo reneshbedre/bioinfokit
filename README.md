@@ -785,22 +785,10 @@ TPM normalized Pandas dataframe as class attributes (tpm_norm)
 
 <a href="https://reneshbedre.github.io/blog/expression_units.html#tpm-transcript-per-million" target="_blank">Working Example</a>
 
-
-
-
-
-
-
-
-
-
-
-
-<!--
-<b>VCF annotation (assign genetic features and function to the markers
+<b>VCF annotation (assign genetic features and function to the variants
 in VCF file)</b>
 
-`bioinfokit.analys.marker.mergevcf(file, id, gff_file, anot_attr)`
+`bioinfokit.analys.marker.vcf_anot(file, id, gff_file, anot_attr)`
 
 Parameters | Description
 ------------ | -------------
@@ -811,10 +799,10 @@ Parameters | Description
 
 Returns:
 
-VCF file with annotation (tsne_2d.png will be saved in same directory)
+VCF file with annotation (annotated vcf file will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
--->
+<a href="https://reneshbedre.github.io/blog/vcfanot.html" target="_blank">Working Example</a>
+
 
 How to cite bioinfokit?
 - Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 

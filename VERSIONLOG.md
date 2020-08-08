@@ -1,3 +1,8 @@
+v0.9.3  has the following updates and changes (August 08, 2020)
+- The error messahe for volcano, inverted volcano, and MA plot updated
+  when there are no significant or non-significant genes (issue # 7)
+- The `vcf_anot` function output updated for strand information 
+
 v0.9.2  has the following updates and changes (July 30, 2020)
 - The manhatten plot updated to add the lables in sorted order for numerical strings 
 - The manhatten plot updated to add figname option 
