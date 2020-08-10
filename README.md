@@ -19,19 +19,48 @@ bioinfokit requires
 - SciPy 
 - matplotlib_venn
 
+bioinfokit can be installed using pip, easy_install and git.
+
+latest bioinfokit version: [![PyPI version](https://badge.fury.io/py/bioinfokit.svg)](https://badge.fury.io/py/bioinfokit)
+
+Install using <a href="https://pip.pypa.io/en/stable/installing/" target="_blank">pip</a> for Python 3 (easiest way)
+
+```python
+# install
+pip install bioinfokit
+
+# uninstall 
+pip uninstall bioinfokit
 ```
+
+Install using <a href="https://setuptools.readthedocs.io/en/latest/easy_install.html" target="_blank">easy_install</a> for Python 3 (easiest way)
+```python
+# install latest version
+easy_install bioinfokit
+
+# specific version
+easy_install bioinfokit==0.3
+
+# uninstall 
+pip uninstall bioinfokit
+```
+
+
+Install using <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">git</a>
+
+```python
+# download and install bioinfokit (Tested on Linux, Mac, Windows) 
 git clone https://github.com/reneshbedre/bioinfokit.git
 cd bioinfokit
 python setup.py install
 ```
 
-<!--
-From Python package index,
-
-`pip install -i https://test.pypi.org/simple/ bioinfokit `
-
-**<span style="color:#33a8ff">Functions:</span>**
--->
+### Check the version of bioinfokit
+```python
+>>> import bioinfokit
+>>> bioinfokit.__version__
+'0.4'
+```
 
 
 <b>Volcano plot</b>
