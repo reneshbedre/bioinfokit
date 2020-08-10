@@ -1,5 +1,6 @@
 
 [![DOI](https://zenodo.org/badge/174428856.svg)](https://zenodo.org/badge/latestdoi/174428856)
+[![PyPI version](https://badge.fury.io/py/bioinfokit.svg)](https://badge.fury.io/py/bioinfokit)
 [![Downloads](https://pepy.tech/badge/bioinfokit/month)](https://pepy.tech/project/bioinfokit/month)
 
 
