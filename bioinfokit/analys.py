@@ -278,10 +278,13 @@ class marker:
         pass
 
     def mergevcf(file="vcf_file_com_sep"):
+        print('mergevcf renamed to concatvcf')
+
+    def concatvcf(file="vcf_file_com_sep"):
         vcf_files = file.split(",")
-        merge_vcf = open("merge_vcf.vcf", "w+")
+        merge_vcf = open("concat_vcf.vcf", "w+")
         file_count = 0
-        print("merging vcf files...")
+        print("concatenating vcf files...")
         for f in vcf_files:
             if file_count == 0:
                 read_file = open(f, "rU")
@@ -432,10 +435,12 @@ class marker:
 
         vcf_iter = marker.vcfreader(file, id)
         try:
-            os.remove(Path(file).stem+'_anot.vcf')
+            # os.remove(Path(file).stem+'_anot.vcf')
+            os.remove(Path(file).stem + '_anot.txt')
         except OSError:
             pass
-        vcf_out_anot = open(Path(file).stem+'_anot.vcf', 'a')
+        # vcf_out_anot = open(Path(file).stem+'_anot.vcf', 'a')
+        vcf_out_anot = open(Path(file).stem + '_anot.txt', 'a')
         for_info_lines = 1
         transcript_id=None
         transcript_name=None
@@ -447,8 +452,8 @@ class marker:
             headers, info_lines, chr, var_pos = record[0], record[1], record[2][0], record[2][1]
             if for_info_lines == 1:
                 for_info_lines = 0
-                for l in info_lines:
-                    vcf_out_anot.write(l+'\n')
+                # for l in info_lines:
+                #    vcf_out_anot.write(l+'\n')
                 headers.extend(['genomic region', 'transcript ID', 'transcript name', 'strand'])
                 vcf_out_anot.write('\t'.join(x for x in headers) + '\n')
 
@@ -937,29 +942,58 @@ class stat:
         plt.ylabel(res)
         plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
 
-    def chisq(df='dataframe'):
+    def chisq(self, df='dataframe', p=None):
         # d = pd.read_csv(table, index_col=0)
         tabulate_list = []
-        chi_ps, p_ps, dof_ps, expctd_ps = stats.chi2_contingency(df.to_dict('split')['data'])
-        tabulate_list.append(["Pearson", dof_ps, chi_ps, p_ps])
-        chi_ll, p_ll, dof_ll, expctd_ll = stats.chi2_contingency(df.to_dict('split')['data'], lambda_="log-likelihood")
-        tabulate_list.append(["Log-likelihood", dof_ll, chi_ll, p_ll])
+        if all(i < 0 for i in df.values.flatten()):
+            raise ValueError("The observation counts for each group must be non-negative number")
+        if p is None:
+            assert df.shape[1] == 2, 'dataframe must 2-dimensional contingency table of observed counts'
+            chi_ps, p_ps, dof_ps, expctd_ps = stats.chi2_contingency(df.to_dict('split')['data'])
+            tabulate_list.append(["Pearson", dof_ps, chi_ps, p_ps])
+            chi_ll, p_ll, dof_ll, expctd_ll = stats.chi2_contingency(df.to_dict('split')['data'], lambda_="log-likelihood")
+            tabulate_list.append(["Log-likelihood", dof_ll, chi_ll, p_ll])
 
-        mosaic_dict = dict()
-        m = df.to_dict('split')
+            mosaic_dict = dict()
+            m = df.to_dict('split')
 
-        for i in range(df.shape[0]):
-            for j in range(df.shape[1]):
-                mosaic_dict[(m['index'][i], m['columns'][j])] = m['data'][i][j]
+            for i in range(df.shape[0]):
+                for j in range(df.shape[1]):
+                    mosaic_dict[(m['index'][i], m['columns'][j])] = m['data'][i][j]
 
-        print("\nChi-squared test\n")
-        print(tabulate(tabulate_list, headers=["Test", "Df", "Chi-square", "P-value"]))
-        print("\nExpected frequency counts\n")
-        print(tabulate(expctd_ps, headers=df.to_dict('split')['columns'], showindex="always"))
+            # print("\nChi-squared test\n")
+            # print(tabulate(tabulate_list, headers=["Test", "Df", "Chi-square", "P-value"]))
+            self.summary = '\nChi-squared test for independence\n' + '\n' + \
+                           tabulate(tabulate_list, headers=["Test", "Df", "Chi-square", "P-value"]) + '\n'
 
-        labels = lambda k: "" if mosaic_dict[k] != 0 else ""
-        mosaic(mosaic_dict, labelizer=labels)
-        plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
+            # print("\nExpected frequency counts\n")
+            # print(tabulate(expctd_ps, headers=df.to_dict('split')['columns'], showindex="always"))
+            self.expected_df = '\nExpected frequency counts\n' + '\n' + \
+                               tabulate(expctd_ps, headers=df.to_dict('split')['columns'], showindex="always") + '\n'
+
+            # labels = lambda k: "" if mosaic_dict[k] != 0 else ""
+            # mosaic(mosaic_dict, labelizer=labels)
+            # plt.savefig('mosaic.png', format='png', bbox_inches='tight', dpi=300)
+
+        # goodness of fit test
+        if p:
+            df = df.drop(['expected_counts'], axis=1, errors='ignore')
+            assert df.shape[1] == 1, 'dataframe must one-dimensional contingency table of observed counts'
+            assert len(p) == df.shape[0], 'probability values should be equal to observations'
+            assert isinstance(p, (tuple, list)) and sum(p) == 1, 'probabilities must be list or tuple and sum to 1'
+            df['expected_counts'] = [df.sum()[0] * i for i in p]
+            if (df['expected_counts'] < 5).any():
+                print('Warning: Chi-squared may not be valid as some of expected counts are < 5')
+            if all(i < 0 for i in p):
+                raise ValueError("The probabilities for each group must be non-negative number")
+            dof = df.shape[0] - 1
+            chi_gf, p_gf = stats.chisquare(f_obs=df[df.columns[0]].to_numpy(), f_exp=df[df.columns[1]].to_numpy())
+            tabulate_list.append([chi_gf, dof, p_gf, df[df.columns[0]].sum()])
+            # print('\nChi-squared goodness of fit test\n')
+            # print(tabulate(tabulate_list, headers=["Chi-Square", "Df", "P-value", "Sample size"]), '\n')
+            self.summary = '\nChi-squared goodness of fit test\n' + '\n' + \
+                           tabulate(tabulate_list, headers=["Chi-Square", "Df", "P-value", "Sample size"]) + '\n'
+            self.expected_df = df
 
 
 class gff:
@@ -1396,6 +1430,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/tsne/ath_root_sub_seurat_processes.csv")
         elif data=='sc_exp':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/gexp/df_sc.csv")
+        elif data=='drugdata':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/chisq/drugdata.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 

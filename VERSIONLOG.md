@@ -1,5 +1,12 @@
+v0.9.4  has the following updates and changes (August 12, 2020)
+- chi-squared goodness of fit test added under the `stat.chisq`
+- chi-squared independence test updated for output as class attributes and mosaic plot removed
+- `mergevcf` renamed to `concatvcf` to keep with conventional naming (issue # 9)
+- programmatic access to chi-squared independence test dataset added
+- `marker.vcf_anot` function updated for tab-delimited text output
+
 v0.9.3  has the following updates and changes (August 08, 2020)
-- The error messahe for volcano, inverted volcano, and MA plot updated
+- The error message for volcano, inverted volcano, and MA plot updated
   when there are no significant or non-significant genes (issue # 7)
 - The `vcf_anot` function output updated for strand information 
 
