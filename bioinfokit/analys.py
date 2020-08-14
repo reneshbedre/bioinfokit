@@ -948,7 +948,7 @@ class stat:
         if all(i < 0 for i in df.values.flatten()):
             raise ValueError("The observation counts for each group must be non-negative number")
         if p is None:
-            assert df.shape[1] == 2, 'dataframe must 2-dimensional contingency table of observed counts'
+            # assert df.shape[1] == 2, 'dataframe must 2-dimensional contingency table of observed counts'
             chi_ps, p_ps, dof_ps, expctd_ps = stats.chi2_contingency(df.to_dict('split')['data'])
             tabulate_list.append(["Pearson", dof_ps, chi_ps, p_ps])
             chi_ll, p_ll, dof_ll, expctd_ll = stats.chi2_contingency(df.to_dict('split')['data'], lambda_="log-likelihood")
@@ -980,7 +980,8 @@ class stat:
             df = df.drop(['expected_counts'], axis=1, errors='ignore')
             assert df.shape[1] == 1, 'dataframe must one-dimensional contingency table of observed counts'
             assert len(p) == df.shape[0], 'probability values should be equal to observations'
-            assert isinstance(p, (tuple, list)) and sum(p) == 1, 'probabilities must be list or tuple and sum to 1'
+            assert isinstance(p, (tuple, list)) and round(sum(p), 10) == 1, 'probabilities must be list or tuple and ' \
+                                                                            'sum to 1'
             df['expected_counts'] = [df.sum()[0] * i for i in p]
             if (df['expected_counts'] < 5).any():
                 print('Warning: Chi-squared may not be valid as some of expected counts are < 5')

@@ -29,6 +29,9 @@ Install using <a href="https://pip.pypa.io/en/stable/installing/" target="_blank
 # install
 pip install bioinfokit
 
+# upgrade to latest version
+pip install bioinfokit --upgrade
+
 # uninstall 
 pip uninstall bioinfokit
 ```
@@ -227,7 +230,7 @@ Correlation matrix plot image in same directory (corr_mat.png)
 
 <b>Concatenate VCF files</b>
 
-Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosomes)
+Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosome)
 
 `bioinfokit.analys.marker.concatvcf(file)`
 

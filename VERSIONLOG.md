@@ -1,3 +1,6 @@
+v0.9.5  has the following updates and changes (August 12, 2020)
+- In chi-squared test, the sum of probabilities is rounded to 10 for exact sum in case of floats
+
 v0.9.4  has the following updates and changes (August 12, 2020)
 - chi-squared goodness of fit test added under the `stat.chisq`
 - chi-squared independence test updated for output as class attributes and mosaic plot removed
