@@ -72,7 +72,7 @@ latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname,
-    xlm, ylm, plotlegend, legendpos, legendanchor, figname, legendlabels)`
+    xlm, ylm, plotlegend, legendpos, legendanchor, figname, legendlabels, ar)`
 
 Parameters | Description
 ------------ | -------------
@@ -107,6 +107,8 @@ Parameters | Description
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `figname` | name of figure [string ][default:"ma"]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
+`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
+
 
 
 Returns:
@@ -120,7 +122,7 @@ latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
-    figname, legendlabels, plotlegend)`
+    figname, legendlabels, plotlegend, ar)`
 
 Parameters | Description
 ------------ | -------------
@@ -151,6 +153,8 @@ Parameters | Description
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `figname` | name of figure [string ][default:"ma"]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
+`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
+
 
 
 Returns:
@@ -163,8 +167,8 @@ MA plot image in same directory (ma.png)
 latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
-    dotsize, markerdot, r, dim, show, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
-    axtickfontname, plotlegend, legendpos, legendanchor, figname, legendlabels)`
+    dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
+    axtickfontname, plotlegend, legendpos, legendanchor, figname, legendlabels, ar)`
 
 Parameters | Description
 ------------ | -------------
@@ -195,7 +199,7 @@ Parameters | Description
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `figname` | name of figure [string ][default:"involcano"]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
-
+`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
 
 
 Returns:
