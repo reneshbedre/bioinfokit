@@ -859,88 +859,136 @@ class stat:
         print(vif)
         '''
 
-    def ttsam(df='dataframe', xfac=None, res=None, evar=True, alpha=0.05):
+    def ttest(self, df='dataframe', xfac=None, res=None, evar=True, alpha=0.05, test_type=None, mu=None):
         # drop NaN
         df = df.dropna()
-        if xfac and res is None:
-            raise Exception("xfac or res variable is missing")
-        levels = df[xfac].unique()
-        levels.sort()
-        if len(levels) != 2:
-            raise Exception("there must be only two levels")
-        a_val = df.loc[df[xfac] == levels[0], res].to_numpy()
-        b_val = df.loc[df[xfac] == levels[1], res].to_numpy()
-        a_count, b_count = len(a_val), len(b_val)
-        count = [a_count, b_count]
-        mean = [df.loc[df[xfac] == levels[0], res].mean(), df.loc[df[xfac] == levels[1], res].mean()]
-        sem = [df.loc[df[xfac] == levels[0], res].sem(), df.loc[df[xfac] == levels[1], res].sem()]
-        sd = [df.loc[df[xfac] == levels[0], res].std(), df.loc[df[xfac] == levels[1], res].std()]
-        ci = (1-alpha)*100
-        # degree of freedom
-        # a_count, b_count = np.split(count, 2)
-        dfa = a_count - 1
-        dfb = b_count - 1
-        # sample variance
-        with np.errstate(invalid='ignore'):
-            var_a = np.nan_to_num(np.var(a_val, ddof=1))
-            var_b = np.nan_to_num(np.var(b_val, ddof=1))
-        mean_diff = mean[0] - mean[1]
-        # variable 95% CI
-        varci_low = []
-        varci_up = []
-        tcritvar = [(stats.t.ppf((1 + (1-alpha)) / 2, dfa)), (stats.t.ppf((1 + (1-alpha)) / 2, dfb))]
-        for i in range(len(levels)):
-            varci_low.append(mean[i] - (tcritvar[i] * sem[i]))
-            varci_up.append(mean[i] + (tcritvar[i] * sem[i]))
+        if df.shape[0] < 2:
+            raise Exception("Very few observations to run t-test")
+        if alpha < 0 or alpha > 1:
+            raise Exception("alpha value must be in between 0 and 1")
+        if test_type == 1:
+            if res and mu is None:
+                raise ValueError("res or mu parameter value is missing")
+            if res not in df.columns:
+                raise ValueError("res column is not in dataframe")
+            a_val = df[res].to_numpy()
+            res_out = stats.ttest_1samp(a=a_val, popmean=mu, nan_policy='omit')
+            sem = df[res].sem()
+            if sem == 0:
+                print("\nWarning: the data is constant\n")
+            ci = (1 - alpha) * 100
+            tcritvar = stats.t.ppf((1 + (1 - alpha)) / 2, len(a_val)-1)
+            # print results
+            self.summary = "\nOne Sample t-test \n" + "\n" + \
+                           tabulate([["Sample size", len(a_val)], ["Mean", df[res].mean()], ["t", res_out[0]],
+                                     ["Df", len(a_val)-1], ["P-value (one-tail)", res_out[1]/2],
+                                     ["P-value (two-tail)", res_out[1]],
+                                     ["Lower " + str(ci) + "%", df[res].mean() - (tcritvar * sem)],
+                                     ["Upper " + str(ci) + "%", df[res].mean() + (tcritvar * sem)]])
+        elif test_type == 2:
+            if xfac and res is None:
+                raise Exception("xfac or res variable is missing")
+            if res not in df.columns or xfac not in df.columns:
+                raise ValueError("res or xfac column is not in dataframe")
+            levels = df[xfac].unique()
+            levels.sort()
+            if len(levels) != 2:
+                raise Exception("there must be only two levels")
+            a_val = df.loc[df[xfac] == levels[0], res].to_numpy()
+            b_val = df.loc[df[xfac] == levels[1], res].to_numpy()
+            a_count, b_count = len(a_val), len(b_val)
+            count = [a_count, b_count]
+            mean = [df.loc[df[xfac] == levels[0], res].mean(), df.loc[df[xfac] == levels[1], res].mean()]
+            sem = [df.loc[df[xfac] == levels[0], res].sem(), df.loc[df[xfac] == levels[1], res].sem()]
+            sd = [df.loc[df[xfac] == levels[0], res].std(), df.loc[df[xfac] == levels[1], res].std()]
+            ci = (1-alpha)*100
+            # degree of freedom
+            # a_count, b_count = np.split(count, 2)
+            dfa = a_count - 1
+            dfb = b_count - 1
+            # sample variance
+            with np.errstate(invalid='ignore'):
+                var_a = np.nan_to_num(np.var(a_val, ddof=1))
+                var_b = np.nan_to_num(np.var(b_val, ddof=1))
+            mean_diff = mean[0] - mean[1]
+            # variable 95% CI
+            varci_low = []
+            varci_up = []
+            tcritvar = [(stats.t.ppf((1 + (1-alpha)) / 2, dfa)), (stats.t.ppf((1 + (1-alpha)) / 2, dfb))]
+            for i in range(len(levels)):
+                varci_low.append(mean[i] - (tcritvar[i] * sem[i]))
+                varci_up.append(mean[i] + (tcritvar[i] * sem[i]))
 
-        var_test = 'equal'
-        # perform levene to check for equal variances
-        w, pvalue = stats.levene(a_val, b_val)
-        if pvalue < alpha:
-            print("\nWarning: the two group variance are not equal. Rerun the test with evar=False")
+            var_test = 'equal'
+            # perform levene to check for equal variances
+            w, pvalue = stats.levene(a_val, b_val)
+            if pvalue < alpha:
+                print("\nWarning: the two group variance are not equal. Rerun the test with evar=False\n")
 
-        if evar is True:
-            # pooled variance
-            p_var = (dfa * var_a + dfb * var_b) / (dfa + dfb)
-            # std error
-            se = np.sqrt(p_var * (1.0 / a_count + 1.0 / b_count))
-            dfr = dfa + dfb
+            if evar is True:
+                # pooled variance
+                message = 'Two sample t-test with equal variance'
+                p_var = (dfa * var_a + dfb * var_b) / (dfa + dfb)
+                # std error
+                se = np.sqrt(p_var * (1.0 / a_count + 1.0 / b_count))
+                dfr = dfa + dfb
+            else:
+                # Welch's t-test for unequal variance
+                # calculate se
+                message = 'Two sample t-test with unequal variance (Welch\'s t-test)'
+                if a_count == 1 or b_count == 1:
+                    raise Exception('Not enough observation for either levels. The observations should be > 1 for both levels')
+                a_temp = var_a / a_count
+                b_temp = var_b / b_count
+                dfr = ((a_temp + b_temp) ** 2) / ((a_temp ** 2) / (a_count - 1) + (b_temp ** 2) / (b_count - 1))
+                se = np.sqrt(a_temp + b_temp)
+                var_test = 'unequal'
+
+            tval = np.divide(mean_diff, se)
+            oneside_pval = stats.t.sf(np.abs(tval), dfr)
+            twoside_pval = oneside_pval * 2
+            # 95% CI for diff
+            # 2.306 t critical at 0.05
+            tcritdiff = stats.t.ppf((1 + (1-alpha)) / 2, dfr)
+            diffci_low = mean_diff - (tcritdiff * se)
+            diffci_up = mean_diff + (tcritdiff * se)
+
+            # print results
+            self.summary = '\n' + message + '\n\n' + tabulate([["Mean diff", mean_diff], ["t", tval], ["Std Error", se], ["df", dfr],
+                                     ["P-value (one-tail)", oneside_pval], ["P-value (two-tail)", twoside_pval],
+                                     ["Lower "+str(ci)+"%", diffci_low], ["Upper "+str(ci)+"%", diffci_up]]) + '\n\n' + \
+                'Parameter estimates\n\n' + tabulate([[levels[0], count[0], mean[0], sd[0], sem[0], varci_low[0],
+                                      varci_up[0]], [levels[1], count[1], mean[1], sd[1], sem[1],
+                                                     varci_low[1], varci_up[1]]],
+                                    headers=["Level", "Number", "Mean", "Std Dev", "Std Error",
+                                             "Lower "+str(ci)+"%", "Upper "+str(ci)+"%"]) + '\n'
+            '''
+            fig = plt.figure()
+            df.boxplot(column=res, by=xfac, grid=False)
+            plt.ylabel(res)
+            plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
+            '''
+        elif test_type == 3:
+            if not isinstance(res, (tuple, list)) and len(res) != 2:
+                raise Exception("res should be either list of tuple of length 2")
+            if sorted(res) != sorted(df.columns):
+                raise ValueError("one or all of res columns are not in dataframe")
+            df = df.drop(['diff_betw_res'], axis=1, errors='ignore')
+            df['diff_betw_res'] = df[res[0]]-df[res[1]]
+            a_val = df['diff_betw_res'].to_numpy()
+            res_out = stats.ttest_1samp(a=a_val, popmean=0, nan_policy='omit')
+            sem = df['diff_betw_res'].sem()
+            ci = (1 - alpha) * 100
+            tcritvar = stats.t.ppf((1 + (1 - alpha)) / 2, len(a_val)-1)
+            # print results
+            self.summary = "\nPaired t-test \n" + "\n" + \
+                           tabulate([["Sample size", len(a_val)], ["Difference Mean", df['diff_betw_res'].mean()], ["t", res_out[0]],
+                                     ["Df", len(a_val)-1], ["P-value (one-tail)", res_out[1]/2],
+                                     ["P-value (two-tail)", res_out[1]],
+                                     ["Lower " + str(ci) + "%", df['diff_betw_res'].mean() - (tcritvar * sem)],
+                                     ["Upper " + str(ci) + "%", df['diff_betw_res'].mean() + (tcritvar * sem)]])
         else:
-            # Welch's t-test for unequal variance
-            # calculate se
-            if a_count == 1 or b_count == 1:
-                raise Exception('Not enough observation for either levels. The observations should be > 1 for both levels')
-            a_temp = var_a / a_count
-            b_temp = var_b / b_count
-            dfr = ((a_temp + b_temp) ** 2) / ((a_temp ** 2) / (a_count - 1) + (b_temp ** 2) / (b_count - 1))
-            se = np.sqrt(a_temp + b_temp)
-            var_test = 'unequal'
-
-        tval = np.divide(mean_diff, se)
-        oneside_pval = stats.t.sf(np.abs(tval), dfr)
-        twoside_pval = oneside_pval * 2
-        # 95% CI for diff
-        # 2.306 t critical at 0.05
-        tcritdiff = stats.t.ppf((1 + (1-alpha)) / 2, dfr)
-        diffci_low = mean_diff - (tcritdiff * se)
-        diffci_up = mean_diff + (tcritdiff * se)
-
-        # print results
-        print("\nTwo sample", levels, "t-test with", var_test, "variance", "\n")
-        print(tabulate([["Mean diff", mean_diff], ["t", tval], ["Std Error", se], ["df", dfr],
-                        ["P-value (one-tail)", oneside_pval], ["P-value (two-tail)", twoside_pval],
-                        ["Lower "+str(ci)+"%", diffci_low], ["Upper "+str(ci)+"%", diffci_up]]), "\n")
-        print("Parameter estimates\n")
-        print(tabulate([[levels[0], count[0], mean[0], sd[0], sem[0], varci_low[0], varci_up[0]], [levels[1], count[1],
-                                                                                             mean[1], sd[1], sem[1],
-                                                                                             varci_low[1], varci_up[1]]],
-                       headers=["Level", "Number", "Mean", "Std Dev", "Std Error",
-                                "Lower "+str(ci)+"%", "Upper "+str(ci)+"%"]), "\n")
-
-        fig = plt.figure()
-        df.boxplot(column=res, by=xfac, grid=False)
-        plt.ylabel(res)
-        plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
+            raise ValueError("Provide a value to test_type parameter for appropriate t-test")
 
     def chisq(self, df='dataframe', p=None):
         # d = pd.read_csv(table, index_col=0)
@@ -1417,7 +1465,7 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/corr/corr_dataset.csv")
         elif data=='slr':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/reg/test_reg_uni.csv")
-        elif data=='ttest':
+        elif data=='t_ind_samp':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/genotype.csv")
         elif data=='gexp':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/pca/cot_pca.csv")
@@ -1433,6 +1481,10 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/gexp/df_sc.csv")
         elif data=='drugdata':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/chisq/drugdata.csv")
+        elif data=='t_one_samp':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/t_one_samp.csv")
+        elif data=='t_pair':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/t_pair.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 

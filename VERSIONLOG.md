@@ -1,3 +1,11 @@
+v0.9.6  has the following updates and changes (August 22, 2020)
+- In t-test, the one sample t and paired t-test added
+- Two sample t-test switched to class based method
+- t-test function name changed to `ttest` from `ttsam`
+- programmatic access to chi-squared independence test dataset added
+- boxplot removed from t-test
+- 'adjustText' module added in `setup.py` (issue #12)
+
 v0.9.5  has the following updates and changes (August 14, 2020)
 - In chi-squared test, the sum of probabilities is rounded to 10 for exact sum in case of floats
 

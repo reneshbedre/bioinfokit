@@ -70,13 +70,13 @@ python setup.py install
 
 latest update v0.8.8
 
-`bioinfokit.visuz.gene_exp.volcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle, sign_line,
-    dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, axtickfontsize, axtickfontname,
-    xlm, ylm, plotlegend, legendpos, legendanchor, figname, legendlabels, ar)`
+`bioinfokit.visuz.gene_exp.volcano(df, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, dim, r, ar, 
+    dotsize, markerdot, sign_line, gstyle, show, figtype, axtickfontsize, axtickfontname, axlabelfontsize, 
+    axlabelfontname, axxlabel, axylabel, xlm, ylm, plotlegend, legendpos, figname, legendanchor, legendlabels)`
 
 Parameters | Description
 ------------ | -------------
-`table` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
+`df` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
 `lfc` | Name of a column having log or absolute fold change values [string][default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
 `lfc_thr` | Log or absolute fold change cutoff for up and downregulated genes [float][default:1.0]
@@ -86,29 +86,28 @@ Parameters | Description
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
 `genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]. gfont not compatible with gstyle=2.
-`gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
-`sign_line` | Show grid lines on plot with defined log fold change (`lfc_thr`) and P-value (`pv_thr`) threshold value [True or False][default:False]
-`dotsize`| The size of the dots in the plot [float][default: 8]
-`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`sign_line` | Show grid lines on plot with defined log fold change (`lfc_thr`) and P-value (`pv_thr`) threshold value [True or False][default:False]
+`gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
-`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 `plotlegend` | plot legend on volcano plot  [True or False][default:False]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `figname` | name of figure [string ][default:"ma"]
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
-`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
-
 
 
 Returns:
@@ -373,23 +372,26 @@ Venn plot (venn3.png, venn2.png)
 
 <a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
-<b>Two sample and Welch's t-test </b>
 
-`bioinfokit.analys.stat.ttsam(table, xfac, res, evar, alpha)`
+<b> t-test (one sample and Two sample (independent and paired t-tests)  </b>
+
+`bioinfokit.analys.stat.ttest(df, xfac, res, evar, alpha, test_type, mu)`
 
 Parameters | Description
 ------------ | -------------
-`table` | Pandas dataframe. It should be stacked table with independent (xfac) and dependent (res) variable columns.
+`df` | Pandas dataframe for appropriate t-test. <br> <b>One sample</b>: It should have atleast dependent (res) variable <br> <b>Two sample independent</b>: It should have independent (xfac) and dependent (res) variables <br> <b>Two sample paired</b>: It should have two dependent (res) variables
 `xfac` | Independent group column name with two levels [string][default: None]
-`res` | Response variable column name [string][default: None]
+`res` | Response variable column name [string or list or tuple][default: None]
 `evar` | t-test with equal variance [bool (True or False)][default: True]
 `alpha` | Confidence level [float][default: 0.05]
+`test_type` | Type of t-test [int (1,2,3)][default: None]. <br> <strong><em>1</em></strong>: One sample t-test <br> <strong><em>2</em></strong>: Two sample independent t-test <br> <strong><em>3</em></strong>: Two sample paired t-test
+`mu` | Population or known mean for the one sample t-test [float][default: None]
 
 Returns:
 
-summary output and group boxplot (ttsam_boxplot.png)
+Summary output as class attribute (summary) 
 
-<a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Working example</a>
+<a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Description and Working example</a>
 
 
 <b>Chi-square test</b>
