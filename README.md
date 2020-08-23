@@ -383,7 +383,7 @@ Parameters | Description
 `xfac` | Independent group column name with two levels [string][default: None]
 `res` | Response variable column name [string or list or tuple][default: None]
 `evar` | t-test with equal variance [bool (True or False)][default: True]
-`alpha` | Confidence level [float][default: 0.05]
+`alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
 `test_type` | Type of t-test [int (1,2,3)][default: None]. <br> <strong><em>1</em></strong>: One sample t-test <br> <strong><em>2</em></strong>: Two sample independent t-test <br> <strong><em>3</em></strong>: Two sample paired t-test
 `mu` | Population or known mean for the one sample t-test [float][default: None]
 
