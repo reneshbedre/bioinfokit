@@ -373,7 +373,7 @@ Venn plot (venn3.png, venn2.png)
 <a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
 
-<b> t-test (one sample and Two sample (independent and paired t-tests)  </b>
+<b> One sample and two sample (independent and paired) t-tests   </b>
 
 `bioinfokit.analys.stat.ttest(df, xfac, res, evar, alpha, test_type, mu)`
 
