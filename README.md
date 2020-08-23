@@ -381,7 +381,7 @@ Parameters | Description
 ------------ | -------------
 `df` | Pandas dataframe for appropriate t-test. <br> <b>One sample</b>: It should have atleast dependent (res) variable <br> <b>Two sample independent</b>: It should have independent (xfac) and dependent (res) variables <br> <b>Two sample paired</b>: It should have two dependent (res) variables
 `xfac` | Independent group column name with two levels [string][default: None]
-`res` | Response variable column name [string or list or tuple][default: None]
+`res` | Dependent variable column name [string or list or tuple][default: None]
 `evar` | t-test with equal variance [bool (True or False)][default: True]
 `alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
 `test_type` | Type of t-test [int (1,2,3)][default: None]. <br> <strong><em>1</em></strong>: One sample t-test <br> <strong><em>2</em></strong>: Two sample independent t-test <br> <strong><em>3</em></strong>: Two sample paired t-test
