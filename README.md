@@ -848,6 +848,19 @@ Tab-delimited text file with annotation (annotated text file will be saved in sa
 
 <a href="https://reneshbedre.github.io/blog/vcfanot.html" target="_blank">Working Example</a>
 
+<b>Bioinformatics file readers and processing (FASTA, FASTQ, and VCF)</b>
+
+Function | Parameters | Description
+------------|---------- | -------------
+`bioinfokit.analys.fasta.fasta_reader(file)` | `FASTA file` | FASTA file reader
+`bioinfokit.analys.fastq.fastq_reader(file)` | `FASTQ file` | FASTQ file reader
+`bioinfokit.analys.marker.vcfreader(file)` | `VCF file` | VCF file reader
+
+Returns:
+
+File generator object (can be iterated only once) that can be parsed for the record
+
+<a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
 
 How to cite bioinfokit?
 - Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
