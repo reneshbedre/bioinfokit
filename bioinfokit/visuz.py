@@ -403,7 +403,7 @@ class marker:
         else:
             raise Exception("provide 'markeridcol' parameter")
 
-    def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
+    def mhat(df="dataframe", chr=None, pv=None, color=None, ax=None,dim=(6,4),dpi=72, r=300, ar=90, gwas_sign_line=False,
              gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False, figtype='png',
              axxlabel=None, axylabel=None, axlabelfontsize=9, axlabelfontname="Arial", axtickfontsize=9,
              axtickfontname="Arial", ylm=None, gstyle=1, figname='manhatten'):
@@ -442,7 +442,8 @@ class marker:
 
         xlabels = []
         xticks = []
-        fig, ax = plt.subplots(figsize=dim)
+        if ax is None:
+            fig, ax = plt.subplots(figsize=dim,dpi=dpi)
         i = 0
         for label, df1 in df.groupby(chr):
             df1.plot(kind='scatter', x='ind', y='tpval', color=color_list[i], s=dotsize, alpha=valpha, ax=ax)
@@ -475,6 +476,7 @@ class marker:
         ax.set_xlabel(_x, fontsize=axlabelfontsize, fontname=axlabelfontname)
         ax.set_ylabel(_y, fontsize=axlabelfontsize, fontname=axlabelfontname)
         general.get_figure(show, r, figtype, figname)
+        return ax
 
 
 class stat:
