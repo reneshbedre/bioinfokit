@@ -48,6 +48,11 @@ easy_install bioinfokit==0.3
 pip uninstall bioinfokit
 ```
 
+Install using <a href="https://docs.conda.io/en/latest/" target="_blank">conda</a> 
+
+```python
+conda install -c bioconda bioinfokit
+```
 
 Install using <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">git</a>
 
