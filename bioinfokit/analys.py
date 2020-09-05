@@ -1413,7 +1413,7 @@ class norm:
     def __init__(self):
         pass
 
-    def cpm(self, df="dataframe"):
+    def cpm(self, df='dataframe'):
         df = df.dropna()
         # check for non-numeric values
         for i in df.columns:
@@ -1422,7 +1422,7 @@ class norm:
         self.lib_size = df.sum()
         self.cpm_norm = (df * 1e6) / df.sum()
 
-    def rpkm(self, df="dataframe", gl=None):
+    def rpkm(self, df='dataframe', gl=None):
         df = df.dropna()
         assert gl is not None, "Provide column name for gene length in bp"
         # check for non-numeric values
@@ -1432,7 +1432,7 @@ class norm:
         self.rpkm_norm = (df.div(df[gl], axis=0) * 1e9) / df.sum()
         self.rpkm_norm = self.rpkm_norm.drop([gl], axis=1)
 
-    def tpm(self, df="dataframe", gl=None):
+    def tpm(self, df='dataframe', gl=None):
         df = df.dropna()
         assert gl is not None, "Provide column name for gene length in bp"
         # check for non-numeric values
@@ -1443,6 +1443,19 @@ class norm:
         self.a = df.div(df[gl], axis=0) * 1e3
         self.tpm_norm = (self.a * 1e6) / self.a.sum()
         self.tpm_norm = self.tpm_norm.drop([gl], axis=1)
+
+
+class assembly:
+    def sizdist(self, file='fasta', n=50):
+        fasta_iter = fasta.fasta_reader(file)
+        seq_len = []
+        total_len_sum = 0
+        for record in fasta_iter:
+            header, sequence = record
+            seq_len.append(len(sequence))
+            total_len_sum += len(sequence)
+        seq_len.sort(reverse=True)
+
 
 
 class get_data:
