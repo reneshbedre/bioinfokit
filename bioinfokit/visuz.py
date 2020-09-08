@@ -575,7 +575,8 @@ class stat:
     # for data with pre-calculated mean and SE
     def multi_bar(df="dataframe", dim=(5, 4), colbar=None, colerrorbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300, show=False,
                   axtickfontname="Arial", axtickfontsize=9, ar=90, figtype='png', figname='multi_bar', valphabar=1,
-                  legendpos='best', errorbar=False, yerrlw=None, yerrcw=None, plotlegend=False, hbsize=4, ylm=None):
+                  legendpos='best', errorbar=False, yerrlw=None, yerrcw=None, plotlegend=False, hbsize=4, ylm=None,
+                  add_sign_line=False):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -600,6 +601,21 @@ class stat:
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         if plotlegend:
             plt.legend(loc=legendpos)
+
+        if add_sign_line:
+            props = {'connectionstyle': 'bar', 'arrowstyle': '-', 'shrinkA': 20, 'shrinkB': 20, 'linewidth': 2}
+            if len(colbar) >= 2:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + 0.5
+                    x_pos_2 = xbar[i]+bw
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + 0.5
+                    ax.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
+                                arrowprops={'connectionstyle': 'bar,fraction=1', 'arrowstyle': '-'})
+                    # ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos, y_pos + 5), arrowprops={'connectionstyle': 'bar', 'arrowstyle': '-'})
+                    # ax.annotate('', xy=(x_pos_2, y_pos_2), xytext=(x_pos_2, y_pos + 5), arrowprops={'arrowstyle': '-'})
+                    # ax.annotate('', xy=(x_pos-bw, y_pos + 5), xytext=(x_pos_2, y_pos + 5), arrowprops={'arrowstyle': '-'})
+
         general.get_figure(show, r, figtype, figname)
 
     # for data with replicates
