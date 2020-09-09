@@ -576,7 +576,7 @@ class stat:
     def multi_bar(df="dataframe", dim=(5, 4), colbar=None, colerrorbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300, show=False,
                   axtickfontname="Arial", axtickfontsize=9, ar=90, figtype='png', figname='multi_bar', valphabar=1,
                   legendpos='best', errorbar=False, yerrlw=None, yerrcw=None, plotlegend=False, hbsize=4, ylm=None,
-                  add_sign_line=False):
+                  add_sign_line=False, pv=None):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -603,18 +603,24 @@ class stat:
             plt.legend(loc=legendpos)
 
         if add_sign_line:
-            props = {'connectionstyle': 'bar', 'arrowstyle': '-', 'shrinkA': 20, 'shrinkB': 20, 'linewidth': 2}
-            if len(colbar) >= 2:
+            if len(colbar) == 2:
                 for i in xbar:
                     x_pos = xbar[i]
                     y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + 0.5
                     x_pos_2 = xbar[i]+bw
                     y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + 0.5
-                    ax.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
-                                arrowprops={'connectionstyle': 'bar,fraction=1', 'arrowstyle': '-'})
-                    # ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos, y_pos + 5), arrowprops={'connectionstyle': 'bar', 'arrowstyle': '-'})
-                    # ax.annotate('', xy=(x_pos_2, y_pos_2), xytext=(x_pos_2, y_pos + 5), arrowprops={'arrowstyle': '-'})
-                    # ax.annotate('', xy=(x_pos-bw, y_pos + 5), xytext=(x_pos_2, y_pos + 5), arrowprops={'arrowstyle': '-'})
+                    # only if y axis is positive
+                    if y_pos > 0:
+                        ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                                    arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                                'arrowstyle': '-', 'linewidth': 0.5  })
+                        pv_symb = ''
+                        print(pv[i])
+                        if 0.05 >= pv[i] > 0.01:
+                            pv_symb = '*'
+                        elif pv[i] <= 0.01:
+                            pv_symb = '**'
+                        ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]),  y_pos+2.5), fontsize=5, ha="center", zorder=10)
 
         general.get_figure(show, r, figtype, figname)
 
