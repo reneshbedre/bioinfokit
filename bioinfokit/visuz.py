@@ -576,7 +576,8 @@ class stat:
     def multi_bar(df="dataframe", dim=(5, 4), colbar=None, colerrorbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300, show=False,
                   axtickfontname="Arial", axtickfontsize=9, ar=90, figtype='png', figname='multi_bar', valphabar=1,
                   legendpos='best', errorbar=False, yerrlw=None, yerrcw=None, plotlegend=False, hbsize=4, ylm=None,
-                  add_sign_line=False, pv=None):
+                  add_sign_line=False, pv=None, sign_line_opts={'symbol': '*', 'fontsize': 5, 'linewidth':0.5,
+                 'arrowstyle': '-'}):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -613,14 +614,18 @@ class stat:
                     if y_pos > 0:
                         ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
                                     arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
-                                                'arrowstyle': '-', 'linewidth': 0.5  })
+                                                'arrowstyle': sign_line_opts['arrowstyle'],
+                                                'linewidth': sign_line_opts['linewidth']})
                         pv_symb = ''
                         print(pv[i])
                         if 0.05 >= pv[i] > 0.01:
-                            pv_symb = '*'
-                        elif pv[i] <= 0.01:
-                            pv_symb = '**'
-                        ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]),  y_pos+2.5), fontsize=5, ha="center", zorder=10)
+                            pv_symb = sign_line_opts['symbol']
+                        elif 0.01 >= pv[i] > 0.001:
+                            pv_symb = 2 * sign_line_opts['symbol']
+                        elif pv[i] <= 0.001:
+                            pv_symb = 3 * sign_line_opts['symbol']
+                        ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]),  y_pos+2.5),
+                                    fontsize=sign_line_opts['fontsize'], ha="center")
 
         general.get_figure(show, r, figtype, figname)
 
