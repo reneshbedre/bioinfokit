@@ -587,7 +587,8 @@ class stat:
                   figname='multi_bar', valphabar=1, legendpos='best', errorbar=False, yerrlw=None, yerrcw=None,
                   plotlegend=False, hbsize=4, ylm=None, add_sign_line=False, pv=None,
                   sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth':0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
-                                  'dist_y_neg': 4.2}):
+                                  'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
+                                                                                              'fontsize': 8 }):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -649,15 +650,62 @@ class stat:
                             ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), min(y_pos_2, y_pos) -
                                                      sign_line_opts['dist_y_neg']),
                                         fontsize=sign_line_opts['fontsize'], ha="center")
+        if add_sign_symbol:
+            if len(colbar) == 2:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    # max value size factor is essential for rel pos of symbol
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
+                            (max(df[colbar[0]].to_numpy()) / 20)
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + \
+                              (max(df[colbar[1]].to_numpy()) / 20)
+                    # only if y axis is positive
+                    if y_pos > 0:
+                            pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
+                            pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
+                            if pv_symb_1:
+                                plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                                                ha="center")
+                            if pv_symb_2:
+                                plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
+                                             ha="center")
+            elif len(colbar) == 3:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    x_pos_3 = xbar[i] + (2 * bw)
+                    # max value size factor is essential for rel pos of symbol
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
+                            (max(df[colbar[0]].to_numpy()) / 20)
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + \
+                              (max(df[colbar[1]].to_numpy()) / 20)
+                    y_pos_3 = df[colbar[2]].to_numpy()[i] + df[colerrorbar[2]].to_numpy()[i] + \
+                              (max(df[colbar[2]].to_numpy()) / 20)
+                    # only if y axis is positive
+                    if y_pos > 0:
+                            pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
+                            pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
+                            pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
+                            if pv_symb_1:
+                                plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                                                ha="center")
+                            if pv_symb_2:
+                                plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
+                                             ha="center")
+                            if pv_symb_3:
+                                plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
+                                             ha="center")
         general.get_figure(show, r, figtype, figname)
 
     # for data with replicates
     def singlebar(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", hbsize=4, r=300, ar=0,
                 valphabar=1, errorbar=True, show=False, ylm=None, axtickfontsize=9, axtickfontname="Arial",
-                axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
+                ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
                 axylabel=None, figtype='png', add_sign_line=False, pv=None,
                   sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth':0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
-                                  'dist_y_neg': 4.2}):
+                                  'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
+                                                                                              'fontsize': 8 }):
         # set axis labels to None
         _x = None
         _y = None
@@ -671,7 +719,12 @@ class stat:
             plt.bar(x=xbar, height=df.describe().loc['mean'], width=bw, color=color_list_bar,
                    capsize=hbsize, alpha=valphabar)
 
-        plt.xticks(xbar, df.columns.to_numpy(), fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        if ax_x_ticklabel:
+            x_ticklabel = ax_x_ticklabel
+        else:
+            x_ticklabel = df.columns.to_numpy()
+
+        plt.xticks(ticks=xbar, labels=x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
         if axxlabel:
             _x = axxlabel
         if axylabel:
@@ -683,6 +736,7 @@ class stat:
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
 
+        size_factor_to_start_line = max(df.describe().loc['mean']) / 20
         if add_sign_line:
             for i in xbar:
                 if i % 2 != 0:
@@ -693,17 +747,28 @@ class stat:
                 y_pos_2 = df.describe().loc['mean'].to_numpy()[i+1] + df.sem().to_numpy()[i+1]
                 # only if y axis is positive
                 if y_pos > 0:
-                    y_pos += 0.5
-                    y_pos_2 += 0.5
+                    y_pos += size_factor_to_start_line
+                    y_pos_2 += size_factor_to_start_line
                     pv_symb = general.pvalue_symbol(pv[int(i/2)], sign_line_opts['symbol'])
                     if pv_symb:
-                        ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                        plt.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
                                     arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
                                                 'arrowstyle': sign_line_opts['arrowstyle'],
                                                 'linewidth': sign_line_opts['linewidth']})
-                        ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
+                        plt.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
                                                  sign_line_opts['dist_y_pos']),
                                     fontsize=sign_line_opts['fontsize'], ha="center")
+
+        if add_sign_symbol:
+            for i in xbar:
+                x_pos = xbar[i]
+                y_pos = df.describe().loc['mean'].to_numpy()[i] + df.sem().to_numpy()[i] + size_factor_to_start_line
+                # only if y axis is positive
+                if y_pos > 0:
+                    pv_symb = general.pvalue_symbol(pv[i], sign_symbol_opts['symbol'])
+                    if pv_symb:
+                        plt.annotate(pv_symb, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'], ha="center")
+
         general.get_figure(show, r, figtype, 'singlebar')
 
 
