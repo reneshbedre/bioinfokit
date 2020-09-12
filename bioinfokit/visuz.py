@@ -779,8 +779,10 @@ class stat:
                     # check if the mean of y_pos is not lesser than not other treatments which lies between
                     # eg if 0-1 has higher sign bar than the 0-2
                     if i[0] in y_pos_dict_trt:
-                        if y_pos_2 <= y_pos_dict_trt[i[0]]:
-                            y_pos_2 += (y_pos_dict_trt[i[0]] - y_pos_2) + (3 * size_factor_to_start_line)
+                        if y_pos_2 <= y_pos_dict_trt[i[0]][1]:
+                            y_pos_2 += (y_pos_dict_trt[i[0]][1] - y_pos_2) + (3 * size_factor_to_start_line)
+                        elif y_pos <= y_pos_dict_trt[i[0]][0]:
+                            y_pos += 3 * size_factor_to_start_line
                     # check if difference is not equivalent between two y_pos
                     # if yes add some distance, so that sign bar will not overlap
                     if i[0] in y_pos_dict:
@@ -790,7 +792,7 @@ class stat:
                     pv_symb = general.pvalue_symbol(pv[p_index], sign_line_opts['symbol'])
                     p_index += 1
                     y_pos_dict[i[0]] = y_pos
-                    y_pos_dict_trt[i[0]] = y_pos_2
+                    y_pos_dict_trt[i[0]] = [y_pos, y_pos_2]
                     if pv_symb:
                         plt.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
                                      arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
