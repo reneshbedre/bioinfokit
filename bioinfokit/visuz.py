@@ -699,13 +699,15 @@ class stat:
         general.get_figure(show, r, figtype, figname)
 
     # for data with replicates
+    # deprecate dist_y_pos and dist_y_neg (repalce with  size_factor_to_start_line)
     def singlebar(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", hbsize=4, r=300, ar=0,
                 valphabar=1, errorbar=True, show=False, ylm=None, axtickfontsize=9, axtickfontname="Arial",
                 ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
                 axylabel=None, figtype='png', add_sign_line=False, pv=None,
                   sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth':0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
                                   'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
-                                                                                              'fontsize': 8 }):
+                                                                                              'fontsize': 8 },
+                  sign_line_pairs=None):
         # set axis labels to None
         _x = None
         _y = None
@@ -737,6 +739,7 @@ class stat:
         plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
 
         size_factor_to_start_line = max(df.describe().loc['mean']) / 20
+        # for only adjacent bars (not for multiple bars with single control)
         if add_sign_line:
             for i in xbar:
                 if i % 2 != 0:
@@ -745,7 +748,7 @@ class stat:
                 x_pos_2 = xbar[i+1]
                 y_pos = df.describe().loc['mean'].to_numpy()[i] + df.sem().to_numpy()[i]
                 y_pos_2 = df.describe().loc['mean'].to_numpy()[i+1] + df.sem().to_numpy()[i+1]
-                # only if y axis is positive
+                # only if y axis is positive; in future make a function to call it (2 times used)
                 if y_pos > 0:
                     y_pos += size_factor_to_start_line
                     y_pos_2 += size_factor_to_start_line
@@ -758,6 +761,46 @@ class stat:
                         plt.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
                                                  sign_line_opts['dist_y_pos']),
                                     fontsize=sign_line_opts['fontsize'], ha="center")
+
+        # for only adjacent bars with one control but multiple treatments
+        p_index = 0
+        y_pos_dict = dict()
+        y_pos_dict_trt = dict()
+        if sign_line_pairs:
+            for i in sign_line_pairs:
+                x_pos = xbar[i[0]]
+                x_pos_2 = xbar[i[1]]
+                y_pos = df.describe().loc['mean'].to_numpy()[i[0]] + df.sem().to_numpy()[i[0]]
+                y_pos_2 = df.describe().loc['mean'].to_numpy()[i[1]] + df.sem().to_numpy()[i[1]]
+                # only if y axis is positive; in future make a function to call it (2 times used)
+                if y_pos > 0:
+                    y_pos += size_factor_to_start_line/2
+                    y_pos_2 += size_factor_to_start_line/2
+                    # check if the mean of y_pos is not lesser than not other treatments which lies between
+                    # eg if 0-1 has higher sign bar than the 0-2
+                    if i[0] in y_pos_dict_trt:
+                        if y_pos_2 <= y_pos_dict_trt[i[0]]:
+                            y_pos_2 += (y_pos_dict_trt[i[0]] - y_pos_2) + (3 * size_factor_to_start_line)
+                    # check if difference is not equivalent between two y_pos
+                    # if yes add some distance, so that sign bar will not overlap
+                    if i[0] in y_pos_dict:
+                        if 0.75 < df.describe().loc['mean'].to_numpy()[i[0]]/df.describe().loc['mean'].to_numpy()[i[1]] < 1.25:
+                            y_pos += 2 * size_factor_to_start_line
+
+                    pv_symb = general.pvalue_symbol(pv[p_index], sign_line_opts['symbol'])
+                    p_index += 1
+                    y_pos_dict[i[0]] = y_pos
+                    y_pos_dict_trt[i[0]] = y_pos_2
+                    if pv_symb:
+                        plt.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
+                                     arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                                     'arrowstyle': sign_line_opts['arrowstyle'],
+                                                     'linewidth': sign_line_opts['linewidth']})
+                        # here size factor size_factor_to_start_line added instead of sign_line_opts['dist_y_pos']
+                        # make this change everywhere in future release
+                        plt.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
+                                                  size_factor_to_start_line),
+                                     fontsize=sign_line_opts['fontsize'], ha="center")
 
         if add_sign_symbol:
             for i in xbar:
