@@ -700,14 +700,13 @@ class stat:
 
     # for data with replicates
     # deprecate dist_y_pos and dist_y_neg (repalce with  size_factor_to_start_line)
-    def singlebar(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", hbsize=4, r=300, ar=0,
+    def singlebar(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", hbsize=4, r=300, ar=(0, 0),
                 valphabar=1, errorbar=True, show=False, ylm=None, axtickfontsize=9, axtickfontname="Arial",
                 ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
                 axylabel=None, figtype='png', add_sign_line=False, pv=None,
-                  sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth':0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
-                                  'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
-                                                                                              'fontsize': 8 },
-                  sign_line_pairs=None):
+                sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth': 0.5, 'arrowstyle': '-'},
+                add_sign_symbol=False, sign_symbol_opts={'symbol': '*', 'fontsize': 8 },
+                sign_line_pairs=None, sub_cat=None, sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 8}):
         # set axis labels to None
         _x = None
         _y = None
@@ -726,7 +725,7 @@ class stat:
         else:
             x_ticklabel = df.columns.to_numpy()
 
-        plt.xticks(ticks=xbar, labels=x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        plt.xticks(ticks=xbar, labels=x_ticklabel, fontsize=axtickfontsize, rotation=ar[0], fontname=axtickfontname)
         if axxlabel:
             _x = axxlabel
         if axylabel:
@@ -736,7 +735,7 @@ class stat:
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
-        plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        plt.yticks(fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
 
         size_factor_to_start_line = max(df.describe().loc['mean']) / 20
         # for only adjacent bars (not for multiple bars with single control)
@@ -813,6 +812,22 @@ class stat:
                     pv_symb = general.pvalue_symbol(pv[i], sign_symbol_opts['symbol'])
                     if pv_symb:
                         plt.annotate(pv_symb, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'], ha="center")
+
+        # get minimum from df
+        min_value = (0, min(df.min()))[min(df.min()) < 0]
+        if sub_cat:
+            if isinstance(sub_cat, dict):
+                for k in sub_cat:
+                    if isinstance(k, tuple) and len(k) == 2:
+                        cat_x_pos, cat_y_pos, cat_x_pos_2 = k[0], min_value - \
+                                                            (sub_cat_opts['y_neg_dist']*size_factor_to_start_line), k[1]
+                        plt.annotate('', xy=(cat_x_pos-(bw/2), cat_y_pos), xytext=(cat_x_pos_2+(bw/2), cat_y_pos),
+                                     arrowprops={'arrowstyle': '-', 'linewidth': 0.5}, annotation_clip=False)
+                        plt.annotate(sub_cat[k], xy=(np.mean([cat_x_pos, cat_x_pos_2]),
+                                                     cat_y_pos-size_factor_to_start_line),
+                                     ha="center", fontsize=sub_cat_opts['fontsize'], annotation_clip=False)
+                    else:
+                        raise KeyError("Sub category keys must be tuple of size 2")
 
         general.get_figure(show, r, figtype, 'singlebar')
 
