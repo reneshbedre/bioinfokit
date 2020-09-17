@@ -21,6 +21,7 @@ from decimal import Decimal
 from pathlib import Path
 from sklearn.metrics import mean_squared_error
 from collections import defaultdict
+from shutil import which
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -270,6 +271,10 @@ class fastq:
 
         out_file_name_1.close()
         out_file_name_2.close()
+
+    def sra_bd(self, a='program', file='sra_list_in_file'):
+        if which('fastq-dump') is not None:
+            raise exception('fastq-dump does not exist. Please install sra toolkit.')
 
 
 class marker:
