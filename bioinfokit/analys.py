@@ -22,6 +22,7 @@ from pathlib import Path
 from sklearn.metrics import mean_squared_error
 from collections import defaultdict
 from shutil import which
+from subprocess import check_output, STDOUT, CalledProcessError
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -272,9 +273,24 @@ class fastq:
         out_file_name_1.close()
         out_file_name_2.close()
 
-    def sra_bd(self, a='program', file='sra_list_in_file'):
-        if which('fastq-dump') is not None:
-            raise exception('fastq-dump does not exist. Please install sra toolkit.')
+    def sra_bd(self, prog='fasterq-dump', t=4, paired=False, file='sra_list_in_file'):
+        if which(prog) is None:
+            raise Exception(prog + ' does not exist. Please install sra toolkit and add to system path')
+        read_f = open(file, 'r')
+        for sra in read_f:
+            print('Donwloading ' + sra.strip() + '\n')
+            if paired:
+                try:
+                    check_output([prog, '-e', str(t), '--split-files', sra.strip()], stderr=STDOUT)
+                except CalledProcessError:
+                    print('Error: there is something wrong with the subprocess command or input fastq already available\n')
+            else:
+                try:
+                    check_output([prog, '-e', str(t), sra.strip()], stderr=STDOUT)
+                except CalledProcessError:
+                    print('Error: there is something wrong with the subprocess command or input fastq already available\n')
+
+        read_f.close()
 
 
 class marker:
