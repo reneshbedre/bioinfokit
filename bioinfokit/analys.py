@@ -25,16 +25,9 @@ from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
 
 
+
 def seqcov(file="fastq_file", gs="genome_size"):
-    x = fastq.fastq_format_check(file)
-    if x == 1:
-        print("Error: Sequences are not in fastq format")
-        sys.exit(1)
-    num_reads, total_len = fastq.fqreadcounter(file)
-    # haploid genome_size must be in Mbp; convert in bp
-    gs = gs * 1e6
-    cov = round(float(total_len / gs), 2)
-    print("Sequence coverage for", file, "is", cov)
+    general.depr_mes("bioinfokit.analys.fastq.seqcov")
 
 
 def mergevcf(file="vcf_file_com_sep"):
@@ -273,24 +266,53 @@ class fastq:
         out_file_name_1.close()
         out_file_name_2.close()
 
-    def sra_bd(self, prog='fasterq-dump', t=4, paired=False, file='sra_list_in_file'):
+    def sra_bd(file='sra_list_in_file', paired=False, prog='fasterq-dump', t=4, other_opts=None):
         if which(prog) is None:
             raise Exception(prog + ' does not exist. Please install sra toolkit and add to system path')
+        if prog not in 'fasterq-dump':
+            raise Exception('Only fasterq-dump program supported')
         read_f = open(file, 'r')
         for sra in read_f:
             print('Donwloading ' + sra.strip() + '\n')
             if paired:
                 try:
-                    check_output([prog, '-e', str(t), '--split-files', sra.strip()], stderr=STDOUT)
-                except CalledProcessError:
-                    print('Error: there is something wrong with the subprocess command or input fastq already available\n')
+                    if other_opts:
+                        cmd = [prog, '-e', str(t), '--split-files']
+                        cmd.extend(other_opts.split())
+                        cmd.extend(sra.strip())
+                        check_output(cmd, stderr=STDOUT)
+                    else:
+                        check_output([prog, '-e', str(t), '--split-files', sra.strip()], stderr=STDOUT)
+                except CalledProcessError as e:
+                    print('Error: there is something wrong with the subprocess command or input fastq already '
+                          'available\n See detaled error \n')
+                    print(e.returncode, e.output, '\n')
             else:
                 try:
-                    check_output([prog, '-e', str(t), sra.strip()], stderr=STDOUT)
-                except CalledProcessError:
-                    print('Error: there is something wrong with the subprocess command or input fastq already available\n')
+                    if other_opts:
+                        cmd = [prog, '-e', str(t)]
+                        cmd.extend(other_opts.split())
+                        cmd.extend([sra.strip()])
+                        check_output(cmd, stderr=STDOUT)
+                    else:
+                        check_output([prog, '-e', str(t), sra.strip()], stderr=STDOUT)
+                except CalledProcessError as e:
+                    print('Error: there is something wrong with the subprocess command or input fastq already '
+                          'available\n See detaled error \n' )
+                    print(e.returncode, e.output, '\n')
 
         read_f.close()
+
+    def seqcov(file="fastq_file", gs="genome_size"):
+        x = fastq.fastq_format_check(file)
+        if x == 1:
+            print("Error: Sequences are not in fastq format")
+            sys.exit(1)
+        num_reads, total_len = fastq.fqreadcounter(file)
+        # haploid genome_size must be in Mbp; convert in bp
+        gs = gs * 1e6
+        cov = round(float(total_len / gs), 2)
+        print("Sequence coverage for", file, "is", cov)
 
 
 class marker:

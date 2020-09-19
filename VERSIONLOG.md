@@ -1,3 +1,8 @@
+v0.9.7  has the following updates and changes (September 18, 2020)
+- `seqcov` moved to `fastq` class
+-  `sra_db` function added under `fastq` class for batch download of FASTQ files 
+  from NCBI SRA database 
+
 v0.9.6  has the following updates and changes (August 22, 2020)
 - In t-test, the one sample t and paired t-test added
 - Two sample t-test switched to class based method

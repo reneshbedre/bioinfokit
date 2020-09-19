@@ -304,7 +304,7 @@ Reverse complement of original DNA sequence
 
 <b>Sequencing coverage</b>
 
-`bioinfokit.analys.seqcov(file, gs)`
+`bioinfokit.analys.fastq.seqcov(file, gs)`
 
 Parameters | Description
 ------------ | -------------
@@ -866,6 +866,32 @@ Returns:
 File generator object (can be iterated only once) that can be parsed for the record
 
 <a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
+
+
+<b>FASTQ batch downloads from SRA database</b>
+
+`bioinfokit.analys.fastq.sra_bd(file, t, other_opts)`
+
+FASTQ files will be downloaded using `fasterq-dump`. Make sure you have the latest version of the NCBI SRA toolkit 
+(version 2.10.8) is installed and binaries are added to the system path
+
+Parameters | Description
+------------ | -------------
+`file` | List of SRA accessions for batch download. All accession must be separated by a newline in the file. 
+`t` | Number of threads for parallel run [int][default=4]
+`other_opts` | Provide other relevant options for `fasterq-dump` [str][default=None] <br> Provide the options as a space-separated string. You can get a detailed option for `fasterq-dump` using the `-help` option. 
+
+Returns:
+
+FASTQ files for each SRA accession in the current directory unless specified by `other_opts`
+
+<a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
+
+<!--
+`paired` | Download paired-end files [bool (True or False)][default=False] <br> By default, it will download the single-end files. If paired-end SRA accessions provided with `paired=False`, the FASTQ file will be downloaded as single file without splitting into left and right reads.
+`prog` | Program to run for downloading FASTQ files from SRA database [string ('fasterq-dump' or 'fastq-dump'][default='fasterq-dump'] <br> Make sure latest version of NCBI SRA toolkit is installed and binaries are added to system path 
+-->
+
 
 How to cite bioinfokit?
 - Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
