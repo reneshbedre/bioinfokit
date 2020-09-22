@@ -1387,7 +1387,7 @@ class gff:
                     if 'ID=' not in line[8]:
                         raise Exception("ID field required in GFF3 file in attribute field for gene feature type")
                     yield (line[0], gene_id, gene_name, transcript_id, line[1], line[2], line[3], line[4], line[6], line[8])
-                elif line[2]=='mRNA' or line[2]=='transcript':
+                elif line[2] == 'mRNA' or line[2] == 'transcript':
                     if 'ID=' in line[8]:
                         transcript_id = re.search('ID=(.+?)(;|$)', line[8]).group(1)
                     else:
@@ -1498,6 +1498,93 @@ class assembly:
             seq_len.append(len(sequence))
             total_len_sum += len(sequence)
         seq_len.sort(reverse=True)
+
+
+class lncrna:
+    def lincrna_types(gff_file='gff_file_with_lincrna'):
+        read_gff_file = open(gff_file, 'r')
+        out_file = open('out.txt', 'w')
+        transcript_id = ''
+        lincrna_dict = dict()
+        mrna_dict = dict()
+        line_num = 0
+        for line in read_gff_file:
+            if not line.startswith('#'):
+                line = re.split('\t', line.strip())
+                line_num += 1
+                line.extend([line_num])
+                if line[1] == 'Evolinc':
+                    lincrna_trn_id = re.search('transcript_id (.+?)(;|$)', line[8]).group(1)
+                    lincrna_dict[(line[0], int(line[3]), int(line[4]), line[6], line[9])] = lincrna_trn_id.strip('"')
+
+                if line[2] == 'mRNA':
+                    mrna_id = re.search('gene_id (.+?)(;|$)', line[8]).group(1)
+                    mrna_dict[(line[0], int(line[3]), int(line[4]), line[6], line[9])] = mrna_id.strip('"')
+
+        read_gff_file.close()
+
+        print('yes')
+        checked = dict()
+        for k in lincrna_dict:
+            if k[3] == '+':
+                for k1 in mrna_dict:
+                    if k[0] == k1[0] and lincrna_dict[k] not in checked:
+                        temp_mrna_st = k[4]
+                        # print(temp_mrna_st, mrna_dict[k1], k1[4], 'y')
+                        for i in range(40):
+                            temp_mrna_st += 1
+                            # print(temp_mrna_st, mrna_dict[k1], k1[4], i, 'z')
+                            if k1[4] == temp_mrna_st:
+                                # print(temp_mrna_st, mrna_dict[k1], k1[4], 'a')
+                                if k1[3] == '+':
+                                    #if lincrna_dict[k] not in checked:
+                                    checked[lincrna_dict[k]] = 1
+                                    out_file.write(k[0]+'\t'+k[3]+'\t'+k1[3]+'\t'+lincrna_dict[k]+'\t'+mrna_dict[k1]+'\t'+'same'+'\n')
+                                    break
+                                elif k1[3] == '-':
+                                    checked[lincrna_dict[k]] = 1
+                                    out_file.write(
+                                        k[0] + '\t' + k[3] + '\t' + k1[3] + '\t' + lincrna_dict[k] + '\t' + mrna_dict[
+                                            k1] + '\t' + 'convergent' + '\n')
+            elif k[3] == '-':
+                for k1 in mrna_dict:
+                    if k[0] == k1[0] and lincrna_dict[k] not in checked:
+                        temp_mrna_st = k[4]
+                        # print(temp_mrna_st, mrna_dict[k1], k1[4], 'y')
+                        for i in range(40quit()):
+                            temp_mrna_st -= 1
+                            # print(temp_mrna_st, mrna_dict[k1], k1[4], i, 'z')
+                            if k1[4] == temp_mrna_st:
+                                # print(temp_mrna_st, mrna_dict[k1], k1[4], 'a')
+                                if k1[3] == '-':
+                                    #if lincrna_dict[k] not in checked:
+                                    checked[lincrna_dict[k]] = 1
+                                    out_file.write(k[0]+'\t'+k[3]+'\t'+k1[3]+'\t'+lincrna_dict[k]+'\t'+mrna_dict[k1]+'\t'+'same'+'\n')
+                                    break
+                                elif k1[3] == '+':
+                                    checked[lincrna_dict[k]] = 1
+                                    out_file.write(
+                                        k[0] + '\t' + k[3] + '\t' + k1[3] + '\t' + lincrna_dict[k] + '\t' + mrna_dict[
+                                            k1] + '\t' + 'convergent' + '\n')
+
+        for k in lincrna_dict:
+            if lincrna_dict[k] not in checked:
+                print(lincrna_dict[k])
+
+
+
+
+
+
+
+
+        # for (k,v), (k2,v2) in zip(lincrna_dict.items(), mrna_dict.items()):
+        #    print(k, k2)
+            # for k1 in mrna_dict:
+                # print(k, k1)
+                # if k[0] == k1[0] and k[3] == '+' and k1[3] == '+' and k1[1] > k[1]:
+                #    print(lincrna_dict[k], mrna_dict[k1])
+
 
 
 
