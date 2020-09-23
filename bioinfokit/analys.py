@@ -1501,12 +1501,16 @@ class assembly:
 
 
 class lncrna:
-    def lincrna_types(gff_file='gff_file_with_lincrna'):
+    def lincrna_types(gff_file='gff_file_with_lincrna', map_factor=200):
         read_gff_file = open(gff_file, 'r')
-        out_file = open('out.txt', 'w')
+        out_file = open('same_conv_out.txt', 'w')
+        out_file_2 = open('dive_out.txt', 'w')
+        out_file_3 = open('lincrna_types.txt', 'w')
         transcript_id = ''
         lincrna_dict = dict()
         mrna_dict = dict()
+        lincrna_dict_1 = dict()
+        mrna_dict_1 = dict()
         line_num = 0
         for line in read_gff_file:
             if not line.startswith('#'):
@@ -1516,76 +1520,109 @@ class lncrna:
                 if line[1] == 'Evolinc':
                     lincrna_trn_id = re.search('transcript_id (.+?)(;|$)', line[8]).group(1)
                     lincrna_dict[(line[0], int(line[3]), int(line[4]), line[6], line[9])] = lincrna_trn_id.strip('"')
+                    lincrna_dict_1[line_num] = [line[0], int(line[3]), int(line[4]), line[6], line[9], lincrna_trn_id.strip('"')]
 
                 if line[2] == 'mRNA':
                     mrna_id = re.search('gene_id (.+?)(;|$)', line[8]).group(1)
                     mrna_dict[(line[0], int(line[3]), int(line[4]), line[6], line[9])] = mrna_id.strip('"')
+                    mrna_dict_1[line_num] = [line[0], int(line[3]), int(line[4]), line[6], line[9],
+                                                mrna_id.strip('"')]
 
         read_gff_file.close()
 
-        print('yes')
         checked = dict()
-        for k in lincrna_dict:
-            if k[3] == '+':
-                for k1 in mrna_dict:
-                    if k[0] == k1[0] and lincrna_dict[k] not in checked:
-                        temp_mrna_st = k[4]
-                        # print(temp_mrna_st, mrna_dict[k1], k1[4], 'y')
-                        for i in range(40):
-                            temp_mrna_st += 1
-                            # print(temp_mrna_st, mrna_dict[k1], k1[4], i, 'z')
-                            if k1[4] == temp_mrna_st:
-                                # print(temp_mrna_st, mrna_dict[k1], k1[4], 'a')
-                                if k1[3] == '+':
-                                    #if lincrna_dict[k] not in checked:
-                                    checked[lincrna_dict[k]] = 1
-                                    out_file.write(k[0]+'\t'+k[3]+'\t'+k1[3]+'\t'+lincrna_dict[k]+'\t'+mrna_dict[k1]+'\t'+'same'+'\n')
-                                    break
-                                elif k1[3] == '-':
-                                    checked[lincrna_dict[k]] = 1
-                                    out_file.write(
-                                        k[0] + '\t' + k[3] + '\t' + k1[3] + '\t' + lincrna_dict[k] + '\t' + mrna_dict[
-                                            k1] + '\t' + 'convergent' + '\n')
-            elif k[3] == '-':
-                for k1 in mrna_dict:
-                    if k[0] == k1[0] and lincrna_dict[k] not in checked:
-                        temp_mrna_st = k[4]
-                        # print(temp_mrna_st, mrna_dict[k1], k1[4], 'y')
-                        for i in range(40quit()):
-                            temp_mrna_st -= 1
-                            # print(temp_mrna_st, mrna_dict[k1], k1[4], i, 'z')
-                            if k1[4] == temp_mrna_st:
-                                # print(temp_mrna_st, mrna_dict[k1], k1[4], 'a')
-                                if k1[3] == '-':
-                                    #if lincrna_dict[k] not in checked:
-                                    checked[lincrna_dict[k]] = 1
-                                    out_file.write(k[0]+'\t'+k[3]+'\t'+k1[3]+'\t'+lincrna_dict[k]+'\t'+mrna_dict[k1]+'\t'+'same'+'\n')
-                                    break
-                                elif k1[3] == '+':
-                                    checked[lincrna_dict[k]] = 1
-                                    out_file.write(
-                                        k[0] + '\t' + k[3] + '\t' + k1[3] + '\t' + lincrna_dict[k] + '\t' + mrna_dict[
-                                            k1] + '\t' + 'convergent' + '\n')
+        checked_2 = dict()
 
-        for k in lincrna_dict:
-            if lincrna_dict[k] not in checked:
-                print(lincrna_dict[k])
+        # for same and convergent
+        for k in lincrna_dict_1:
+            if lincrna_dict_1[k][3] == '+':
+                k1 = k
+                for i in range(map_factor):
+                    if k1 in mrna_dict_1:
+                        linc_st = lincrna_dict_1[k][1]
+                        mrna_st = mrna_dict_1[k1][1]
+                        diff = mrna_st - linc_st + 1
+                        mrna_id = mrna_dict_1[k1][5]
+                        if 'PGSC' in mrna_dict_1[k1][5] and mrna_dict_1[k1][3] == '+' and lincrna_dict_1[k][5] not in \
+                                checked and mrna_dict_1[k1][0] == lincrna_dict_1[k][0]:
+                            checked[lincrna_dict_1[k][5]] = [diff, mrna_id, 'same']
+                            out_file.write(lincrna_dict_1[k][5]+'\t'+mrna_dict_1[k1][5]+'\t'+str(diff)+'\t'+'same'+'\n')
+                        elif 'PGSC' in mrna_dict_1[k1][5] and mrna_dict_1[k1][3] == '-' and lincrna_dict_1[k][5] not \
+                                in checked and mrna_dict_1[k1][0] == lincrna_dict_1[k][0]:
+                            checked[lincrna_dict_1[k][5]] = [diff, mrna_id, 'convergent']
+                            out_file.write(lincrna_dict_1[k][5]+'\t'+mrna_dict_1[k1][5]+'\t'+str(diff)+'\t'+'convergent'+'\n')
+                    else:
+                        k1 += 1
+            elif lincrna_dict_1[k][3] == '-':
+                k1 = k
+                for i in range(map_factor):
+                    if k1 in mrna_dict_1:
+                        linc_st = lincrna_dict_1[k][1]
+                        mrna_st = mrna_dict_1[k1][1]
+                        diff = linc_st - mrna_st + 1
+                        mrna_id = mrna_dict_1[k1][5]
+                        if 'PGSC' in mrna_dict_1[k1][5] and mrna_dict_1[k1][3] == '-' and lincrna_dict_1[k][
+                            5] not in checked and mrna_dict_1[k1][0] == lincrna_dict_1[k][0]:
+                            checked[lincrna_dict_1[k][5]] = [diff, mrna_id, 'same']
+                            out_file.write(lincrna_dict_1[k][5]+'\t'+mrna_dict_1[k1][5]+'\t'+str(diff)+'\t'+'same'+'\n')
+                        elif 'PGSC' in mrna_dict_1[k1][5] and mrna_dict_1[k1][3] == '+' and lincrna_dict_1[k][
+                            5] not in checked and mrna_dict_1[k1][0] == lincrna_dict_1[k][0]:
+                            checked[lincrna_dict_1[k][5]] = [diff, mrna_id, 'convergent']
+                            out_file.write(lincrna_dict_1[k][5]+'\t'+mrna_dict_1[k1][5]+'\t'+str(diff)+'\t'+'convergent'+'\n')
+                    else:
+                        k1 -= 1
 
+        # for divergent only
+        for k in lincrna_dict_1:
+            if lincrna_dict_1[k][3] == '+':
+                k1 = k
+                for i in range(map_factor):
+                    if k1 in mrna_dict_1:
+                        linc_st = lincrna_dict_1[k][1]
+                        mrna_st = mrna_dict_1[k1][1]
+                        diff = linc_st - mrna_st + 1
+                        mrna_id = mrna_dict_1[k1][5]
+                        if 'PGSC' in mrna_dict_1[k1][5] and mrna_dict_1[k1][3] == '-' and lincrna_dict_1[k][5] not in \
+                                checked_2 and mrna_dict_1[k1][0] == lincrna_dict_1[k][0]:
+                            checked_2[lincrna_dict_1[k][5]] = [diff, mrna_id, 'divergent']
+                            out_file_2.write(lincrna_dict_1[k][5]+'\t'+mrna_dict_1[k1][5]+'\t'+str(diff)+'\t'+'divergent'+'\n')
+                    else:
+                        k1 -= 1
+            elif lincrna_dict_1[k][3] == '-':
+                k1 = k
+                for i in range(map_factor):
+                    if k1 in mrna_dict_1:
+                        linc_st = lincrna_dict_1[k][1]
+                        mrna_st = mrna_dict_1[k1][1]
+                        diff = mrna_st - linc_st + 1
+                        mrna_id = mrna_dict_1[k1][5]
+                        if 'PGSC' in mrna_dict_1[k1][5] and mrna_dict_1[k1][3] == '+' and lincrna_dict_1[k][
+                            5] not in checked_2 and mrna_dict_1[k1][0] == lincrna_dict_1[k][0]:
+                            checked_2[lincrna_dict_1[k][5]] = [diff, mrna_id, 'divergent']
+                            out_file_2.write(lincrna_dict_1[k][5]+'\t'+mrna_dict_1[k1][5]+'\t'+str(diff)+'\t'+'divergent'+'\n')
+                    else:
+                        k1 += 1
 
+        for k in lincrna_dict_1:
+            if lincrna_dict_1[k][5] not in checked:
+                print(lincrna_dict_1[k][5])
 
-
-
-
-
-
-        # for (k,v), (k2,v2) in zip(lincrna_dict.items(), mrna_dict.items()):
-        #    print(k, k2)
-            # for k1 in mrna_dict:
-                # print(k, k1)
-                # if k[0] == k1[0] and k[3] == '+' and k1[3] == '+' and k1[1] > k[1]:
-                #    print(lincrna_dict[k], mrna_dict[k1])
-
-
+        for k in checked:
+            x = 0
+            for k1 in checked_2:
+                if k == k1 and checked[k][2] == 'same':
+                    x = 1
+                    out_file_3.write(k + '\t' + checked[k][1] + '\t' + checked[k][2] + '\t' + str(checked[k][0]) + '\n')
+                elif k == k1 and checked[k][2] == 'convergent' and checked_2[k][2] == 'divergent':
+                    if checked[k][0] <= checked_2[k][0]:
+                        x = 1
+                        out_file_3.write(k + '\t' + checked[k][1] + '\t' + checked[k][2] + '\t' + str(checked[k][0]) + '\n')
+                    else:
+                        x = 1
+                        out_file_3.write(
+                            k + '\t' + checked_2[k1][1] + '\t' + checked_2[k1][2] + '\t' + str(checked_2[k1][0]) + '\n')
+            if x == 0:
+                out_file_3.write(k + '\t' + checked[k][1] + '\t' + checked[k][2] + '\t' + str(checked[k][0]) + '\n')
 
 
 class get_data:
