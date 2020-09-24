@@ -1501,6 +1501,7 @@ class assembly:
 
 
 class lncrna:
+    @staticmethod
     def lincrna_types(gff_file='gff_file_with_lincrna', map_factor=200):
         read_gff_file = open(gff_file, 'r')
         out_file = open('same_conv_out.txt', 'w')
@@ -1623,6 +1624,113 @@ class lncrna:
                             k + '\t' + checked_2[k1][1] + '\t' + checked_2[k1][2] + '\t' + str(checked_2[k1][0]) + '\n')
             if x == 0:
                 out_file_3.write(k + '\t' + checked[k][1] + '\t' + checked[k][2] + '\t' + str(checked[k][0]) + '\n')
+
+
+class genfam:
+    @staticmethod
+    def get_file_from_gd(url=None):
+        get_path = 'https://drive.google.com/uc?export=download&id=' + url.split('/')[-2]
+        return pd.read_csv(get_path)
+
+    @staticmethod
+    def get_bg_counts(df=None):
+        bg_gene_count = df['loc_len'].sum()
+        bg_trn_count = df['trn_len'].sum()
+        bg_phytid_count = df['phyt_id_len'].sum()
+        return bg_gene_count, bg_trn_count, bg_phytid_count
+
+    @staticmethod
+    def get_rec_dicts(df=None, glist=None, sname=None, loclen=None, gop=None, gof=None, goc=None):
+        df1_glist = df[glist]
+        df1_sname = df[sname]
+        df1_loclen = df[loclen]
+        df1_gop = df[gop]
+        df1_gof = df[gof]
+        df1_goc = df[goc]
+        df2_glist = df1_glist.replace('(^\{|\}$)', '', regex=True)
+        df_dict_glist = df2_glist.set_index('gene_fam').T.to_dict('list')
+        df_dict_sname = df1_sname.set_index('gene_fam').T.to_dict('list')
+        df_dict_loclen = df1_loclen.set_index('gene_fam').T.to_dict('list')
+        df_dict_gop = df1_gop.set_index('gene_fam').T.to_dict('list')
+        df_dict_gof = df1_gof.set_index('gene_fam').T.to_dict('list')
+        df_dict_goc = df1_goc.set_index('gene_fam').T.to_dict('list')
+        df_dict_glist = {key: value[0].split(',') for key, value in df_dict_glist.items()}
+        return df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc
+
+    @staticmethod
+    def fam_enrich(species=None, id_type=None, id_file='text_file'):
+        # solanum tuberosum potato
+        if species == 'stub':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = "Solanum tuberosum"
+
+        # phytozome locus == 1
+        get_gene_ids_from_user = dict()
+        gene_fam_count = dict()
+        short_fam_name = dict()
+        get_user_id_count_for_gene_fam = dict()
+        uniq_p = dict()
+        uniq_f = dict()
+        uniq_c = dict()
+        if id_type == 1:
+            df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
+                genfam.get_rec_dicts(df, ['gene_fam', 'array_agg'], ['gene_fam', 'fam_short'], ['gene_fam', 'loc_len'],
+                                     ['gene_fam', 'uniq_p'], ['gene_fam', 'uniq_f'], ['gene_fam', 'uniq_c'])
+
+            for item in df_dict_glist:
+                df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
+                get_gene_ids_from_user[item] = []
+                # gene family short name
+                short_fam_name[item] = df_dict_sname[item]
+                # count for each gene family for background genome
+                gene_fam_count[item] = df_dict_loclen[item]
+                # user gene id counts for each gene family
+                get_user_id_count_for_gene_fam[item] = 0
+                # GO terms
+                uniq_p[item] = df_dict_gop[item]
+                uniq_f[item] = df_dict_gof[item]
+                uniq_c[item] = df_dict_goc[item]
+        # phytozome transcript
+        elif id_type == 2:
+            df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
+                genfam.get_rec_dicts(df, ['gene_fam', 'trn_array'], ['gene_fam', 'fam_short'], ['gene_fam', 'trn_len'],
+                                     ['gene_fam', 'uniq_p'], ['gene_fam', 'uniq_f'], ['gene_fam', 'uniq_c'])
+
+            for item in df_dict_glist:
+                df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
+                get_gene_ids_from_user[item] = []
+                # gene family short name
+                short_fam_name[item] = df_dict_sname[item]
+                # count for each gene family for background genome
+                gene_fam_count[item] = df_dict_loclen[item]
+                # user gene id counts for each gene family
+                get_user_id_count_for_gene_fam[item] = 0
+                # GO terms
+                uniq_p[item] = df_dict_gop[item]
+                uniq_f[item] = df_dict_gof[item]
+                uniq_c[item] = df_dict_goc[item]
+        # phytozome  pacId
+        elif id_type == 3:
+            df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
+                genfam.get_rec_dicts(df, ['gene_fam', 'phyt_id_array'], ['gene_fam', 'fam_short'], ['gene_fam', 'phyt_id_len'],
+                                     ['gene_fam', 'uniq_p'], ['gene_fam', 'uniq_f'], ['gene_fam', 'uniq_c'])
+
+            for item in df_dict_glist:
+                df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
+                get_gene_ids_from_user[item] = []
+                # gene family short name
+                short_fam_name[item] = df_dict_sname[item]
+                # count for each gene family for background genome
+                gene_fam_count[item] = df_dict_loclen[item]
+                # user gene id counts for each gene family
+                get_user_id_count_for_gene_fam[item] = 0
+                # GO terms
+                uniq_p[item] = df_dict_gop[item]
+                uniq_f[item] = df_dict_gof[item]
+                uniq_c[item] = df_dict_goc[item]
+
+
 
 
 class get_data:
