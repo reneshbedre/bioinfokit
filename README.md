@@ -893,6 +893,27 @@ FASTQ files for each SRA accession in the current directory unless specified by 
 -->
 
 
+<b>Gene family enrichment analysis (GenFam)</b>
+
+`bioinfokit.analys.genfam.fam_enrich(species, id_type, id_file, stat_sign_test, multi_test_corr, min_map_ids)`
+
+GenFam is a comprehensive classification and enrichment analysis tool for plant genomes. It provides a unique way to 
+characterize the large-scale gene datasets such as those from transcriptome analysis.
+
+Parameters | Description
+------------ | -------------
+`species` | Plant species ID for GenFam analysis. All plant species ID provided [here](./data/genfam_species_id.txt)
+`id_type` | Plant species ID type for respective plant species. <br> <strong><em>1</em></strong>: Phytozome locus ID <br> <strong><em>2</em></strong>: Phytozome transcript ID <br> <strong><em>3</em></strong>: Phytozome PAC ID <br> 
+`id_file` | Text file contating the list of gene IDs to analyze using GenFam 
+`stat_sign_test` | Statistical significance test for enrichment analysis [default=1]. <br> <strong><em>1</em></strong>: Fisher exact test <br> <strong><em>2</em></strong>: Hypergeometric distribution <br> <strong><em>3</em></strong>: Binomial distribution <br> <strong><em>4</em></strong>: Chi-squared distribution <br>
+`multi_test_corr` | Multiple testing correction test [default=1]. <br> <strong><em>1</em></strong>: Bonferroni <br> <strong><em>2</em></strong>: Bonferroni-Holm <br> <strong><em>3</em></strong>: Benjamini-Hochberg <br> 
+`min_map_ids` | Minimum number of gene IDs from user list (`id_file`) must be mapped to background database for performing GenFam analysis [default=5]
+
+Returns:
+
+fam_enrich_out.txt (enriched gene families), fam_all_out.txt (all mapped gene families) will be saved in same directory
+
+
 How to cite bioinfokit?
 - Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
   Zenodo. http://doi.org/10.5281/zenodo.3965241 

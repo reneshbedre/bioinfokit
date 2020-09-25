@@ -11,7 +11,7 @@ import csv
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from tabulate import tabulate
-from statsmodels.graphics.mosaicplot import mosaic
+from statsmodels.stats.multitest import multipletests
 from textwrap3 import wrap
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.formula.api import ols
@@ -1628,6 +1628,104 @@ class lncrna:
 
 class genfam:
     @staticmethod
+    def enrichment_analysis(user_provided_uniq_ids_len=None, get_user_id_count_for_gene_fam=None, gene_fam_count=None,
+                            bg_gene_count=None, df_dict_glist=None, stat_sign_test=None, multi_test_corr=None,
+                            uniq_p=None, uniq_c=None, uniq_f=None, get_gene_ids_from_user=None, short_fam_name=None,
+                            min_map_ids=None):
+        pvalues = []
+        enrichment_result = []
+        # get total mapped genes from user list
+        mapped_query_ids = sum(get_user_id_count_for_gene_fam.values())
+
+        for k in get_user_id_count_for_gene_fam:
+            # first row and first column (k)
+            # from user list
+            # number of genes mapped to family in subset
+            gene_in_category = get_user_id_count_for_gene_fam[k]
+            short_fam = short_fam_name[k]
+            # first row and second column (m-k)  _uniq_id_count_dict (m)
+            # n-k (n total mappable deg)
+            # from user list
+            # total subset - gene mapped to family
+            # gene_not_in_category_but_in_sample = _uniq_id_count_dict-gene_in_category
+            # calculate stat sign based on only ids mapped and not all query ids as in agrigo
+            gene_not_in_category_but_in_sample = mapped_query_ids - gene_in_category
+            # second row and first column (n-k)
+            # m-k
+            # genes that mapped to family are in genome - genes in category from user list
+            gene_not_in_catgory_but_in_genome = gene_fam_count[k] - gene_in_category
+            bg_gene_fam_ids = gene_fam_count[k]
+            # second row and second column gene_in_category+gene_not_in_catgory_and_in_genome (n)
+            # N-m-n+k
+            bg_in_genome = bg_gene_count - mapped_query_ids - (gene_in_category + gene_not_in_catgory_but_in_genome) \
+                           + gene_in_category
+            # for go terms
+            process = uniq_p[k]
+            function = uniq_f[k]
+            comp = uniq_c[k]
+            # gene ids from user list mapped to particular gene family
+            gene_ids = get_gene_ids_from_user[k]
+
+            # fisher exact test
+            if stat_sign_test == 1:
+                # run analysis if only mappable ids are >= 5
+                # if mapped_query_ids >= 5:
+                oddsratio, pvalue = stats.fisher_exact([[gene_in_category, gene_not_in_category_but_in_sample],
+                                                        [gene_not_in_catgory_but_in_genome, bg_in_genome]], 'greater')
+
+                if int(gene_in_category) > 0:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids])
+                    pvalues.append(pvalue)
+            # Hypergeometric
+            elif stat_sign_test == 2:
+                oddsratio = 'NA'
+                pvalue = stats.hypergeom.sf(gene_in_category - 1, bg_gene_count, gene_fam_count[k], mapped_query_ids)
+                if int(gene_in_category) > 0:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids])
+                    pvalues.append(pvalue)
+            # Binomial
+            elif stat_sign_test == 3:
+                oddsratio = 'NA'
+                # probability from the reference set for particular category
+                exp_pvalue = (gene_fam_count[k] / bg_gene_count)
+                pvalue = stats.binom_test(gene_in_category, mapped_query_ids, exp_pvalue, alternative='greater')
+                if int(gene_in_category) > 0:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids])
+                    pvalues.append(pvalue)
+            # Chi-Square
+            elif stat_sign_test == 4:
+                oddsratio = 'NA'
+                chi2, pvalue, dof, exp = stats.chi2_contingency([[gene_in_category, gene_not_in_category_but_in_sample],
+                                                                 [gene_not_in_catgory_but_in_genome, bg_in_genome]],
+                                                                correction=False)
+                # count cells where expected frequency < 5
+                cell_ct = sum(sum(i < 5 for i in exp))
+                cell_ct_per = 100 * float(cell_ct) / float(4)
+                # only report the family where observed count is more than expected gene in category count
+                # this is for getting highly enriched genes other under-represented genes will also be found
+                if int(gene_in_category) > 0 and gene_in_category >= exp[0][0]:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids,
+                                              cell_ct_per])
+                    # print key, chi2, pvalue
+                    pvalues.append(pvalue)
+
+        # FDR Bonferroni
+        if multi_test_corr == 1:
+            fdr = multipletests(pvals=pvalues, method='bonferroni')[1]
+        # FDR Bonferroni-Holm
+        elif multi_test_corr == 2:
+            fdr = multipletests(pvals=pvalues, method='holm')[1]
+        # FDR Benjamini-Hochberg
+        elif multi_test_corr == 3:
+            fdr = multipletests(pvals=pvalues, method='fdr_bh')[1]
+
+        return enrichment_result, fdr, mapped_query_ids
+
+    @staticmethod
     def get_file_from_gd(url=None):
         get_path = 'https://drive.google.com/uc?export=download&id=' + url.split('/')[-2]
         return pd.read_csv(get_path)
@@ -1657,13 +1755,29 @@ class genfam:
         df_dict_glist = {key: value[0].split(',') for key, value in df_dict_glist.items()}
         return df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc
 
-    @staticmethod
-    def fam_enrich(species=None, id_type=None, id_file='text_file'):
+    def fam_enrich(self, species=None, id_type=None, id_file='text_file_with_gene_ids', stat_sign_test=1,
+                   multi_test_corr=1, min_map_ids=5):
+        if id_type not in [1, 2, 3]:
+            raise ValueError('This is not valid value for id_type')
+        if stat_sign_test not in [1, 2, 3, 4]:
+            raise ValueError('This is not valid value for stat_sign_test')
+        if multi_test_corr not in [1, 2, 3]:
+            raise ValueError('This is not valid value for multi_test_corr')
+
         # solanum tuberosum potato
         if species == 'stub':
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
-            plant_name = "Solanum tuberosum"
+            plant_name = 'Solanum tuberosum'
+        elif species == 'grai':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/11_Atm8NQpt87KzBS7hEVwnadq19x7SPk/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Gossypium raimondii v2.1'
+            print(bg_gene_count, bg_trn_count, bg_phytid_count, 'a')
+        else:
+            raise ValueError('This is not valid value for plant species')
+
 
         # phytozome locus == 1
         get_gene_ids_from_user = dict()
@@ -1673,6 +1787,8 @@ class genfam:
         uniq_p = dict()
         uniq_f = dict()
         uniq_c = dict()
+        user_provided_uniq_ids = dict()
+        # phytozome locus
         if id_type == 1:
             df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
                 genfam.get_rec_dicts(df, ['gene_fam', 'array_agg'], ['gene_fam', 'fam_short'], ['gene_fam', 'loc_len'],
@@ -1682,9 +1798,9 @@ class genfam:
                 df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
                 get_gene_ids_from_user[item] = []
                 # gene family short name
-                short_fam_name[item] = df_dict_sname[item]
+                short_fam_name[item] = df_dict_sname[item][0]
                 # count for each gene family for background genome
-                gene_fam_count[item] = df_dict_loclen[item]
+                gene_fam_count[item] = df_dict_loclen[item][0]
                 # user gene id counts for each gene family
                 get_user_id_count_for_gene_fam[item] = 0
                 # GO terms
@@ -1701,9 +1817,9 @@ class genfam:
                 df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
                 get_gene_ids_from_user[item] = []
                 # gene family short name
-                short_fam_name[item] = df_dict_sname[item]
+                short_fam_name[item] = df_dict_sname[item][0]
                 # count for each gene family for background genome
-                gene_fam_count[item] = df_dict_loclen[item]
+                gene_fam_count[item] = df_dict_loclen[item][0]
                 # user gene id counts for each gene family
                 get_user_id_count_for_gene_fam[item] = 0
                 # GO terms
@@ -1720,9 +1836,9 @@ class genfam:
                 df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
                 get_gene_ids_from_user[item] = []
                 # gene family short name
-                short_fam_name[item] = df_dict_sname[item]
+                short_fam_name[item] = df_dict_sname[item][0]
                 # count for each gene family for background genome
-                gene_fam_count[item] = df_dict_loclen[item]
+                gene_fam_count[item] = df_dict_loclen[item][0]
                 # user gene id counts for each gene family
                 get_user_id_count_for_gene_fam[item] = 0
                 # GO terms
@@ -1730,7 +1846,96 @@ class genfam:
                 uniq_f[item] = df_dict_gof[item]
                 uniq_c[item] = df_dict_goc[item]
 
+        read_id_file = open(id_file, 'r')
+        for gene_id in read_id_file:
+            gene_id = gene_id.strip().upper()
+            # remove the duplicate ids and keep unique
+            user_provided_uniq_ids[gene_id] = 0
+        read_id_file.close()
 
+        # get the annotation count. number of genes from user input present in genfam database
+        anot_count = 0
+        for k1 in df_dict_glist:
+            for k2 in user_provided_uniq_ids:
+                if k2 in df_dict_glist[k1]:
+                    # if the user input id present in df_dict_glist increment count
+                    get_gene_ids_from_user[k1].append(k2)
+                    get_user_id_count_for_gene_fam[k1] += 1
+                    anot_count += 1
+
+        enrichment_result, fdr, mapped_query_ids = genfam.enrichment_analysis(len(user_provided_uniq_ids),
+                                                                              get_user_id_count_for_gene_fam,
+                                                                              gene_fam_count, bg_gene_count,
+                                                                              df_dict_glist, stat_sign_test,
+                                                                              multi_test_corr, uniq_p, uniq_c, uniq_f,
+                                                                              get_gene_ids_from_user, short_fam_name,
+                                                                              min_map_ids)
+
+        # if the number input ids are less than 5, the process will stop
+        # check if list is empty; this is in case of wrong input by user for gene ids or not as per phytozome format or
+        # wrong species selected
+        # if len(uniq_id_count_dict) >= 5 and enrichment_result and _plant_select!="z":
+        if mapped_query_ids < min_map_ids:
+            raise Exception('The minimum mapped gene IDs must be greater than ', min_map_ids, '\n')
+
+        # replace all fdr values which are greater than 1 to 1
+        fdr[fdr > 1] = 1
+        fam_out_enrich_file = open('fam_enrich_out.txt', 'w')
+        fam_out_all_file = open('fam_all_out.txt', 'w')
+        # Query IDs = total query ids from user (k)
+        # Annotated query IDs = query ids annotated to particular gene family
+        # background ids = particular gene family ids present in whole genome backround
+        # background total = total genome ids
+        for x in range(0, len(fdr)):
+            enrichment_result[x].insert(3, anot_count)
+            enrichment_result[x].insert(9, fdr[x])
+
+        if stat_sign_test == 4:
+            # chi-s test only
+            fam_out_enrich_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" +
+                "Annotated query per family" + "\t" + "Background annotated total" + "\t" +
+                "Background annotated per family" + "\t" + "Odds ratio" + "\t" + "P-value" + "\t" + "FDR" + "\t" +
+                "GO biological process" + "\t" + "GO molecular function" + "\t" + "GO cellular component" + "\t" +
+                "Gene IDs" + "\t" + "Cells with expected frequency <5 (%)" + "\n")
+            fam_out_all_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" + "Annotated query per family"
+                + "\t" + "Background annotated total" + "\t" + "Background annotated per family" + "\t" + "Odds ratio" +
+                "\t" + "P-value" + "\t" + "FDR" + "\t" + "GO biological process" + "\t" + "GO molecular function" + "\t" +
+                "GO cellular component" + "\t" + "Gene IDs" + "\t" + "Cells with expected frequency <5 (%)" + "\n")
+        else:
+            fam_out_enrich_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" +
+                "Annotated query per family" + "\t" + "Background annotated total" + "\t" +
+                "Background annotated per family" + "\t" + "Odds ratio" + "\t" + "P-value" + "\t" + "FDR" + "\t" +
+                "GO biological process" + "\t" + "GO molecular function" + "\t" + "GO cellular component" + "\t" +
+                "Gene IDs" + "\n")
+            fam_out_all_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" + "Annotated query per family"
+                + "\t" + "Background annotated total" + "\t" + "Background annotated per family" + "\t" + "Odds ratio" +
+                "\t" + "P-value" + "\t" + "FDR" + "\t" + "GO biological process" + "\t" + "GO molecular function" + "\t" +
+                "GO cellular component" + "\t" + "Gene IDs" + "\n")
+
+        genfam_for_df, sname_for_df, pv_for_df, fdr_for_df = [], [], [], []
+        for x in range(0, len(enrichment_result)):
+            fam_out_all_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
+            # check pvalue less than 0.05
+            if float(enrichment_result[x][8]) <= 0.05:
+                fam_out_enrich_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
+                # print(enrichment_result[x])
+                genfam_for_df.append(enrichment_result[x][0])
+                sname_for_df.append(enrichment_result[x][1])
+                pv_for_df.append(enrichment_result[x][8])
+                fdr_for_df.append(enrichment_result[x][9])
+
+        # console result
+        self.df_enrich = pd.DataFrame({'Gene Family': genfam_for_df, 'Short name': sname_for_df, 'p value': pv_for_df,
+                                  'FDR': fdr_for_df,})
+        self.df_enrich = self.df_enrich.sort_values(by=['p value'])
+        self.df_enrich = self.df_enrich(index=False)
+
+        fam_out_all_file.close()
+        fam_out_enrich_file.close()
 
 
 class get_data:
