@@ -1,3 +1,10 @@
+v0.9.8  has the following updates and changes (September 25, 2020)
+- new option `mrna_feature_name` added in `analys.gff.gff_to_gtf` if the name of the feature (column 3 of GFF3 file) of 
+  protein coding mRNA is other than 'mRNA' or 'transcript' (e.g. some GFF3 file has this feature named as 
+  protein_coding_gene )
+-  `dim` option added to `visuz.cluster.screeplot`, `visuz.cluster.pcaplot` and `visuz.cluster.biplot` to control the
+   figure size
+
 v0.9.7  has the following updates and changes (September 18, 2020)
 - `seqcov` moved to `fastq` class
 -  `sra_db` function added under `fastq` class for batch download of FASTQ files 

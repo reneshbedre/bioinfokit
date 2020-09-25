@@ -25,17 +25,13 @@ def involcano(table="dataset_file", lfc="logFC", pv="p_values", lfc_thr=1, pv_th
 def ma(table="dataset_file", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1):
     general.depr_mes("bioinfokit.visuz.gene_exp.ma")
 
+
 def corr_mat(table="p_df", corm="pearson"):
     general.depr_mes("bioinfokit.visuz.stat.corr_mat")
 
+
 def screeplot(obj="pcascree"):
-    y = [x * 100 for x in obj[1]]
-    plt.bar(obj[0], y)
-    plt.xlabel('PCs', fontsize=12, fontname="sans-serif")
-    plt.ylabel('Proportion of variance (%)', fontsize=12, fontname="sans-serif")
-    plt.xticks(fontsize=7, rotation=70)
-    plt.savefig('screeplot.png', format='png', bbox_inches='tight', dpi=300)
-    plt.close()
+    general.depr_mes("bioinfokit.visuz.cluster.screeplot")
 
 
 def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3="var3"):
@@ -65,6 +61,7 @@ def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3
 def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True, zscore=None, xlabel=True, ylabel=True,
          tickfont=(10,10)):
     general.depr_mes("bioinfokit.visuz.gene_exp.hmap")
+
 
 def venn(vennset=(1,1,1,1,1,1,1), venncolor=('#00909e', '#f67280', '#ff971d'), vennalpha=0.5,
          vennlabel=('A', 'B', 'C')):
@@ -836,9 +833,11 @@ class cluster:
     def __init__(self):
         pass
 
+    @staticmethod
     def screeplot(obj="pcascree", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-                axylabel=None, figtype='png', r=300, show=False):
+                axylabel=None, figtype='png', r=300, show=False, dim=(6, 4)):
         y = [x * 100 for x in obj[1]]
+        plt.subplots(figsize=dim)
         plt.bar(obj[0], y)
         xlab='PCs'
         ylab='Proportion of variance (%)'
@@ -850,10 +849,12 @@ class cluster:
         general.axis_labels(xlab, ylab, axlabelfontsize, axlabelfontname)
         general.get_figure(show, r, figtype, 'screeplot')
 
+    @staticmethod
     def pcaplot(x=None, y=None, z=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9,
-                axlabelfontname="Arial", figtype='png', r=300, show=False, plotlabels=True):
+                axlabelfontname="Arial", figtype='png', r=300, show=False, plotlabels=True, dim=(6, 4)):
         if x is not None and y is not None and z is None:
             assert var1 is not None and var2 is not None and labels is not None, "var1 or var2 variable or labels are missing"
+            plt.subplots(figsize=dim)
             for i, varnames in enumerate(labels):
                 plt.scatter(x[i], y[i])
                 if plotlabels:
@@ -863,7 +864,7 @@ class cluster:
         elif x is not None and y is not None and z is not None:
             assert var1 and var2 and var3 and labels is not None, "var1 or var2 or var3 or labels are missing"
             # for 3d plot
-            fig = plt.figure()
+            fig = plt.figure(figsize=dim)
             ax = fig.add_subplot(111, projection='3d')
             for i, varnames in enumerate(labels):
                 ax.scatter(x[i], y[i], z[i])
@@ -874,11 +875,12 @@ class cluster:
             ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=axlabelfontsize, fontname=axlabelfontname)
             general.get_figure(show, r, figtype, 'pcaplot_3d')
 
+    @staticmethod
     # adapted from https://stackoverflow.com/questions/39216897/plot-pca-loadings-and-loading-in-biplot-in-sklearn-like-rs-autoplot
     def biplot(cscore=None, loadings=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9, axlabelfontname="Arial",
                figtype='png', r=300, show=False, markerdot="o", dotsize=6, valphadot=1, colordot='#4a4e4d', arrowcolor='#fe8a71',
                valphaarrow=1, arrowlinestyle='-', arrowlinewidth=1.0, centerlines=True, colorlist=None, legendpos='best',
-               datapoints=True):
+               datapoints=True, dim=(6, 4)):
         assert cscore is not None and loadings is not None and labels is not None and var1 is not None and var2 is not None, \
             "cscore or loadings or labels or var1 or var2 are missing"
         if var1 is not None and var2 is not None and var3 is None:
@@ -886,6 +888,7 @@ class cluster:
             yscale = 1.0 / (cscore[:, 1].max() - cscore[:, 1].min())
             # zscale = 1.0 / (cscore[:, 2].max() - cscore[:, 2].min())
             # colorlist is an array of classes from dataframe column
+            plt.subplots(figsize=dim)
             if datapoints:
                 if colorlist is not None:
                     unique_class = set(colorlist)
@@ -933,7 +936,7 @@ class cluster:
             xscale = 1.0 / (cscore[:, 0].max() - cscore[:, 0].min())
             yscale = 1.0 / (cscore[:, 1].max() - cscore[:, 1].min())
             zscale = 1.0 / (cscore[:, 2].max() - cscore[:, 2].min())
-            fig = plt.figure()
+            fig = plt.figure(figsize=dim)
             ax = fig.add_subplot(111, projection='3d')
             if datapoints:
                 if colorlist is not None:
