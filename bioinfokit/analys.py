@@ -86,29 +86,11 @@ def fqreadcounter(file="fastq_file"):
 
 
 def fasta_reader(file="fasta_file"):
-    read_file = open(file, "rU")
-    fasta_iter = (rec[1] for rec in groupby(read_file, lambda line: line[0] == ">"))
-    for record in fasta_iter:
-        fasta_header = record .__next__()[1:].strip()
-        fasta_header = re.split("\s+", fasta_header)[0]
-        seq = "".join(s.strip() for s in fasta_iter.__next__())
-        yield (fasta_header, seq)
+    general.depr_mes("bioinfokit.analys.fasta.fasta_reader")
 
 
 def rev_com(seq=None, file=None):
-    if seq is not None:
-        rev_seq = seq[::-1]
-        rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
-        return rev_seq
-    elif file is not None:
-        out_file = open("output_revcom.fasta", 'w')
-        fasta_iter = fasta_reader(file)
-        for record in fasta_iter:
-            fasta_header, seq = record
-            rev_seq = seq[::-1]
-            rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
-            out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
-        out_file.close()
+    general.depr_mes("bioinfokit.analys.fasta.rev_com")
 
 
 # extract subseq from genome sequence
@@ -174,6 +156,19 @@ class fasta:
                 rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
                 out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
             out_file.close()
+
+    def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
+        fasta_iter = fasta.fasta_reader(file)
+        for record in fasta_iter:
+            fasta_header, seq = record
+            if id == fasta_header.strip() and strand == "plus":
+                # -1 is necessary as it counts from 0
+                sub_seq = seq[int(st - 1):int(end)]
+                print(sub_seq)
+            elif id == fasta_header.strip() and strand == "minus":
+                sub_seq = seq[int(st - 1):int(end)]
+                sub_seq_rc = fasta.rev_com(seq=sub_seq)
+                print(sub_seq_rc)
 
 
 class fastq:
@@ -1226,13 +1221,11 @@ class gff:
                             "Parent field required in GFF3 file in attribute field for exon"
                             " feature type")
 
-                    exon_i[transcript_id] = 0
-
                     if transcript_id_temp in gene_trn[gene_id]:
                         exon_i[transcript_id_temp] += 1
                         gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id_temp + \
-                                        '"; exon_number "' + str(exon_i[transcript_id_temp]) + '"; gene_name "'+ \
-                                        gene_name+ '"; gene_source "' + line[1] + '";'
+                                        '"; exon_number "' + str(exon_i[transcript_id_temp]) + '"; gene_name "' + \
+                                        gene_name + '"; gene_source "' + line[1] + '";'
                     # for transcripts with shared exons
                     elif ',' in transcript_id_temp:
                         gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id_temp + \
@@ -1312,40 +1305,74 @@ class gff:
                 if first_cds_present == 1 and start_codon_present == 0:
                     first_cds_present = 0
                     if 'Parent=' in line[8]:
-                        gene_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
 
                     if 'Parent=' not in line[8]:
                         raise Exception(
                             "Parent field required in GFF3 file in attribute field for CDS"
                             " feature type")
 
-                    if transcript_id_temp == transcript_id or gene_id_temp == gene_id:
-                        if line[6] == '+':
-                            codon_min_cord = int(min(cds_dict_st[transcript_id_temp], key=int))
-                            cds_phase = int(
-                                cds_dict_st_phase[(transcript_id_temp, min(cds_dict_st[transcript_id_temp], key=int))])
-                            line[2], line[3], line[4] = 'start_codon', codon_min_cord + cds_phase, \
-                                                        codon_min_cord + cds_phase + 2
-                        elif line[6] == '-':
-                            codon_max_cord = int(max(cds_dict_end[transcript_id_temp], key=int))
-                            cds_phase = int(
-                                cds_dict_end_phase[(transcript_id_temp, max(cds_dict_end[transcript_id_temp], key=int))])
-                            line[2], line[3], line[4] = 'start_codon', codon_max_cord - 2 - cds_phase, \
-                                                        codon_max_cord - cds_phase
-                        gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id + '"; gene_name "' + \
+                    for k in gene_trn[gene_id]:
+                        if k == transcript_id_temp:
+                            if line[6] == '+':
+                                codon_min_cord = int(min(cds_dict_st[transcript_id_temp], key=int))
+                                cds_phase = int(
+                                    cds_dict_st_phase[
+                                        (transcript_id_temp, min(cds_dict_st[transcript_id_temp], key=int))])
+                                line[2], line[3], line[4] = 'start_codon', codon_min_cord + cds_phase, \
+                                                            codon_min_cord + cds_phase + 2
+                            elif line[6] == '-':
+                                codon_max_cord = int(max(cds_dict_end[transcript_id_temp], key=int))
+                                cds_phase = int(
+                                    cds_dict_end_phase[
+                                        (transcript_id_temp, max(cds_dict_end[transcript_id_temp], key=int))])
+                                line[2], line[3], line[4] = 'start_codon', codon_max_cord - 2 - cds_phase, \
+                                                            codon_max_cord - cds_phase
+                            gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id_temp + '"; gene_name "' + \
                                             gene_name + '"; gene_source "' + line[1] + '";'
-                        out_gtf_file.write('\t'.join(str(x) for x in line[0:8]) + '\t' + gene_attr_gtf + '\n')
+                            out_gtf_file.write('\t'.join(str(x) for x in line[0:8]) + '\t' + gene_attr_gtf + '\n')
 
+                        '''
+                        if transcript_id in gene_trn[k] or gene_id_temp == k:
+                            print(transcript_id, 'e')
+                            if line[6] == '+':
+                                codon_min_cord = int(min(cds_dict_st[transcript_id_temp], key=int))
+                                cds_phase = int(
+                                    cds_dict_st_phase[(transcript_id_temp, min(cds_dict_st[transcript_id_temp], key=int))])
+                                line[2], line[3], line[4] = 'start_codon', codon_min_cord + cds_phase, \
+                                                        codon_min_cord + cds_phase + 2
+                            elif line[6] == '-':
+                                codon_max_cord = int(max(cds_dict_end[transcript_id_temp], key=int))
+                                cds_phase = int(
+                                    cds_dict_end_phase[(transcript_id_temp, max(cds_dict_end[transcript_id_temp], key=int))])
+                                line[2], line[3], line[4] = 'start_codon', codon_max_cord - 2 - cds_phase, \
+                                                        codon_max_cord - cds_phase
+                            gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id + '"; gene_name "' + \
+                                            gene_name + '"; gene_source "' + line[1] + '";'
+                            out_gtf_file.write('\t'.join(str(x) for x in line[0:8]) + '\t' + gene_attr_gtf + '\n')
+                        '''
                 if last_cds_present == 1 and end_codon_present == 0:
                     last_cds_present = 0
                     if 'Parent=' in line[8]:
-                        gene_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
+                        transcript_id_temp = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
 
                     if 'Parent=' not in line[8]:
                         raise Exception(
                             "Parent field required in GFF3 file in attribute field for CDS"
                             " feature type")
 
+                    for k in gene_trn[gene_id]:
+                        if k == transcript_id_temp:
+                            if line[6] == '+':
+                                codon_max_cord = int(max(cds_dict_end[transcript_id_temp], key=int))
+                                line[2], line[3], line[4] = 'stop_codon', codon_max_cord - 2, codon_max_cord
+                            elif line[6] == '-':
+                                codon_min_cord = int(min(cds_dict_st[transcript_id_temp], key=int))
+                                line[2], line[3], line[4] = 'stop_codon', codon_min_cord, codon_min_cord + 2
+                            gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id_temp + \
+                                            '"; gene_name "' + gene_name + '"; gene_source "' + line[1] + '";'
+                            out_gtf_file.write('\t'.join(str(x) for x in line[0:8]) + '\t' + gene_attr_gtf + '\n')
+                    '''
                     if transcript_id_temp == transcript_id or gene_id_temp == gene_id:
                         if line[6] == '+':
                             codon_max_cord = int(max(cds_dict_end[transcript_id_temp], key=int))
@@ -1358,7 +1385,7 @@ class gff:
                         gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id + '"; gene_name "' + \
                                             gene_name + '"; gene_source "' + line[1] + '";'
                         out_gtf_file.write('\t'.join(str(x) for x in line[0:8]) + '\t' + gene_attr_gtf + '\n')
-
+                    '''
         read_gff_file.close()
         out_gtf_file.close()
 
