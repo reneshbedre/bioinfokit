@@ -908,6 +908,9 @@ Parameters | Description
 `stat_sign_test` | Statistical significance test for enrichment analysis [default=1]. <br> <strong><em>1</em></strong>: Fisher exact test <br> <strong><em>2</em></strong>: Hypergeometric distribution <br> <strong><em>3</em></strong>: Binomial distribution <br> <strong><em>4</em></strong>: Chi-squared distribution <br>
 `multi_test_corr` | Multiple testing correction test [default=1]. <br> <strong><em>1</em></strong>: Bonferroni <br> <strong><em>2</em></strong>: Bonferroni-Holm <br> <strong><em>3</em></strong>: Benjamini-Hochberg <br> 
 `min_map_ids` | Minimum number of gene IDs from user list (`id_file`) must be mapped to background database for performing GenFam analysis [default=5]
+`alpha` | Significance level [float][default: 0.05]
+
+
 
 Returns:
 
