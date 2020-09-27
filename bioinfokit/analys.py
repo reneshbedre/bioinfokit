@@ -1778,7 +1778,6 @@ class genfam:
                 'https://drive.google.com/file/d/11_Atm8NQpt87KzBS7hEVwnadq19x7SPk/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Gossypium raimondii v2.1'
-            print(bg_gene_count, bg_trn_count, bg_phytid_count, 'a')
         else:
             raise ValueError('This is not valid value for plant species')
 
@@ -1935,7 +1934,7 @@ class genfam:
         self.df_enrich = self.df_enrich.sort_values(by=['p value'])
 
         # console info
-        self.info = pd.DataFrame({'Parameter': ['Total query gene IDs', 'Number of genes annotated', 'Plant species',
+        self.genfam_info = pd.DataFrame({'Parameter': ['Total query gene IDs', 'Number of genes annotated', 'Plant species',
                                                 'Statistical test for enrichment', 'Multiple testing correction method',
                                                 'Significance level'],
                                   'Value':[len(user_provided_uniq_ids), mapped_query_ids, plant_name, stat_test_name,
@@ -1948,7 +1947,9 @@ class genfam:
         df_enrich_fig = self.df_enrich
         df_enrich_fig['log10p'] = -(np.log10(df_enrich_fig['p value']))
         visuz.stat.normal_bar(df=df_enrich_fig, x_col_name='Short name', y_col_name='log10p', axxlabel='Gene Family',
-                        axylabel='-log10(p value)')
+                        axylabel='-log10(p value)', ar=(90, 0))
+
+        
 
 
 class get_data:
