@@ -1,14 +1,12 @@
-from sklearn.decomposition import PCA
 import pandas as pd
 import re
 import os
 import numpy as np
-from bioinfokit.visuz import screeplot, pcaplot, general
-from itertools import groupby, chain, combinations
-import string
+from bioinfokit.visuz import general
+from bioinfokit import visuz
+from itertools import groupby, chain
 import sys
 import csv
-import matplotlib.pyplot as plt
 import scipy.stats as stats
 from tabulate import tabulate
 from statsmodels.stats.multitest import multipletests
@@ -19,7 +17,6 @@ import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from pathlib import Path
-from sklearn.metrics import mean_squared_error
 from collections import defaultdict
 from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
@@ -1668,6 +1665,7 @@ class genfam:
 
             # fisher exact test
             if stat_sign_test == 1:
+                stat_test_name = 'Fisher exact test'
                 # run analysis if only mappable ids are >= 5
                 # if mapped_query_ids >= 5:
                 oddsratio, pvalue = stats.fisher_exact([[gene_in_category, gene_not_in_category_but_in_sample],
@@ -1679,6 +1677,7 @@ class genfam:
                     pvalues.append(pvalue)
             # Hypergeometric
             elif stat_sign_test == 2:
+                stat_test_name = 'Hypergeometric distribution'
                 oddsratio = 'NA'
                 pvalue = stats.hypergeom.sf(gene_in_category - 1, bg_gene_count, gene_fam_count[k], mapped_query_ids)
                 if int(gene_in_category) > 0:
@@ -1687,6 +1686,7 @@ class genfam:
                     pvalues.append(pvalue)
             # Binomial
             elif stat_sign_test == 3:
+                stat_test_name = 'Binomial distribution'
                 oddsratio = 'NA'
                 # probability from the reference set for particular category
                 exp_pvalue = (gene_fam_count[k] / bg_gene_count)
@@ -1697,6 +1697,7 @@ class genfam:
                     pvalues.append(pvalue)
             # Chi-Square
             elif stat_sign_test == 4:
+                stat_test_name = 'Chi-squared distribution'
                 oddsratio = 'NA'
                 chi2, pvalue, dof, exp = stats.chi2_contingency([[gene_in_category, gene_not_in_category_but_in_sample],
                                                                  [gene_not_in_catgory_but_in_genome, bg_in_genome]],
@@ -1715,15 +1716,18 @@ class genfam:
 
         # FDR Bonferroni
         if multi_test_corr == 1:
+            mult_test_name = 'Bonferroni'
             fdr = multipletests(pvals=pvalues, method='bonferroni')[1]
         # FDR Bonferroni-Holm
         elif multi_test_corr == 2:
+            mult_test_name = 'Bonferroni-Holm'
             fdr = multipletests(pvals=pvalues, method='holm')[1]
         # FDR Benjamini-Hochberg
         elif multi_test_corr == 3:
+            mult_test_name = 'Benjamini-Hochberg'
             fdr = multipletests(pvals=pvalues, method='fdr_bh')[1]
 
-        return enrichment_result, fdr, mapped_query_ids
+        return enrichment_result, fdr, mapped_query_ids, stat_test_name, mult_test_name
 
     @staticmethod
     def get_file_from_gd(url=None):
@@ -1756,7 +1760,7 @@ class genfam:
         return df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc
 
     def fam_enrich(self, species=None, id_type=None, id_file='text_file_with_gene_ids', stat_sign_test=1,
-                   multi_test_corr=1, min_map_ids=5):
+                   multi_test_corr=1, min_map_ids=5, alpha=0.05):
         if id_type not in [1, 2, 3]:
             raise ValueError('This is not valid value for id_type')
         if stat_sign_test not in [1, 2, 3, 4]:
@@ -1863,13 +1867,10 @@ class genfam:
                     get_user_id_count_for_gene_fam[k1] += 1
                     anot_count += 1
 
-        enrichment_result, fdr, mapped_query_ids = genfam.enrichment_analysis(len(user_provided_uniq_ids),
-                                                                              get_user_id_count_for_gene_fam,
-                                                                              gene_fam_count, bg_gene_count,
-                                                                              df_dict_glist, stat_sign_test,
-                                                                              multi_test_corr, uniq_p, uniq_c, uniq_f,
-                                                                              get_gene_ids_from_user, short_fam_name,
-                                                                              min_map_ids)
+        enrichment_result, fdr, mapped_query_ids, stat_test_name, mult_test_name = \
+            genfam.enrichment_analysis(len(user_provided_uniq_ids), get_user_id_count_for_gene_fam, gene_fam_count,
+                                       bg_gene_count, df_dict_glist, stat_sign_test, multi_test_corr, uniq_p, uniq_c,
+                                       uniq_f, get_gene_ids_from_user, short_fam_name, min_map_ids)
 
         # if the number input ids are less than 5, the process will stop
         # check if list is empty; this is in case of wrong input by user for gene ids or not as per phytozome format or
@@ -1920,7 +1921,7 @@ class genfam:
         for x in range(0, len(enrichment_result)):
             fam_out_all_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
             # check pvalue less than 0.05
-            if float(enrichment_result[x][8]) <= 0.05:
+            if float(enrichment_result[x][8]) <= alpha:
                 fam_out_enrich_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
                 # print(enrichment_result[x])
                 genfam_for_df.append(enrichment_result[x][0])
@@ -1930,12 +1931,24 @@ class genfam:
 
         # console result
         self.df_enrich = pd.DataFrame({'Gene Family': genfam_for_df, 'Short name': sname_for_df, 'p value': pv_for_df,
-                                  'FDR': fdr_for_df,})
+                                  'FDR': fdr_for_df})
         self.df_enrich = self.df_enrich.sort_values(by=['p value'])
-        self.df_enrich = self.df_enrich(index=False)
+
+        # console info
+        self.info = pd.DataFrame({'Parameter': ['Total query gene IDs', 'Number of genes annotated', 'Plant species',
+                                                'Statistical test for enrichment', 'Multiple testing correction method',
+                                                'Significance level'],
+                                  'Value':[len(user_provided_uniq_ids), mapped_query_ids, plant_name, stat_test_name,
+                                           mult_test_name, alpha]})
 
         fam_out_all_file.close()
         fam_out_enrich_file.close()
+
+        # get figure for enrichment results
+        df_enrich_fig = self.df_enrich
+        df_enrich_fig['log10p'] = -(np.log10(df_enrich_fig['p value']))
+        visuz.stat.normal_bar(df=df_enrich_fig, x_col_name='Short name', y_col_name='log10p', axxlabel='Gene Family',
+                        axylabel='-log10(p value)')
 
 
 class get_data:
