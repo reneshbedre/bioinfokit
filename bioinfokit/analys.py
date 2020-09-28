@@ -1949,7 +1949,18 @@ class genfam:
         visuz.stat.normal_bar(df=df_enrich_fig, x_col_name='Short name', y_col_name='log10p', axxlabel='Gene Family',
                         axylabel='-log10(p value)', ar=(90, 0))
 
-        
+    @staticmethod
+    def allowed_ids(locus=None, trn=None, pacid=None, species=None):
+        print('\nAllowed ID types for ', species, '\n\n', 'Phytozome locus: ', locus, '\n', 'Phytozome transcript: ', trn,
+              '\n', 'Phytozome pacID: ', pacid, '\n')
+
+    @staticmethod
+    def check_allowed_ids(species=None):
+        if species == 'stub':
+            genfam.allowed_ids('PGSC0003DMG400014174', 'PGSC0003DMT400036749', '37453284', 'Solanum tuberosum')
+        else:
+            raise ValueError('Invalid value for species \n')
+
 
 
 class get_data:
