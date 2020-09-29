@@ -2,6 +2,7 @@
 [![DOI](https://zenodo.org/badge/174428856.svg)](https://zenodo.org/badge/latestdoi/174428856)
 [![PyPI version](https://badge.fury.io/py/bioinfokit.svg)](https://badge.fury.io/py/bioinfokit)
 [![Downloads](https://pepy.tech/badge/bioinfokit/month)](https://pepy.tech/project/bioinfokit/month)
+[![Build Status](https://travis-ci.org/reneshbedre/bioinfokit.svg?branch=master)](https://travis-ci.org/reneshbedre/bioinfokit)
 
 
 The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
@@ -436,6 +437,7 @@ Output will be saved in same directory
 
 <a href="https://reneshbedre.github.io/blog/format.html" target="_blank">Working example</a>
 
+<!--
 <b>One-way ANOVA</b>
 
 `bioinfokit.stat.oanova(table, res, xfac, ph, phalpha)`
@@ -454,7 +456,7 @@ Returns:
 ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
 
 <a href="https://reneshbedre.github.io/blog/oanova.html" target="_blank">Working example</a>
-
+-->
 
 <b>Manhatten plot</b>
 
