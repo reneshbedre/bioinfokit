@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/bioinfokit.svg)](https://badge.fury.io/py/bioinfokit)
 [![Downloads](https://pepy.tech/badge/bioinfokit/month)](https://pepy.tech/project/bioinfokit/month)
 [![Build Status](https://travis-ci.org/reneshbedre/bioinfokit.svg?branch=master)](https://travis-ci.org/reneshbedre/bioinfokit)
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/bioinfokit/badges/version.svg)](https://anaconda.org/bioconda/bioinfokit)
 
 
 The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
