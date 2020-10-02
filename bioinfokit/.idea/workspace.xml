@@ -4,7 +4,6 @@
     <list default="true" id="71e75625-13c9-4fcc-a08d-c45d9475d173" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/bioinfokit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/bioinfokit.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analys.py" beforeDir="false" afterPath="$PROJECT_DIR$/analys.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -43,7 +42,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="md" value="3447" />
-          <entry key="py" value="4237" />
+          <entry key="py" value="4258" />
           <entry key="txt" value="25" />
         </counts>
       </usages-collector>
@@ -51,7 +50,7 @@
         <counts>
           <entry key="Markdown" value="3433" />
           <entry key="PLAIN_TEXT" value="25" />
-          <entry key="Python" value="4251" />
+          <entry key="Python" value="4272" />
         </counts>
       </usages-collector>
     </session>
@@ -61,11 +60,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/analys.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="1918" column="43" lean-forward="true" selection-start-line="1918" selection-start-column="43" selection-end-line="1918" selection-end-column="43" />
+            <state relative-caret-position="257">
+              <caret line="1938" column="124" selection-start-line="1938" selection-start-column="124" selection-end-line="1938" selection-end-column="124" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
-                <marker date="1601618317498" expanded="true" signature="109451:109634" ph="..." />
               </folding>
             </state>
           </provider>
@@ -295,11 +293,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/analys.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="1918" column="43" lean-forward="true" selection-start-line="1918" selection-start-column="43" selection-end-line="1918" selection-end-column="43" />
+        <state relative-caret-position="257">
+          <caret line="1938" column="124" selection-start-line="1938" selection-start-column="124" selection-end-line="1938" selection-end-column="124" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <marker date="1601618317498" expanded="true" signature="109451:109634" ph="..." />
           </folding>
         </state>
       </provider>
