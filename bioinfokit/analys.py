@@ -1768,18 +1768,175 @@ class genfam:
         if multi_test_corr not in [1, 2, 3]:
             raise ValueError('This is not valid value for multi_test_corr')
 
+
         # solanum tuberosum potato
-        if species == 'stub':
-            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
+        if species == 'ahyp':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Y5WHC-G7idvaMa_sX5xyy99MLXENaSfS/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
-            plant_name = 'Solanum tuberosum'
+            plant_name = 'Amaranthus hypochondriacus v2.1 (Amaranth)'
+        elif species == 'atri':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1PeuE4_r4o3YdczEwuJhiJgpS0SAD6kWi/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Amborella trichopoda v1.0 (Amborella)'
+        elif species == 'acom':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/198lQk2_kvI78qqE15QmEiuKNmR7IjIy0/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Ananas comosus v3 (Pineapple)'
+        elif species == 'alyr':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1xa8V_g0fJLJRuZ9lbJooZy_QC1xNypnC/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Arabidopsis lyrata v2.1 (Lyre-leaved rock cress)'
+        elif species == 'atha':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1akf_2LJU0ULLB31o7smQI6NwUC0_Cg1T/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Arabidopsis thaliana TAIR10 (Thale cress)'
+        elif species == 'aoff':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1D5dkCEwEf7uwPsb1bJySKQcH3HukDLUD/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Asparagus officinalis V1.1 (Asparagus)'
+        elif species == 'bstr':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1uJtA-WpEfgYdjDsiCAZbPdRX9OyMAmb1/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Boechera stricta v1.2 (Drummond rock cress)'
+        elif species == 'bdis':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ju40AJAw9vYcm3CdKEYOnL8LonXF9t5H/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Brachypodium distachyon v3.1 (Purple false brome)'
+        elif species == 'bole':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1NOAEvLJBKPFKogwyUkQ_8bXCO4Wz8ZqF/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Brassica oleracea capitata v1.0 (Savoy cabbage)'
+        elif species == 'cgra':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1SI7PLZOuc5GTnuFxYA-zdCHZShLvleSk/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Capsella grandiflora v1.1'
+        elif species == 'crub':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Sz9yPe67BzLujVj_N4Hpgvu8rG7rFSLl/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Capsella rubella v1.0 (Pink shepherds purse)'
+        elif species == 'cpap':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1pFLQJt2m-TDA2zGBDBCFQSiiiA5SEfQO/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Carica papaya ASGPBv0.4 (Papaya)'
+        elif species == 'cqui':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/10KLHnBgB-OC7aTEEhxYqp3BYbLqchfcj/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Chenopodium quinoa v1.0 (Quinoa)'
+        elif species == 'crei':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1YbQ457hRuKZ2KsuVhfSShgCeso9QTPZP/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Chlamydomonas reinhardtii v5.5 (Green algae)'
+        elif species == 'czof':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1WftatxF-m11Q7WWxvbSV_gEIJlLUp4X5/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Chromochloris zofingiensis v5.2.3.2'
+        elif species == 'cari':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/14EldoR_JBgvFAgyOa_MW4IqaE-_IVEA3/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Cicer arietinum v1.0 (Chickpea)'
+        elif species == 'ccle':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1xTrCDPgnWwfIObZFxeMdp0v-iNL2aO69/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Citrus clementina v1.0 (Clementine)'
+        elif species == 'csin':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Zaif12UzenScHAuNP7NY2bqSHplBpx9a/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Citrus sinensis v1.1 (Sweet orange)'
+        elif species == 'csub':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1UXEF9n1kKNXtEDv-e9pGYJkKcMsJ203S/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Coccomyxa subellipsoidea C-169 v2.0'
+        elif species == 'csat':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1DeuURHM1yFtHk7TUjh341Au43BdXQqQK/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Cucumis sativus v1.0'
+        elif species == 'dcar':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1dUO1umk6RvzXdT7jilx7NYmXz6xWXWBj/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Daucus carota v2.0'
+        elif species == 'dsal':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1EibVmaLKl9jqIECQ5eI35dd1ePpycKw_/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Dunaliella salina v1.0'
+        elif species == 'egra':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1s6-HTCXKtd8TCvEzYSb2t2T_sCnJF3GT/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Eucalyptus grandis v2.0'
+        elif species == 'esal':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/18sMv6sK4DzWqEhpU7JuMQzwoI-DdPAgZ/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Eutrema salsugineum v1.0'
+        elif species == 'fves':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1GhNX0dkRZHOZiQIxuPTrPuOX6Yf7HZ4z/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Fragaria vesca v1.1'
+        elif species == 'gmax':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1j9nENpp5_bWnuuiM0ojoB3-shltl7QMn/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Glycine max Wm82.a2.v1'
         elif species == 'grai':
             df = genfam.get_file_from_gd(
                 'https://drive.google.com/file/d/11_Atm8NQpt87KzBS7hEVwnadq19x7SPk/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Gossypium raimondii v2.1'
+        elif species == 'hvul':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1gQmt5j8o4TaRrl-RE4GVUV5_a19haR5N/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Hordeum vulgare r1 (Barley)'
+        elif species == 'kfed':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1te-KkIUkKhwyaJeyMzxruji20VzV2Jp-/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Kalanchoe fedtschenkoi v1.1 (diploid Kalanchoe)'
+        elif species == 'lsat':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1V-fXPzpR2hV_FKGed1bcnVV0LCnA36vd/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Lactuca sativa V5 (Lettuce)'
+        elif species == 'lusi':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1RY97um9edfEyC_HoPLmi5FZuGvBvYK6M/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Linum usitatissimum v1.0 (Flax)'
+        elif species == 'mdom':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1d05-57Uxc-Zpg1P42oCmZWQscBETzwru/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Malus domestica v1.0 (Apple)'
+        elif species == 'mesc':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/131d1eiwgeRt691GASO9hEi5j2AVlgA5f/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Manihot esculenta v6.1 (Cassava)'
+        elif species == 'mpol':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1S4eJBldzkvov2HRigG68JDJ4kPz5o2i9/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Marchantia polymorpha v3.1 (Common liverwort)'
+        elif species == 'mtru':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/111BzdpRL6Vmrq32ErujKmRJGi8EZmQWG/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Medicago truncatula Mt4.0v1 (Barrel medic)'
+        elif species == 'mpus':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/109eZLEkzQFSyeq1DYHiznDPUuZ1X9D1y/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Micromonas pusilla CCMP1545 v3.0'
+        elif species == 'mgut':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Ewqr7_xeSSMzADQgzEBJseu9YVyfsHC7/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Mimulus guttatus v2.0 (Monkey flower)'
+        elif species == 'macu':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1v9q_voRcqaMDXc7CpfYdkAt0uUwbHRbb/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Musa acuminata v1 (Banana)'
+        elif species == 'stub':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Solanum tuberosum'
+
         else:
             raise ValueError('This is not valid value for plant species')
+
+
+
+
+
+
+
 
 
         # phytozome locus == 1
