@@ -585,7 +585,8 @@ class stat:
                   plotlegend=False, hbsize=4, ylm=None, add_sign_line=False, pv=None,
                   sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth':0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
                                   'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
-                                                                                              'fontsize': 8 }):
+                                                                                              'fontsize': 8 },
+                  dotplot=False):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -614,6 +615,13 @@ class stat:
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         if plotlegend:
             plt.legend(loc=legendpos)
+
+        if dotplot:
+            for cols in range(len(df2['factors'].unique())):
+                ax.scatter(x=np.linspace(xbar[cols] - bw / 2, xbar[cols] + bw / 2, int(reps)),
+                       y=df2[(df2['factors'] == df2['factors'].unique()[cols]) & (df2['sample'] == 'M')]['value'],
+                       s=dotsize, color="#7d0013", zorder=1, alpha=valphadot,
+                       marker=markerdot)
 
         if add_sign_line:
             if len(colbar) == 2:
@@ -693,6 +701,171 @@ class stat:
                             if pv_symb_3:
                                 plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
                                              ha="center")
+        general.get_figure(show, r, figtype, figname)
+
+    # with replicates values
+    # need to work on this later
+    def multi_bar_raw(df="dataframe", dim=(5, 4), samp_col_name=None, bw=0.4, colorbar=None, r=300,
+                  show=False, axtickfontname="Arial", axtickfontsize=9, ax_x_ticklabel=None, ar=90, figtype='png',
+                  figname='multi_bar', valphabar=1, legendpos='best', errorbar=False, yerrlw=None, yerrcw=None,
+                  plotlegend=False, hbsize=4, ylm=None, add_sign_line=False, pv=None,
+                  sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth': 0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
+                                  'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
+                                                                                               'fontsize': 8},
+                  dotplot=False):
+        if samp_col_name is None or colorbar is None:
+            raise ValueError('Invalid value for samp_col_name or colorbar options')
+        fig, ax = plt.subplots(figsize=dim)
+        assert len(df[samp_col_name].unique()) >= 2, "number of bar should be atleast 2"
+        df_mean = df.groupby(samp_col_name).mean().reset_index().set_index(samp_col_name).T
+        df_sem = df.groupby(samp_col_name).sem().reset_index().set_index(samp_col_name).T
+        colbar = list(df_mean)
+        colerrorbar = list(df_sem)
+        xbar = np.arange(df_mean.shape[0])
+        xbar_temp = xbar
+        xbarcol = df_mean.index
+        assert len(colbar) == len(colorbar), "number of color should be equivalent to number of column bars"
+        if colbar is not None and isinstance(colbar, (tuple, list)):
+            for i in range(len(colbar)):
+                if errorbar:
+                    ax.bar(x=xbar_temp, height=df_mean[colbar[i]], yerr=df_sem[colerrorbar[i]], width=bw,
+                           color=colorbar[i], alpha=valphabar, capsize=hbsize, label=colbar[i],
+                           error_kw={'elinewidth': yerrlw, 'capthick': yerrcw})
+                    xbar_temp = xbar_temp + bw
+                else:
+                    ax.bar(x=xbar_temp, height=df_mean[colbar[i]], width=bw, color=colorbar[i], alpha=valphabar,
+                           label=colbar[i])
+                    xbar_temp = xbar_temp + bw
+        ax.set_xticks(xbar + ((bw * (len(colbar) - 1)) / (1 + (len(colbar) - 1))))
+        if ax_x_ticklabel:
+            x_ticklabel = ax_x_ticklabel
+        else:
+            x_ticklabel = df[xbarcol]
+        ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        # ylm must be tuple of start, end, interval
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+        if plotlegend:
+            plt.legend(loc=legendpos)
+
+        df_melt = pd.melt(df.reset_index(), id_vars=[samp_col_name], value_vars=df_mean.index)
+        size_factor_to_start_line = max(df_mean.max()) / 20
+        if add_sign_line:
+            if len(colbar) == 2:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i]
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i]
+                    # only if y axis is positive
+                    if y_pos > 0:
+                        y_pos += 0.5
+                        y_pos_2 += 0.5
+                        pv_symb = general.pvalue_symbol(pv[i], sign_line_opts['symbol'])
+                        if pv_symb:
+                            ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                                        arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                                    'arrowstyle': sign_line_opts['arrowstyle'],
+                                                    'linewidth': sign_line_opts['linewidth']})
+                            ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
+                                                     sign_line_opts['dist_y_pos']),
+                                        fontsize=sign_line_opts['fontsize'], ha="center")
+                    else:
+                        y_pos -= 0.5
+                        y_pos_2 -= 0.5
+                        pv_symb = general.pvalue_symbol(pv[i], sign_line_opts['symbol'])
+                        if pv_symb:
+                            ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                                        arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=-1 ',
+                                                    'arrowstyle': sign_line_opts['arrowstyle'],
+                                                    'linewidth': sign_line_opts['linewidth']})
+                            ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), min(y_pos_2, y_pos) -
+                                                     sign_line_opts['dist_y_neg']),
+                                        fontsize=sign_line_opts['fontsize'], ha="center")
+            elif len(colbar) == 3:
+                for i in xbar:
+                    if i == len(colbar) - 1:
+                        break
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    y_pos = df_mean[colbar[i]].to_numpy()[i] + df_sem[colerrorbar[i]].to_numpy()[i]
+                    y_pos_2 = df_mean[colbar[i+1]].to_numpy()[i] + df_sem[colerrorbar[i+1]].to_numpy()[i]
+                    # only if y axis is positive
+                    if y_pos > 0:
+                        y_pos += 0.5
+                        y_pos_2 += 0.5
+                        pv_symb = general.pvalue_symbol(pv[i], sign_line_opts['symbol'])
+                        if pv_symb:
+                            ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                                        arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                                    'arrowstyle': sign_line_opts['arrowstyle'],
+                                                    'linewidth': sign_line_opts['linewidth']})
+                            ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
+                                                     size_factor_to_start_line),
+                                        fontsize=sign_line_opts['fontsize'], ha="center")
+                    else:
+                        y_pos -= 0.5
+                        y_pos_2 -= 0.5
+                        pv_symb = general.pvalue_symbol(pv[i], sign_line_opts['symbol'])
+                        if pv_symb:
+                            ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                                        arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=-1 ',
+                                                    'arrowstyle': sign_line_opts['arrowstyle'],
+                                                    'linewidth': sign_line_opts['linewidth']})
+                            ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), min(y_pos_2, y_pos) -
+                                                     sign_line_opts['dist_y_neg']),
+                                        fontsize=sign_line_opts['fontsize'], ha="center")
+
+
+
+
+        if add_sign_symbol:
+            if len(colbar) == 2:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    # max value size factor is essential for rel pos of symbol
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
+                            (max(df[colbar[0]].to_numpy()) / 20)
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + \
+                              (max(df[colbar[1]].to_numpy()) / 20)
+                    # only if y axis is positive
+                    if y_pos > 0:
+                        pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
+                        pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
+                        if pv_symb_1:
+                            plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_2:
+                            plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+            elif len(colbar) == 3:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    x_pos_3 = xbar[i] + (2 * bw)
+                    # max value size factor is essential for rel pos of symbol
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
+                            (max(df[colbar[0]].to_numpy()) / 20)
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + \
+                              (max(df[colbar[1]].to_numpy()) / 20)
+                    y_pos_3 = df[colbar[2]].to_numpy()[i] + df[colerrorbar[2]].to_numpy()[i] + \
+                              (max(df[colbar[2]].to_numpy()) / 20)
+                    # only if y axis is positive
+                    if y_pos > 0:
+                        pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
+                        pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
+                        pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
+                        if pv_symb_1:
+                            plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_2:
+                            plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_3:
+                            plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
         general.get_figure(show, r, figtype, figname)
 
     # for data with replicates

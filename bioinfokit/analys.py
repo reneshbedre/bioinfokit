@@ -1,3 +1,5 @@
+# Copyright (c) 2020, Renesh Bedre (see LICENSE)
+
 from sklearn.decomposition import PCA
 import pandas as pd
 import re
@@ -23,7 +25,7 @@ from sklearn.metrics import mean_squared_error
 from collections import defaultdict
 from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
-
+from statsmodels.stats.libqsturng import psturng, qsturng
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -689,7 +691,9 @@ class format:
 
 class stat:
     def __init__(self):
-        pass
+        self.anova_summary = None
+        self.data_summary = None
+        self.tukey_summary = None
 
     def anova(self, df='dataframe', xfac=None, res=None):
         # drop NaN
@@ -724,54 +728,117 @@ class stat:
             print(tabulate(anova_table, headers=["Source", "Df", "Sum Squares", "Mean Squares", "F", "Pr(>F)"]),
                   "\n")
 
+    @staticmethod
+    def _data_summary(df='dataframe', xfac_var=None, res_var=None):
+        data_summary_dict = dict()
+        data_summary_dict['Group'] = []
+        data_summary_dict['Count'] = []
+        data_summary_dict['Mean'] = []
+        data_summary_dict['Std Dev'] = []
+        data_summary_dict['Min'] = []
+        data_summary_dict['25%'] = []
+        data_summary_dict['50%'] = []
+        data_summary_dict['75%'] = []
+        data_summary_dict['Max'] = []
+        levels = df[xfac_var].unique()
+        for i in levels:
+            temp = df.loc[df[xfac_var] == i, res_var]
+            data_summary_dict['Group'].append(i)
+            data_summary_dict['Count'].append(temp.describe().to_numpy()[0])
+            data_summary_dict['Mean'].append(temp.describe().to_numpy()[1])
+            data_summary_dict['Std Dev'].append(temp.describe().to_numpy()[2])
+            data_summary_dict['Min'].append(temp.describe().to_numpy()[3])
+            data_summary_dict['25%'].append(temp.describe().to_numpy()[4])
+            data_summary_dict['50%'].append(temp.describe().to_numpy()[5])
+            data_summary_dict['75%'].append(temp.describe().to_numpy()[6])
+            data_summary_dict['Max'].append(temp.describe().to_numpy()[7])
+        return pd.DataFrame(data_summary_dict)
 
+    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
+        tukey_phoc = dict()
+        tukey_phoc['group1'] = []
+        tukey_phoc['group2'] = []
+        tukey_phoc['Mean Diff'] = []
+        tukey_phoc['Lower'] = []
+        tukey_phoc['Upper'] = []
+        tukey_phoc['Significant'] = []
+        tukey_phoc['t'] = []
+        tukey_phoc['p'] = []
+        levels = df[xfac_var].unique()
 
-    def oanova(table="table", res=None, xfac=None, ph=False, phalpha=0.05):
+        self.oanova(df, res_var, xfac_var, phalpha)
+        df_res = self.anova_summary.df.Residual
+        mse = self.anova_summary.sum_sq.Residual / df_res
+
+        # q critical
+        q_crit = qsturng(1 - phalpha, len(levels), df_res)
+        # t critical tcrit = qcrit /\sqrt 2.
+        # t_crit = q_crit / np.sqrt(2)
+        tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
+
+        for i in range(len(levels)):
+            for j in range(len(levels)):
+                if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1]:
+                    mean_diff = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Mean'].to_numpy()[0] - \
+                                self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[0]
+                    t_val = mean_diff / np.sqrt(2 * (mse / len(levels) ) )
+                    # count for groups; this is useful when sample size not equal -- Tukey-Kramer
+                    group1_count = self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Count'].to_numpy()[0]
+                    group2_count = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Count'].to_numpy()[
+                        0]
+                    tukey_phoc['group1'].append(levels[i])
+                    tukey_phoc['group2'].append(levels[j+1])
+                    tukey_phoc['Mean Diff'].append(mean_diff)
+                    # when equal sample size
+                    tukey_phoc['Lower'].append(mean_diff - (q_crit * np.sqrt(np.divide(mse, 2) *
+                                                                             (np.divide(1, group1_count) +
+                                                                              np.divide(1, group2_count)) ) ) )
+                    tukey_phoc['Upper'].append(mean_diff + (q_crit * np.sqrt(np.divide(mse, 2) *
+                                                                             (np.divide(1, group1_count) +
+                                                                              np.divide(1, group2_count))) ) )
+                    tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
+                    # t test related to qvalue as q = sqrt(2) t
+                    # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
+                    tukey_phoc['t'].append(t_val)
+                    tukey_phoc['p'].append(psturng(np.abs(t_val), len(levels), df_res))
+
+        self.tukey_summary = pd.DataFrame(tukey_phoc)
+
+    def oanova(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
         # create and run model
-        model = ols('{} ~ C({})'.format(res, xfac), data=table).fit()
+        model = ols('{} ~ C({})'.format(res_var, xfac_var), data=df).fit()
         anova_table = sm.stats.anova_lm(model, typ=2)
 
         # treatments
         # this is for bartlett test
-        levels = table[xfac].unique()
-        fac_list = []
-        data_summary = []
-        for i in levels:
-            temp_summary = []
-            temp = table.loc[table[xfac]==i, res]
-            fac_list.append(temp)
-            temp_summary.append(i)
-            temp_summary.extend(temp.describe().to_numpy())
-            data_summary.append(temp_summary)
-
-        print("\nTable Summary\n")
-        print(tabulate(data_summary, headers=["Group", "Count", "Mean", "Std Dev", "Min", "25%", "50%", "75%", "Max"]), "\n")
+        levels = df[xfac_var].unique()
+        self.data_summary = stat._data_summary(df, xfac_var, res_var)
 
         # check assumptions
         # Shapiro-Wilk  data is drawn from normal distribution.
-        w, pvalue1 = stats.shapiro(model.resid)
-        w, pvalue2 = stats.bartlett(*fac_list)
-        if pvalue1 < 0.05:
-            print("Warning: Data is not drawn from normal distribution")
-        else:
+        # w, pvalue1 = stats.shapiro(model.resid)
+        # w, pvalue2 = stats.bartlett(*fac_list)
+        # if pvalue1 < 0.05:
+        #    print("Warning: Data is not drawn from normal distribution")
+        # else:
             # samples from populations have equal variances.
-            if pvalue2 < 0.05:
-                print("Warning: treatments do not have equal variances")
+        #    if pvalue2 < 0.05:
+        #        print("Warning: treatments do not have equal variances")
 
-        print("\nOne-way ANOVA Summary\n")
-        print(anova_table)
-        print("\n")
+        self.anova_summary = anova_table
+        # tukey hsd
+        # self.tukey_hsd(df, res_var, xfac_var, phalpha)
 
-        # if post-hoc test is true
+        '''
         if ph:
             # perform multiple pairwise comparison (Tukey HSD)
-            m_comp = pairwise_tukeyhsd(endog=table[res], groups=table[xfac], alpha=phalpha)
+            m_comp = pairwise_tukeyhsd(endog=df[res], groups=df[xfac], alpha=phalpha)
             print("\nPost-hoc Tukey HSD test\n")
             print(m_comp, "\n")
-
-        print("ANOVA Assumption tests\n")
-        print("Shapiro-Wilk (P-value):", pvalue1, "\n")
-        print("Bartlett (P-value):", pvalue2, "\n")
+        '''
+        # print("ANOVA Assumption tests\n")
+        # print("Shapiro-Wilk (P-value):", pvalue1, "\n")
+        # print("Bartlett (P-value):", pvalue2, "\n")
 
     def lin_reg(self, df="dataframe", y=None, x=None):
         df = df.dropna()
