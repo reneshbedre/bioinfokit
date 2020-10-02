@@ -1923,6 +1923,22 @@ class genfam:
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1v9q_voRcqaMDXc7CpfYdkAt0uUwbHRbb/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Musa acuminata v1 (Banana)'
+        elif species == 'oeur':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1dJAipHwx4mPZmMAs53gJG0EiCzgizGtx/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Olea europaea var. sylvestris v1.0 (Wild olive)'
+        elif species == 'otho':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1eUnTqx4WMRG0HHZS2HBAhi0vil1a9_xj/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Oropetium thomaeum v1.0'
+        elif species == 'osat':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1GsQgmFrwxtlSMCgDAyamAvMXQvEaYjcE/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Oryza sativa v7_JGI (Rice)'
+        elif species == 'oluc':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Ld57aW3j7GT7J6YSlfDou32pxsIlnB-S/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Ostreococcus lucimarinus v2.0'
         elif species == 'stub':
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
