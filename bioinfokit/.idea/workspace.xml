@@ -4,7 +4,6 @@
     <list default="true" id="71e75625-13c9-4fcc-a08d-c45d9475d173" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/bioinfokit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/bioinfokit.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -59,8 +58,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/analys.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="1647" lean-forward="true" selection-start-line="1647" selection-end-line="1647" />
+            <state relative-caret-position="386">
+              <caret line="1647" selection-start-line="1647" selection-end-line="1647" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -72,7 +71,7 @@
         <entry file="file://$PROJECT_DIR$/../README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="207">
+              <first_editor relative-caret-position="13605">
                 <caret line="907" column="73" selection-start-line="907" selection-start-column="73" selection-end-line="907" selection-end-column="73" />
               </first_editor>
               <second_editor />
@@ -83,8 +82,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/visuz.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="843" column="20" lean-forward="true" selection-start-line="843" selection-start-column="20" selection-end-line="843" selection-end-column="20" />
+            <state relative-caret-position="12480">
+              <caret line="843" column="20" selection-start-line="843" selection-start-column="20" selection-end-line="843" selection-end-column="20" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -187,7 +186,7 @@
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25767368" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2657512" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="DB Browser" order="3" />
@@ -275,17 +274,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../data/genfam_species_id.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="32" selection-start-line="1" selection-start-column="32" selection-end-line="1" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../data/genfam_species_id.txt" />
     <entry file="file://$PROJECT_DIR$/../README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="207">
+          <first_editor relative-caret-position="13605">
             <caret line="907" column="73" selection-start-line="907" selection-start-column="73" selection-end-line="907" selection-end-column="73" />
           </first_editor>
           <second_editor />
@@ -301,8 +294,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/visuz.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="843" column="20" lean-forward="true" selection-start-line="843" selection-start-column="20" selection-end-line="843" selection-end-column="20" />
+        <state relative-caret-position="12480">
+          <caret line="843" column="20" selection-start-line="843" selection-start-column="20" selection-end-line="843" selection-end-column="20" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -311,8 +304,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/analys.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="1647" lean-forward="true" selection-start-line="1647" selection-end-line="1647" />
+        <state relative-caret-position="386">
+          <caret line="1647" selection-start-line="1647" selection-end-line="1647" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
