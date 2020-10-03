@@ -694,6 +694,7 @@ class stat:
         self.anova_summary = None
         self.data_summary = None
         self.tukey_summary = None
+        self.tukey_groups = None
 
     def anova(self, df='dataframe', xfac=None, res=None):
         # drop NaN
@@ -761,9 +762,10 @@ class stat:
         tukey_phoc['Mean Diff'] = []
         tukey_phoc['Lower'] = []
         tukey_phoc['Upper'] = []
-        tukey_phoc['Significant'] = []
-        tukey_phoc['t'] = []
-        tukey_phoc['p'] = []
+        # tukey_phoc['Significant'] = []
+        tukey_phoc['q value'] = []
+        tukey_phoc['p value'] = []
+        group_letter = dict()
         levels = df[xfac_var].unique()
 
         self.oanova(df, res_var, xfac_var, phalpha)
@@ -775,10 +777,13 @@ class stat:
         # t critical tcrit = qcrit /\sqrt 2.
         # t_crit = q_crit / np.sqrt(2)
         tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
+        let_num = 97
+        let_num_list = []
+        sharing_letter = dict()
 
         for i in range(len(levels)):
             for j in range(len(levels)):
-                if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1]:
+                if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1] and j+1 > i:
                     mean_diff = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Mean'].to_numpy()[0] - \
                                 self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[0]
                     t_val = mean_diff / np.sqrt(2 * (mse / len(levels) ) )
@@ -786,6 +791,10 @@ class stat:
                     group1_count = self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Count'].to_numpy()[0]
                     group2_count = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Count'].to_numpy()[
                         0]
+                    # https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
+                    # also for considering unequal sample size
+                    mse_factor = np.sqrt(np.divide(mse, group1_count) + np.divide(mse, group2_count))
+                    q_val = mean_diff / np.divide(mse_factor, np.sqrt(2))
                     tukey_phoc['group1'].append(levels[i])
                     tukey_phoc['group2'].append(levels[j+1])
                     tukey_phoc['Mean Diff'].append(mean_diff)
@@ -796,13 +805,63 @@ class stat:
                     tukey_phoc['Upper'].append(mean_diff + (q_crit * np.sqrt(np.divide(mse, 2) *
                                                                              (np.divide(1, group1_count) +
                                                                               np.divide(1, group2_count))) ) )
-                    tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
+                    # tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
                     # t test related to qvalue as q = sqrt(2) t
                     # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
-                    tukey_phoc['t'].append(t_val)
-                    tukey_phoc['p'].append(psturng(np.abs(t_val), len(levels), df_res))
+                    tukey_phoc['q value'].append(q_val)
+                    tukey_phoc['p value'].append(psturng(np.abs(q_val), len(levels), df_res))
 
+                    if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
+                        if levels[i] not in group_letter and levels[j+1] not in group_letter:
+                            assigned = 1
+                            group_letter[levels[i]] = let_num
+                            let_num_list.append(let_num)
+                            group_letter[levels[j + 1]] = let_num_list[-1] + 1
+                            let_num_list.append(let_num_list[-1] + 1)
+                            print(let_num_list, 'a')
+                        elif levels[j+1] not in group_letter:
+                            assigned = 1
+                            group_letter[levels[j + 1]] = let_num_list[-1] + 1
+                            let_num_list.append(let_num_list[-1] + 1)
+                            print(levels[i], levels[j + 1], let_num_list, 'b')
+                        elif levels[j+1] in group_letter:
+                            if assigned == 1:
+                                group_letter[levels[j + 1]] = let_num_list[-1] + 1
+                                let_num_list.append(let_num_list[-1] + 1)
+                                assigned = 0
+                                print(levels[i], levels[j + 1], let_num_list, 'd')
+
+                    else:
+                        if levels[i] not in group_letter and levels[j+1] not in group_letter:
+                            assigned = 1
+                            group_letter[levels[i]] = let_num
+                            let_num_list.append(let_num)
+                            group_letter[levels[j + 1]] = let_num
+                            let_num_list.append(let_num)
+                            sharing_letter[levels[i]] = 0
+                            sharing_letter[levels[j+1]] = 0
+                            print(levels[i], levels[j+1], let_num_list, 'e')
+                        elif levels[j + 1] in group_letter:
+                            assigned = 1
+                            print(levels[i], levels[j+1], sharing_letter, 'g')
+                            if levels[j + 1] in sharing_letter:
+                                group_letter[levels[i]] = [group_letter[levels[i]], group_letter[levels[j+1]]]
+                                let_num_list.append(group_letter[levels[i]])
+                                print(let_num_list, 'f')
+                            else:
+                                group_letter[levels[j + 1]] = group_letter[levels[i]]
+                                let_num_list.append(group_letter[levels[i]])
+                                print(let_num_list, 'c')
+                        elif levels[j + 1] not in group_letter:
+                            assigned = 1
+                            group_letter[levels[j + 1]] = group_letter[levels[i]]
+                            let_num_list.append(group_letter[levels[i]])
+                            print(levels[i], levels[j+1], let_num_list, 'h')
+
+        print(group_letter)
+        group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
         self.tukey_summary = pd.DataFrame(tukey_phoc)
+        self.tukey_groups = pd.DataFrame({'': group_letter_chars.keys(), 'groups': group_letter_chars.values()})
 
     def oanova(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
         # create and run model
@@ -826,8 +885,6 @@ class stat:
         #        print("Warning: treatments do not have equal variances")
 
         self.anova_summary = anova_table
-        # tukey hsd
-        # self.tukey_hsd(df, res_var, xfac_var, phalpha)
 
         '''
         if ph:

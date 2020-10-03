@@ -712,22 +712,29 @@ class stat:
                   sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth': 0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
                                   'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
                                                                                                'fontsize': 8},
-                  dotplot=False):
+                  dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
+                  sign_line_pairs=None):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
-        assert len(df[samp_col_name].unique()) >= 2, "number of bar should be atleast 2"
+        sample_list = df[samp_col_name].unique()
+        assert len(sample_list) >= 2, "number of bar should be atleast 2"
         df_mean = df.groupby(samp_col_name).mean().reset_index().set_index(samp_col_name).T
         df_sem = df.groupby(samp_col_name).sem().reset_index().set_index(samp_col_name).T
-        colbar = list(df_mean)
-        colerrorbar = list(df_sem)
+        colbar = sample_list
+        colerrorbar = sample_list
         xbar = np.arange(df_mean.shape[0])
         xbar_temp = xbar
         xbarcol = df_mean.index
         assert len(colbar) == len(colorbar), "number of color should be equivalent to number of column bars"
-        if colbar is not None and isinstance(colbar, (tuple, list)):
+        df_melt = pd.melt(df.reset_index(), id_vars=[samp_col_name], value_vars=df_mean.index)
+        variable_list = df_melt['variable'].unique()
+        get_sample_x_pos = dict()
+
+        if colbar is not None:
             for i in range(len(colbar)):
                 if errorbar:
+                    print(xbar_temp, i)
                     ax.bar(x=xbar_temp, height=df_mean[colbar[i]], yerr=df_sem[colerrorbar[i]], width=bw,
                            color=colorbar[i], alpha=valphabar, capsize=hbsize, label=colbar[i],
                            error_kw={'elinewidth': yerrlw, 'capthick': yerrcw})
@@ -736,7 +743,10 @@ class stat:
                     ax.bar(x=xbar_temp, height=df_mean[colbar[i]], width=bw, color=colorbar[i], alpha=valphabar,
                            label=colbar[i])
                     xbar_temp = xbar_temp + bw
-        ax.set_xticks(xbar + ((bw * (len(colbar) - 1)) / (1 + (len(colbar) - 1))))
+
+        bw_fact = bw / 2
+        ax.set_xticks(xbar+((len(df_mean.columns)-1) * bw_fact) )
+        # ax.set_xticks(xbar + ((bw * (len(colbar) - 1)) / (1 + (len(colbar) - 1))))
         if ax_x_ticklabel:
             x_ticklabel = ax_x_ticklabel
         else:
@@ -749,7 +759,21 @@ class stat:
         if plotlegend:
             plt.legend(loc=legendpos)
 
-        df_melt = pd.melt(df.reset_index(), id_vars=[samp_col_name], value_vars=df_mean.index)
+
+        if dotplot:
+            for cols in range(len(variable_list)):
+                move_fact = 0
+                for cols1 in range(len(sample_list)):
+                        ax.scatter(x=np.linspace(xbar[cols] - bw_fact + move_fact, xbar[cols] + bw_fact + move_fact,
+                                         int(df.groupby(samp_col_name).count().loc[sample_list[cols1], variable_list[cols]])),
+                           y=df_melt[(df_melt['variable'] == df_melt['variable'].unique()[cols]) & (
+                                       df_melt[samp_col_name] == sample_list[cols1])]['value'], s=dotplot_opts['dotsize'],
+                               color=dotplot_opts['color'], zorder=10, alpha=dotplot_opts['valpha'],
+                               marker=dotplot_opts['marker'])
+                        move_fact += 2 * bw_fact
+
+        print(get_sample_x_pos)
+
         size_factor_to_start_line = max(df_mean.max()) / 20
         if add_sign_line:
             if len(colbar) == 2:
@@ -817,9 +841,6 @@ class stat:
                                                      sign_line_opts['dist_y_neg']),
                                         fontsize=sign_line_opts['fontsize'], ha="center")
 
-
-
-
         if add_sign_symbol:
             if len(colbar) == 2:
                 for i in xbar:
@@ -866,6 +887,34 @@ class stat:
                         if pv_symb_3:
                             plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
+            elif len(colbar) == 3:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    x_pos_3 = xbar[i] + (2 * bw)
+                    # max value size factor is essential for rel pos of symbol
+                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
+                            (max(df[colbar[0]].to_numpy()) / 20)
+                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + \
+                              (max(df[colbar[1]].to_numpy()) / 20)
+                    y_pos_3 = df[colbar[2]].to_numpy()[i] + df[colerrorbar[2]].to_numpy()[i] + \
+                              (max(df[colbar[2]].to_numpy()) / 20)
+                    # only if y axis is positive
+                    if y_pos > 0:
+                        pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
+                        pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
+                        pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
+                        if pv_symb_1:
+                            plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_2:
+                            plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_3:
+                            plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+
+
         general.get_figure(show, r, figtype, figname)
 
     # for data with replicates
