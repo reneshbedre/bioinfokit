@@ -759,12 +759,12 @@ class stat:
         tukey_phoc = dict()
         tukey_phoc['group1'] = []
         tukey_phoc['group2'] = []
-        tukey_phoc['Mean Diff'] = []
+        tukey_phoc['Diff'] = []
         tukey_phoc['Lower'] = []
         tukey_phoc['Upper'] = []
         # tukey_phoc['Significant'] = []
-        tukey_phoc['q value'] = []
-        tukey_phoc['p value'] = []
+        tukey_phoc['q-value'] = []
+        tukey_phoc['p-value'] = []
         # group_letter = dict()
         group_pval = dict()
         group_let = dict()
@@ -800,7 +800,7 @@ class stat:
                     q_val = mean_diff / np.divide(mse_factor, np.sqrt(2))
                     tukey_phoc['group1'].append(levels[i])
                     tukey_phoc['group2'].append(levels[j+1])
-                    tukey_phoc['Mean Diff'].append(mean_diff)
+                    tukey_phoc['Diff'].append(mean_diff)
                     # when equal sample size
                     tukey_phoc['Lower'].append(mean_diff - (q_crit * np.sqrt(np.divide(mse, 2) *
                                                                              (np.divide(1, group1_count) +
@@ -811,13 +811,13 @@ class stat:
                     # tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
                     # t test related to qvalue as q = sqrt(2) t
                     # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
-                    tukey_phoc['q value'].append(q_val)
+                    tukey_phoc['q-value'].append(q_val)
                     if isinstance(psturng(np.abs(q_val), len(levels), df_res), np.ndarray):
                         group_pval[(levels[i], levels[j+1])] = psturng(np.abs(q_val), len(levels), df_res)[0]
-                        tukey_phoc['p value'].append(psturng(np.abs(q_val), len(levels), df_res)[0])
+                        tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res)[0])
                     else:
                         group_pval[(levels[i], levels[j + 1])] = psturng(np.abs(q_val), len(levels), df_res)
-                        tukey_phoc['p value'].append(psturng(np.abs(q_val), len(levels), df_res))
+                        tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res))
 
                     '''
                     if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
@@ -925,7 +925,8 @@ class stat:
         group_letter_chars = {m: ''.join(list(map(chr, n))) for m, n in group_let.items()}
 
         self.tukey_summary = pd.DataFrame(tukey_phoc)
-        self.tukey_groups = pd.DataFrame({'': group_letter_chars.keys(), 'groups': group_letter_chars.values()})
+        self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
+            list(group_letter_chars.values())})
 
     def oanova(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
         # create and run model

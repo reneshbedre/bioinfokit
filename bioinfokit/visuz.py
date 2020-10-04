@@ -714,7 +714,7 @@ class stat:
                                                                                                'fontsize': 8},
                   dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
                   sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=None, legendfontsize=8,
-                  ax_y_label=None):
+                  ax_y_label=None, symb_dist=None):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
@@ -926,7 +926,6 @@ class stat:
                     if isinstance(group_let_df, pd.DataFrame):
                         # only if y axis is positive
                         if y_pos > 0:
-                            print(colbar[0], xbarcol[i], 'x')
                             plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
                                          fontsize=sign_symbol_opts['fontsize'], ha="center")
                         if y_pos_2 > 0:
@@ -937,6 +936,70 @@ class stat:
                                          fontsize=sign_symbol_opts['fontsize'], ha="center")
                         if y_pos_4 > 0:
                             plt.annotate(group_let_df.loc[colbar[3], xbarcol[i]], xy=(x_pos_4, y_pos_4),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+
+                    # need to work on this for 4 bars
+                    if pv:
+                        pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
+                        pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
+                        pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
+                        if pv_symb_1:
+                            plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_2:
+                            plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+                        if pv_symb_3:
+                            plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center")
+            elif len(colbar) == 5:
+                for i in xbar:
+                    x_pos = xbar[i]
+                    x_pos_2 = xbar[i] + bw
+                    x_pos_3 = xbar[i] + (2 * bw)
+                    x_pos_4 = xbar[i] + (3 * bw)
+                    x_pos_5 = xbar[i] + (4 * bw)
+                    # max value size factor is essential for rel pos of symbol
+                    if symb_dist:
+                        y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i] + \
+                                (max(df_mean[colbar[0]].to_numpy()) / 20) + symb_dist[i][0]
+                        y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[1]].to_numpy()) / 20) + symb_dist[i][1]
+                        y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[2]].to_numpy()) / 20) + symb_dist[i][2]
+                        y_pos_4 = df_mean[colbar[3]].to_numpy()[i] + df_sem[colerrorbar[3]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[3]].to_numpy()) / 20) + symb_dist[i][3]
+                        y_pos_5 = df_mean[colbar[4]].to_numpy()[i] + df_sem[colerrorbar[4]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[4]].to_numpy()) / 20) + symb_dist[i][4]
+                    else:
+                        y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i] + \
+                                (max(df_mean[colbar[0]].to_numpy()) / 20)
+                        y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[1]].to_numpy()) / 20)
+                        y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[2]].to_numpy()) / 20)
+                        y_pos_4 = df_mean[colbar[3]].to_numpy()[i] + df_sem[colerrorbar[3]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[3]].to_numpy()) / 20)
+                        y_pos_5 = df_mean[colbar[4]].to_numpy()[i] + df_sem[colerrorbar[4]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[4]].to_numpy()) / 20)
+
+                    # group_let_df need index column
+                    if isinstance(group_let_df, pd.DataFrame):
+                        # only if y axis is positive
+                        if y_pos > 0:
+                            plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_2 > 0:
+                            plt.annotate(group_let_df.loc[colbar[1], xbarcol[i]], xy=(x_pos_2, y_pos_2),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_3 > 0:
+                            plt.annotate(group_let_df.loc[colbar[2], xbarcol[i]], xy=(x_pos_3, y_pos_3),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_4 > 0:
+                            plt.annotate(group_let_df.loc[colbar[3], xbarcol[i]], xy=(x_pos_4, y_pos_4),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_5 > 0:
+                            plt.annotate(group_let_df.loc[colbar[4], xbarcol[i]], xy=(x_pos_5, y_pos_5),
                                          fontsize=sign_symbol_opts['fontsize'], ha="center")
 
                     # need to work on this for 4 bars
