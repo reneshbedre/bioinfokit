@@ -4,7 +4,6 @@
     <list default="true" id="71e75625-13c9-4fcc-a08d-c45d9475d173" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/bioinfokit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/bioinfokit.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analys.py" beforeDir="false" afterPath="$PROJECT_DIR$/analys.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visuz.py" beforeDir="false" afterPath="$PROJECT_DIR$/visuz.py" afterDir="false" />
     </list>
@@ -27,6 +26,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+          <entry key="csv" value="1" />
           <entry key="gff" value="1" />
           <entry key="md" value="7" />
           <entry key="py" value="3" />
@@ -37,34 +37,35 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Markdown" value="7" />
-          <entry key="PLAIN_TEXT" value="5" />
+          <entry key="PLAIN_TEXT" value="6" />
           <entry key="Python" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
+          <entry key="csv" value="2" />
           <entry key="md" value="3447" />
-          <entry key="py" value="5081" />
-          <entry key="txt" value="412" />
+          <entry key="py" value="6283" />
+          <entry key="txt" value="586" />
           <entry key="xx" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Markdown" value="3433" />
-          <entry key="PLAIN_TEXT" value="426" />
-          <entry key="Python" value="5095" />
+          <entry key="PLAIN_TEXT" value="602" />
+          <entry key="Python" value="6297" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/analys.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="311">
-              <caret line="831" column="64" selection-start-line="831" selection-start-column="64" selection-end-line="831" selection-end-column="64" />
+            <state relative-caret-position="-128">
+              <caret line="924" column="59" selection-start-line="924" selection-start-column="59" selection-end-line="924" selection-end-column="59" />
               <folding>
                 <element signature="e#50#87#0" expanded="true" />
               </folding>
@@ -76,7 +77,7 @@
         <entry file="file://$PROJECT_DIR$/../README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="13575">
+              <first_editor relative-caret-position="579">
                 <caret line="905" selection-start-line="905" selection-end-line="905" />
               </first_editor>
               <second_editor />
@@ -84,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/visuz.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1427">
-              <caret line="914" column="53" selection-start-line="914" selection-start-column="53" selection-end-line="914" selection-end-column="53" />
+            <state relative-caret-position="433">
+              <caret line="758" column="107" selection-start-line="758" selection-start-column="107" selection-end-line="758" selection-end-column="107" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -99,8 +100,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../misc/jiaxing/audit.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="386" column="16" lean-forward="true" selection-start-line="374" selection-end-line="386" selection-end-column="16" />
+            <state relative-caret-position="415">
+              <caret line="417" column="144" selection-start-line="417" selection-end-line="418" />
             </state>
           </provider>
         </entry>
@@ -133,8 +134,10 @@
       <find>alpha</find>
       <find>single</find>
       <find>label</find>
-      <find>legend</find>
       <find>qsturng</find>
+      <find>pval</find>
+      <find>legend</find>
+      <find>legendanchor</find>
       <find>dot</find>
     </findStrings>
     <replaceStrings>
@@ -154,10 +157,11 @@
         <option value="$PROJECT_DIR$/../../codes/reneshbedre.github.io/_posts/2018-12-11-FQutil.md" />
         <option value="$PROJECT_DIR$/../data/genfam_species_id.txt" />
         <option value="$PROJECT_DIR$/../README.md" />
-        <option value="$PROJECT_DIR$/visuz.py" />
         <option value="$PROJECT_DIR$/xx" />
-        <option value="$PROJECT_DIR$/../../misc/jiaxing/audit.txt" />
         <option value="$PROJECT_DIR$/analys.py" />
+        <option value="$PROJECT_DIR$/../../misc/jiaxing/fig_6bd_anova_group.csv" />
+        <option value="$PROJECT_DIR$/../../misc/jiaxing/audit.txt" />
+        <option value="$PROJECT_DIR$/visuz.py" />
       </list>
     </option>
   </component>
@@ -334,16 +338,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../data/genfam_species_id.txt" />
-    <entry file="file://$PROJECT_DIR$/../README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="13575">
-            <caret line="905" selection-start-line="905" selection-end-line="905" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Downloads/VectorBase-48_AgambiaePEST.gff">
       <provider selected="true" editor-type-id="LargeFileEditor">
         <state relative-caret-position="165">
@@ -351,12 +345,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/visuz.py">
+    <entry file="file://$PROJECT_DIR$/../README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="579">
+            <caret line="905" selection-start-line="905" selection-end-line="905" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../misc/jiaxing/fig_6bd_anova_group.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1427">
-          <caret line="914" column="53" selection-start-line="914" selection-start-column="53" selection-end-line="914" selection-end-column="53" />
+        <state relative-caret-position="60">
+          <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analys.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-128">
+          <caret line="924" column="59" selection-start-line="924" selection-start-column="59" selection-end-line="924" selection-end-column="59" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#50#87#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -370,17 +381,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../misc/jiaxing/audit.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="386" column="16" lean-forward="true" selection-start-line="374" selection-end-line="386" selection-end-column="16" />
+        <state relative-caret-position="415">
+          <caret line="417" column="144" selection-start-line="417" selection-end-line="418" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/analys.py">
+    <entry file="file://$PROJECT_DIR$/visuz.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="831" column="64" selection-start-line="831" selection-start-column="64" selection-end-line="831" selection-end-column="64" />
+        <state relative-caret-position="433">
+          <caret line="758" column="107" selection-start-line="758" selection-start-column="107" selection-end-line="758" selection-end-column="107" />
           <folding>
-            <element signature="e#50#87#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>

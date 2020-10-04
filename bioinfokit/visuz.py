@@ -713,7 +713,7 @@ class stat:
                                   'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
                                                                                                'fontsize': 8},
                   dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
-                  sign_line_pairs=None):
+                  sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=None, legendfontsize=1):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
@@ -729,7 +729,6 @@ class stat:
         assert len(colbar) == len(colorbar), "number of color should be equivalent to number of column bars"
         df_melt = pd.melt(df.reset_index(), id_vars=[samp_col_name], value_vars=df_mean.index)
         variable_list = df_melt['variable'].unique()
-        get_sample_x_pos = dict()
 
         if colbar is not None:
             for i in range(len(colbar)):
@@ -757,7 +756,7 @@ class stat:
             plt.ylim(bottom=ylm[0], top=ylm[1])
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         if plotlegend:
-            plt.legend(loc=legendpos)
+            plt.legend(loc=legendpos, bbox_to_anchor=legendanchor, ncol=legendcols, fontsize=legendfontsize)
 
 
         if dotplot:
@@ -772,7 +771,6 @@ class stat:
                                marker=dotplot_opts['marker'])
                         move_fact += 2 * bw_fact
 
-        print(get_sample_x_pos)
 
         size_factor_to_start_line = max(df_mean.max()) / 20
         if add_sign_line:
@@ -887,11 +885,12 @@ class stat:
                         if pv_symb_3:
                             plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
-            elif len(colbar) == 3:
+            elif len(colbar) == 4:
                 for i in xbar:
                     x_pos = xbar[i]
                     x_pos_2 = xbar[i] + bw
                     x_pos_3 = xbar[i] + (2 * bw)
+                    x_pos_4 = xbar[i] + (3 * bw)
                     # max value size factor is essential for rel pos of symbol
                     y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
                             (max(df[colbar[0]].to_numpy()) / 20)
@@ -899,8 +898,27 @@ class stat:
                               (max(df[colbar[1]].to_numpy()) / 20)
                     y_pos_3 = df[colbar[2]].to_numpy()[i] + df[colerrorbar[2]].to_numpy()[i] + \
                               (max(df[colbar[2]].to_numpy()) / 20)
-                    # only if y axis is positive
-                    if y_pos > 0:
+                    y_pos_4 = df[colbar[3]].to_numpy()[i] + df[colerrorbar[3]].to_numpy()[i] + \
+                              (max(df[colbar[3]].to_numpy()) / 20)
+
+                    # group_let_df need index column
+                    if group_let_df:
+                        # only if y axis is positive
+                        if y_pos > 0:
+                            plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_2 > 0:
+                            plt.annotate(group_let_df.loc[colbar[1], xbarcol[i]], xy=(x_pos_2, y_pos_2),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_3 > 0:
+                            plt.annotate(group_let_df.loc[colbar[2], xbarcol[i]], xy=(x_pos_3, y_pos_3),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                        if y_pos_4 > 0:
+                            plt.annotate(group_let_df.loc[colbar[3], xbarcol[i]], xy=(x_pos_4, y_pos_4),
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+
+                    # need to work on this for 4 bars
+                    if pv:
                         pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
                         pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
                         pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
@@ -913,7 +931,6 @@ class stat:
                         if pv_symb_3:
                             plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
-
 
         general.get_figure(show, r, figtype, figname)
 

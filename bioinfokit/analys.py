@@ -765,7 +765,10 @@ class stat:
         # tukey_phoc['Significant'] = []
         tukey_phoc['q value'] = []
         tukey_phoc['p value'] = []
-        group_letter = dict()
+        # group_letter = dict()
+        group_pval = dict()
+        group_let = dict()
+        share_let = dict()
         levels = df[xfac_var].unique()
 
         self.oanova(df, res_var, xfac_var, phalpha)
@@ -809,8 +812,14 @@ class stat:
                     # t test related to qvalue as q = sqrt(2) t
                     # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
                     tukey_phoc['q value'].append(q_val)
-                    tukey_phoc['p value'].append(psturng(np.abs(q_val), len(levels), df_res))
+                    if isinstance(psturng(np.abs(q_val), len(levels), df_res), np.ndarray):
+                        group_pval[(levels[i], levels[j+1])] = psturng(np.abs(q_val), len(levels), df_res)[0]
+                        tukey_phoc['p value'].append(psturng(np.abs(q_val), len(levels), df_res)[0])
+                    else:
+                        group_pval[(levels[i], levels[j + 1])] = psturng(np.abs(q_val), len(levels), df_res)
+                        tukey_phoc['p value'].append(psturng(np.abs(q_val), len(levels), df_res))
 
+                    '''
                     if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
                         if levels[i] not in group_letter and levels[j+1] not in group_letter:
                             assigned = 1
@@ -857,9 +866,64 @@ class stat:
                             group_letter[levels[j + 1]] = group_letter[levels[i]]
                             let_num_list.append(group_letter[levels[i]])
                             print(levels[i], levels[j+1], let_num_list, 'h')
+                    '''
 
-        print(group_letter)
-        group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
+        # print(group_letter)
+        # group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
+
+        for k, v in group_pval.items():
+            # print(k)
+            if v <= phalpha:
+                if k[0] in group_let and k[1] not in group_let:
+                    group_let[k[1]] = [let_num]
+                    # print(group_let, 'a')
+                    let_num += 1
+                elif k[0] in group_let and k[1] in group_let:
+                    if group_let[k[0]] == group_let[k[1]]:
+                        group_let[k[1]] = [let_num]
+                        # share_let[(k[0], k[1])] = let_num
+                        let_num += 1
+                        for k1, v1 in share_let.items():
+                            if k[0] in k1:
+                                if group_pval[(k1[0], k[1])] <= phalpha:
+                                    pass
+                                elif group_pval[(k1[0], k[1])] > phalpha:
+                                    group_let[k1[0]].extend(group_let[k[1]])
+                        # print(group_let, 'i')
+                elif k[0] not in group_let and k[1] not in group_let:
+                    group_let[k[0]] = [let_num]
+                    let_num += 1
+                    group_let[k[1]] = [let_num]
+                    let_num += 1
+                    # print(group_let, 'e')
+            elif v > phalpha:
+                if k[0] not in group_let and k[1] not in group_let:
+                    group_let[k[0]] = [let_num]
+                    group_let[k[1]] = [let_num]
+                    # share_let[let_num] = [k[0], k[1]]
+                    share_let[(k[0], k[1])] = let_num
+                    let_num += 1
+                    # print(group_let, 'b')
+                elif k[0] in group_let and k[1] not in group_let:
+                    group_let[k[1]] = group_let[k[0]]
+                    share_let[(k[0], k[1])] = [group_let[k[0]]]
+                    # print(group_let, 'd')
+                elif k[0] in group_let and k[1] in group_let:
+                    if any(ele in group_let[k[0]] for ele in group_let[k[1]]):
+                        pass
+                    elif any(k[0] in ele for ele in share_let):
+                        for k1, v1 in share_let.items():
+                            # print(k[0], k1)
+                            if k[0] in k1:
+                                group_let[k[1]].extend(group_let[k[0]])
+                                # print(group_let, 'cd')
+                    else:
+                        group_let[k[1]] = group_let[k[0]]
+                        share_let[(k[0], k[1])] = group_let[k[0]]
+                        # print(group_let, 'c')
+
+        group_letter_chars = {m: ''.join(list(map(chr, n))) for m, n in group_let.items()}
+
         self.tukey_summary = pd.DataFrame(tukey_phoc)
         self.tukey_groups = pd.DataFrame({'': group_letter_chars.keys(), 'groups': group_letter_chars.values()})
 
