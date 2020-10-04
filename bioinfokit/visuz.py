@@ -706,7 +706,7 @@ class stat:
     # with replicates values
     # need to work on this later
     def multi_bar_raw(df="dataframe", dim=(5, 4), samp_col_name=None, bw=0.4, colorbar=None, r=300,
-                  show=False, axtickfontname="Arial", axtickfontsize=9, ax_x_ticklabel=None, ar=90, figtype='png',
+                  show=False, axtickfontname="Arial", axtickfontsize=9, ax_x_ticklabel=None, ar=(0, 90), figtype='png',
                   figname='multi_bar', valphabar=1, legendpos='best', errorbar=False, yerrlw=None, yerrcw=None,
                   plotlegend=False, hbsize=4, ylm=None, add_sign_line=False, pv=None,
                   sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth': 0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
@@ -750,13 +750,14 @@ class stat:
             x_ticklabel = ax_x_ticklabel
         else:
             x_ticklabel = df[xbarcol]
-        ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize, rotation=ar[0], fontname=axtickfontname)
         if ax_y_label:
-            ax.set_ylabel(ax_y_label, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+            ax.set_ylabel(ax_y_label, fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
         # ylm must be tuple of start, end, interval
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
-            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize,
+                       fontname=axtickfontname)
         if plotlegend:
             plt.legend(loc=legendpos, bbox_to_anchor=legendanchor, ncol=legendcols, fontsize=legendfontsize)
 
