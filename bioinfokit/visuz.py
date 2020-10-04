@@ -713,7 +713,8 @@ class stat:
                                   'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
                                                                                                'fontsize': 8},
                   dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
-                  sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=None, legendfontsize=1):
+                  sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=None, legendfontsize=8,
+                  ax_y_label=None):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
@@ -733,7 +734,6 @@ class stat:
         if colbar is not None:
             for i in range(len(colbar)):
                 if errorbar:
-                    print(xbar_temp, i)
                     ax.bar(x=xbar_temp, height=df_mean[colbar[i]], yerr=df_sem[colerrorbar[i]], width=bw,
                            color=colorbar[i], alpha=valphabar, capsize=hbsize, label=colbar[i],
                            error_kw={'elinewidth': yerrlw, 'capthick': yerrcw})
@@ -751,13 +751,14 @@ class stat:
         else:
             x_ticklabel = df[xbarcol]
         ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        if ax_y_label:
+            ax.set_ylabel(ax_y_label, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
         # ylm must be tuple of start, end, interval
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         if plotlegend:
             plt.legend(loc=legendpos, bbox_to_anchor=legendanchor, ncol=legendcols, fontsize=legendfontsize)
-
 
         if dotplot:
             for cols in range(len(variable_list)):
@@ -773,6 +774,8 @@ class stat:
 
 
         size_factor_to_start_line = max(df_mean.max()) / 20
+        y_pos_dict = dict()
+        y_pos_dict_trt = dict()
         if add_sign_line:
             if len(colbar) == 2:
                 for i in xbar:
@@ -786,7 +789,7 @@ class stat:
                         y_pos_2 += 0.5
                         pv_symb = general.pvalue_symbol(pv[i], sign_line_opts['symbol'])
                         if pv_symb:
-                            ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                            ax.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, y_pos),
                                         arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
                                                     'arrowstyle': sign_line_opts['arrowstyle'],
                                                     'linewidth': sign_line_opts['linewidth']})
@@ -807,24 +810,41 @@ class stat:
                                         fontsize=sign_line_opts['fontsize'], ha="center")
             elif len(colbar) == 3:
                 for i in xbar:
-                    if i == len(colbar) - 1:
-                        break
                     x_pos = xbar[i]
                     x_pos_2 = xbar[i] + bw
-                    y_pos = df_mean[colbar[i]].to_numpy()[i] + df_sem[colerrorbar[i]].to_numpy()[i]
-                    y_pos_2 = df_mean[colbar[i+1]].to_numpy()[i] + df_sem[colerrorbar[i+1]].to_numpy()[i]
+                    x_pos_3 = xbar[i] + (2 * bw)
+                    y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i]
+                    y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i]
+                    y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i]
+
                     # only if y axis is positive
                     if y_pos > 0:
-                        y_pos += 0.5
-                        y_pos_2 += 0.5
-                        pv_symb = general.pvalue_symbol(pv[i], sign_line_opts['symbol'])
-                        if pv_symb:
-                            ax.annotate('', xy=(x_pos, y_pos), xytext=(x_pos_2, y_pos),
+                        y_pos += size_factor_to_start_line / 2
+                        y_pos_2 += size_factor_to_start_line / 2
+                        y_pos_3 += size_factor_to_start_line / 2
+
+
+                        pv_symb1 = general.pvalue_symbol(pv[i][0], sign_line_opts['symbol'])
+                        pv_symb2 = general.pvalue_symbol(pv[i][1], sign_line_opts['symbol'])
+                        if pv_symb1:
+                            if max(y_pos, y_pos_2) >= y_pos_3:
+                                pass
+                            ax.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
                                         arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
                                                     'arrowstyle': sign_line_opts['arrowstyle'],
                                                     'linewidth': sign_line_opts['linewidth']})
-                            ax.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
+                            ax.annotate(pv_symb1, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
                                                      size_factor_to_start_line),
+                                        fontsize=sign_line_opts['fontsize'], ha="center")
+                        if pv_symb2:
+                            if max(y_pos, y_pos_3) < y_pos_2:
+                                y_pos_3 = y_pos_2 + (4 * size_factor_to_start_line)
+                            ax.annotate('', xy=(x_pos, max(y_pos, y_pos_3)), xytext=(x_pos_3, max(y_pos, y_pos_3)),
+                                        arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                                    'arrowstyle': sign_line_opts['arrowstyle'],
+                                                    'linewidth': sign_line_opts['linewidth']})
+                            ax.annotate(pv_symb2, xy=(np.mean([x_pos, x_pos_3]), max(y_pos, y_pos_3) +
+                                                      size_factor_to_start_line),
                                         fontsize=sign_line_opts['fontsize'], ha="center")
                     else:
                         y_pos -= 0.5
@@ -892,19 +912,20 @@ class stat:
                     x_pos_3 = xbar[i] + (2 * bw)
                     x_pos_4 = xbar[i] + (3 * bw)
                     # max value size factor is essential for rel pos of symbol
-                    y_pos = df[colbar[0]].to_numpy()[i] + df[colerrorbar[0]].to_numpy()[i] + \
-                            (max(df[colbar[0]].to_numpy()) / 20)
-                    y_pos_2 = df[colbar[1]].to_numpy()[i] + df[colerrorbar[1]].to_numpy()[i] + \
-                              (max(df[colbar[1]].to_numpy()) / 20)
-                    y_pos_3 = df[colbar[2]].to_numpy()[i] + df[colerrorbar[2]].to_numpy()[i] + \
-                              (max(df[colbar[2]].to_numpy()) / 20)
-                    y_pos_4 = df[colbar[3]].to_numpy()[i] + df[colerrorbar[3]].to_numpy()[i] + \
-                              (max(df[colbar[3]].to_numpy()) / 20)
+                    y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i] + \
+                            (max(df_mean[colbar[0]].to_numpy()) / 20)
+                    y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i] + \
+                              (max(df_mean[colbar[1]].to_numpy()) / 20)
+                    y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i] + \
+                              (max(df_mean[colbar[2]].to_numpy()) / 20)
+                    y_pos_4 = df_mean[colbar[3]].to_numpy()[i] + df_sem[colerrorbar[3]].to_numpy()[i] + \
+                              (max(df_mean[colbar[3]].to_numpy()) / 20)
 
                     # group_let_df need index column
-                    if group_let_df:
+                    if isinstance(group_let_df, pd.DataFrame):
                         # only if y axis is positive
                         if y_pos > 0:
+                            print(colbar[0], xbarcol[i], 'x')
                             plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
                                          fontsize=sign_symbol_opts['fontsize'], ha="center")
                         if y_pos_2 > 0:
