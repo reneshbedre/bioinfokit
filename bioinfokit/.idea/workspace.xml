@@ -4,6 +4,8 @@
     <list default="true" id="71e75625-13c9-4fcc-a08d-c45d9475d173" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/bioinfokit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/bioinfokit.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analys.py" beforeDir="false" afterPath="$PROJECT_DIR$/analys.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visuz.py" beforeDir="false" afterPath="$PROJECT_DIR$/visuz.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,27 +46,27 @@
         <counts>
           <entry key="csv" value="2" />
           <entry key="md" value="3447" />
-          <entry key="py" value="6478" />
-          <entry key="txt" value="818" />
+          <entry key="py" value="6916" />
+          <entry key="txt" value="871" />
           <entry key="xx" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Markdown" value="3433" />
-          <entry key="PLAIN_TEXT" value="834" />
-          <entry key="Python" value="6492" />
+          <entry key="PLAIN_TEXT" value="887" />
+          <entry key="Python" value="6930" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/analys.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2702">
-              <caret line="924" column="59" selection-start-line="924" selection-start-column="59" selection-end-line="924" selection-end-column="59" />
+            <state relative-caret-position="505">
+              <caret line="938" column="9" selection-start-line="938" selection-start-column="9" selection-end-line="938" selection-end-column="9" />
               <folding>
                 <element signature="e#50#87#0" expanded="true" />
               </folding>
@@ -87,8 +89,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/visuz.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="753" selection-start-line="753" selection-end-line="753" />
+            <state relative-caret-position="380">
+              <caret line="932" column="75" selection-start-line="932" selection-start-column="75" selection-end-line="932" selection-end-column="75" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -105,11 +107,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../misc/jiaxing/audit.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="529">
-              <caret line="452" lean-forward="true" selection-start-line="443" selection-end-line="452" />
+            <state relative-caret-position="213">
+              <caret line="617" column="16" lean-forward="true" selection-start-line="607" selection-end-line="617" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -137,9 +139,9 @@
       <find>legend</find>
       <find>dot</find>
       <find>\t</find>
-      <find>pval</find>
       <find>legendanchor</find>
       <find>set_yticklabels</find>
+      <find>pval</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -158,11 +160,11 @@
         <option value="$PROJECT_DIR$/../../codes/reneshbedre.github.io/_posts/2018-12-11-FQutil.md" />
         <option value="$PROJECT_DIR$/../data/genfam_species_id.txt" />
         <option value="$PROJECT_DIR$/../README.md" />
-        <option value="$PROJECT_DIR$/analys.py" />
         <option value="$PROJECT_DIR$/../../misc/jiaxing/fig_6bd_anova_group.csv" />
         <option value="$PROJECT_DIR$/xx" />
-        <option value="$PROJECT_DIR$/../../misc/jiaxing/audit.txt" />
         <option value="$PROJECT_DIR$/visuz.py" />
+        <option value="$PROJECT_DIR$/../../misc/jiaxing/audit.txt" />
+        <option value="$PROJECT_DIR$/analys.py" />
       </list>
     </option>
   </component>
@@ -370,20 +372,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/analys.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2702">
-          <caret line="924" column="59" selection-start-line="924" selection-start-column="59" selection-end-line="924" selection-end-column="59" />
-          <folding>
-            <element signature="e#50#87#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/visuz.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="753" selection-start-line="753" selection-end-line="753" />
+        <state relative-caret-position="380">
+          <caret line="932" column="75" selection-start-line="932" selection-start-column="75" selection-end-line="932" selection-end-column="75" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -392,8 +384,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../misc/jiaxing/audit.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="529">
-          <caret line="452" lean-forward="true" selection-start-line="443" selection-end-line="452" />
+        <state relative-caret-position="213">
+          <caret line="617" column="16" lean-forward="true" selection-start-line="607" selection-end-line="617" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analys.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="505">
+          <caret line="938" column="9" selection-start-line="938" selection-start-column="9" selection-end-line="938" selection-end-column="9" />
+          <folding>
+            <element signature="e#50#87#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -867,19 +867,21 @@ class stat:
                             let_num_list.append(group_letter[levels[i]])
                             print(levels[i], levels[j+1], let_num_list, 'h')
                     '''
-
+        '''
         # print(group_letter)
         # group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
-
+        let_list = []
         for k, v in group_pval.items():
             # print(k)
             if v <= phalpha:
                 if k[0] in group_let and k[1] not in group_let:
                     group_let[k[1]] = [let_num]
-                    # print(group_let, 'a')
+                    let_list.append(let_num)
+                    print(group_let, let_list, 'a')
                     let_num += 1
                 elif k[0] in group_let and k[1] in group_let:
-                    if group_let[k[0]] == group_let[k[1]]:
+                    if any(ele in group_let[k[0]] for ele in group_let[k[1]]):
+                    # if group_let[k[0]] == group_let[k[1]]:
                         group_let[k[1]] = [let_num]
                         # share_let[(k[0], k[1])] = let_num
                         let_num += 1
@@ -889,13 +891,18 @@ class stat:
                                     pass
                                 elif group_pval[(k1[0], k[1])] > phalpha:
                                     group_let[k1[0]].extend(group_let[k[1]])
-                        # print(group_let, 'i')
+                        print(group_let, 'i')
+                    else:
+                        print(group_let, 'j')
+                        pass
                 elif k[0] not in group_let and k[1] not in group_let:
                     group_let[k[0]] = [let_num]
+                    let_list.append(let_num)
                     let_num += 1
                     group_let[k[1]] = [let_num]
+                    let_list.append(let_num)
                     let_num += 1
-                    # print(group_let, 'e')
+                    print(group_let, let_list, 'e')
             elif v > phalpha:
                 if k[0] not in group_let and k[1] not in group_let:
                     group_let[k[0]] = [let_num]
@@ -903,11 +910,11 @@ class stat:
                     # share_let[let_num] = [k[0], k[1]]
                     share_let[(k[0], k[1])] = let_num
                     let_num += 1
-                    # print(group_let, 'b')
+                    print(group_let, 'b')
                 elif k[0] in group_let and k[1] not in group_let:
                     group_let[k[1]] = group_let[k[0]]
                     share_let[(k[0], k[1])] = [group_let[k[0]]]
-                    # print(group_let, 'd')
+                    print(group_let, 'd')
                 elif k[0] in group_let and k[1] in group_let:
                     if any(ele in group_let[k[0]] for ele in group_let[k[1]]):
                         pass
@@ -915,18 +922,21 @@ class stat:
                         for k1, v1 in share_let.items():
                             # print(k[0], k1)
                             if k[0] in k1:
+                                # if group_let[k[1]] not in
                                 group_let[k[1]].extend(group_let[k[0]])
-                                # print(group_let, 'cd')
+                                # group_let[k[1]] = group_let[k[0]]
+                                print(group_let, 'cd')
                     else:
                         group_let[k[1]] = group_let[k[0]]
                         share_let[(k[0], k[1])] = group_let[k[0]]
-                        # print(group_let, 'c')
+                        print(group_let, 'c')
+        '''
 
-        group_letter_chars = {m: ''.join(list(map(chr, n))) for m, n in group_let.items()}
+        # group_letter_chars = {m: ''.join(list(map(chr, n))) for m, n in group_let.items()}
 
         self.tukey_summary = pd.DataFrame(tukey_phoc)
-        self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
-            list(group_letter_chars.values())})
+        # self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
+        #    list(group_letter_chars.values())})
 
     def oanova(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
         # create and run model

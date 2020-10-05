@@ -912,15 +912,25 @@ class stat:
                     x_pos_2 = xbar[i] + bw
                     x_pos_3 = xbar[i] + (2 * bw)
                     x_pos_4 = xbar[i] + (3 * bw)
-                    # max value size factor is essential for rel pos of symbol
-                    y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i] + \
-                            (max(df_mean[colbar[0]].to_numpy()) / 20)
-                    y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i] + \
-                              (max(df_mean[colbar[1]].to_numpy()) / 20)
-                    y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i] + \
-                              (max(df_mean[colbar[2]].to_numpy()) / 20)
-                    y_pos_4 = df_mean[colbar[3]].to_numpy()[i] + df_sem[colerrorbar[3]].to_numpy()[i] + \
-                              (max(df_mean[colbar[3]].to_numpy()) / 20)
+                    if symb_dist:
+                        # max value size factor is essential for rel pos of symbol
+                        y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i] + \
+                                (max(df_mean[colbar[0]].to_numpy()) / 20) + symb_dist[i][0]
+                        y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i] + \
+                                (max(df_mean[colbar[1]].to_numpy()) / 20) + symb_dist[i][1]
+                        y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i] + \
+                                (max(df_mean[colbar[2]].to_numpy()) / 20) + symb_dist[i][2]
+                        y_pos_4 = df_mean[colbar[3]].to_numpy()[i] + df_sem[colerrorbar[3]].to_numpy()[i] + \
+                                (max(df_mean[colbar[3]].to_numpy()) / 20) + symb_dist[i][3]
+                    else:
+                        y_pos = df_mean[colbar[0]].to_numpy()[i] + df_sem[colerrorbar[0]].to_numpy()[i] + \
+                                (max(df_mean[colbar[0]].to_numpy()) / 20)
+                        y_pos_2 = df_mean[colbar[1]].to_numpy()[i] + df_sem[colerrorbar[1]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[1]].to_numpy()) / 20)
+                        y_pos_3 = df_mean[colbar[2]].to_numpy()[i] + df_sem[colerrorbar[2]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[2]].to_numpy()) / 20)
+                        y_pos_4 = df_mean[colbar[3]].to_numpy()[i] + df_sem[colerrorbar[3]].to_numpy()[i] + \
+                                  (max(df_mean[colbar[3]].to_numpy()) / 20)
 
                     # group_let_df need index column
                     if isinstance(group_let_df, pd.DataFrame):
