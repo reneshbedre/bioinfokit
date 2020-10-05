@@ -15,7 +15,6 @@ import scipy.stats as stats
 from tabulate import tabulate
 from statsmodels.graphics.mosaicplot import mosaic
 from textwrap3 import wrap
-from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.formula.api import ols
 import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
@@ -696,6 +695,7 @@ class stat:
         self.tukey_summary = None
         self.tukey_groups = None
 
+    '''
     def anova(self, df='dataframe', xfac=None, res=None):
         # drop NaN
         df = df.dropna()
@@ -728,7 +728,7 @@ class stat:
             print("\nANOVA Summary:\n")
             print(tabulate(anova_table, headers=["Source", "Df", "Sum Squares", "Mean Squares", "F", "Pr(>F)"]),
                   "\n")
-
+    '''
     @staticmethod
     def _data_summary(df='dataframe', xfac_var=None, res_var=None):
         data_summary_dict = dict()
@@ -755,7 +755,10 @@ class stat:
             data_summary_dict['Max'].append(temp.describe().to_numpy()[7])
         return pd.DataFrame(data_summary_dict)
 
-    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
+    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_xfac_var=None, phalpha=0.05):
+        df = df.dropna()
+        if xfac_var is None or anova_xfac_var is None:
+            raise ValueError('Invalid value for xfac_var or anova_xfac_var')
         tukey_phoc = dict()
         tukey_phoc['group1'] = []
         tukey_phoc['group2'] = []
@@ -767,28 +770,33 @@ class stat:
         tukey_phoc['p-value'] = []
         # group_letter = dict()
         group_pval = dict()
-        group_let = dict()
-        share_let = dict()
+        # group_let = dict()
+        # share_let = dict()
         levels = df[xfac_var].unique()
 
-        self.oanova(df, res_var, xfac_var, phalpha)
+        self.anova_stat(df, res_var, anova_xfac_var)
         df_res = self.anova_summary.df.Residual
         mse = self.anova_summary.sum_sq.Residual / df_res
+        self.data_summary = stat._data_summary(df, xfac_var, res_var)
 
         # q critical
         q_crit = qsturng(1 - phalpha, len(levels), df_res)
         # t critical tcrit = qcrit /\sqrt 2.
         # t_crit = q_crit / np.sqrt(2)
         tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
-        let_num = 97
-        let_num_list = []
-        sharing_letter = dict()
+        # let_num = 97
+        # let_num_list = []
+        # sharing_letter = dict()
 
         for i in range(len(levels)):
             for j in range(len(levels)):
                 if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1] and j+1 > i:
-                    mean_diff = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Mean'].to_numpy()[0] - \
-                                self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[0]
+                    mean_diff = max(self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Mean'].to_numpy()[0],
+                                    self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[0]) - \
+                                min(self.data_summary.loc[
+                                        self.data_summary['Group'] == levels[j + 1], 'Mean'].to_numpy()[0],
+                                    self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[
+                                        0])
                     t_val = mean_diff / np.sqrt(2 * (mse / len(levels) ) )
                     # count for groups; this is useful when sample size not equal -- Tukey-Kramer
                     group1_count = self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Count'].to_numpy()[0]
@@ -938,15 +946,30 @@ class stat:
         # self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
         #    list(group_letter_chars.values())})
 
-    def oanova(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
-        # create and run model
-        model = ols('{} ~ C({})'.format(res_var, xfac_var), data=df).fit()
+    def anova_stat(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
+        # x = '{} ~ '
+        x = res_var + '~'
+        # y = 'C({})'
+        z = '+'
+        if isinstance(xfac_var, list) and len(xfac_var) > 1:
+            for i in range(len(xfac_var)):
+                x += 'C({})'.format(xfac_var[i])
+                if i < len(xfac_var) - 1:
+                    x += z
+            model = ols(x, data=df).fit()
+        elif isinstance(xfac_var, str):
+            # create and run model
+            # model = ols('{} ~ C({})'.format(res_var, xfac_var), data=df).fit()
+            x += 'C({})'.format(xfac_var)
+            model = ols(x, data=df).fit()
+        else:
+            raise TypeError('xfac_var in anova must be string or list')
         anova_table = sm.stats.anova_lm(model, typ=2)
 
         # treatments
         # this is for bartlett test
-        levels = df[xfac_var].unique()
-        self.data_summary = stat._data_summary(df, xfac_var, res_var)
+        # levels = df[xfac_var].unique()
+        # self.data_summary = stat._data_summary(df, xfac_var, res_var)
 
         # check assumptions
         # Shapiro-Wilk  data is drawn from normal distribution.

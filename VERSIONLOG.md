@@ -1,3 +1,6 @@
+v0.9.9  has the following updates and changes (October 04, 2020)
+- Tukey HSD test added to perform multiple pairwise comparisons (`bioinfokit.analys.stat.tukey_hsd`)
+
 v0.9.8  has the following updates and changes (September 25, 2020)
 - new option `mrna_feature_name` added in `analys.gff.gff_to_gtf` if the name of the feature (column 3 of GFF3 file) of 
   protein coding mRNA is other than 'mRNA' or 'transcript' (e.g. some GFF3 file has this feature named as 
