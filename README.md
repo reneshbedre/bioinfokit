@@ -433,9 +433,9 @@ are unequal among the groups.
 Parameters | Description
 ------------ | -------------
 `df` | Pandas dataframe with the variables mentioned in the `res_var`, `xfac_var` and `anova_xfac_var` options. It should not have missing data. The missing data will be omitted.
-`res_var` | Response variable [string][default: None]
-`xfac_var` | Factor or group for pairwise comparison [string][default: None]
-`anova_xfac_var` | Factor or group for ANOVA analysis. In case of one-way ANOVA, `xfac_var` and `anova_xfac_var` should be similar  [string or list][default: None]
+`res_var` | Name of a column having response variable [string][default: None]
+`xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
+`anova_xfac_var` | Names of a column having factors or groups for ANOVA analysis. In case of one-way ANOVA, `xfac_var` and `anova_xfac_var` should be similar  [string or list][default: None]
 `phalpha` | Significance level [float][default: 0.05]
 
 Returns:
@@ -927,12 +927,6 @@ FASTQ files for each SRA accession in the current directory unless specified by 
 
 <a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
 
-<!--
-`paired` | Download paired-end files [bool (True or False)][default=False] <br> By default, it will download the single-end files. If paired-end SRA accessions provided with `paired=False`, the FASTQ file will be downloaded as single file without splitting into left and right reads.
-`prog` | Program to run for downloading FASTQ files from SRA database [string ('fasterq-dump' or 'fastq-dump'][default='fasterq-dump'] <br> Make sure latest version of NCBI SRA toolkit is installed and binaries are added to system path 
--->
-
-
 How to cite bioinfokit?
 - Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
   Zenodo. http://doi.org/10.5281/zenodo.3965241 
@@ -947,10 +941,11 @@ References:
 - Wes McKinney. Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference, 51-56 (2010)
 - David C. Howell. Multiple Comparisons With Unequal Sample Sizes. https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
 
-
+<!--
 bioinfokit cited by:
 - Jennifer Gribble, Andrea J. Pruijssers, Maria L. Agostini, Jordan Anderson-Daniels, James D. Chappell, Xiaotao Lu, Laura J. Stevens, Andrew L. Routh, Mark R. Denison
   bioRxiv 2020.04.23.057786; doi: https://doi.org/10.1101/2020.04.23.057786
 - Greaney AM, Adams TS, Raredon MS, Gubbins E, Schupp JC, Engler AJ, Ghaedi M, Yuan Y, Kaminski N, Niklason LE. Platform 
   Effects on Regeneration by Pulmonary Basal Cells as Evaluated by Single-Cell RNA Sequencing. Cell Reports. 2020 Mar 
   24;30(12):4250-65.
+-->  

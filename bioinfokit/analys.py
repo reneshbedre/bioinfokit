@@ -1,5 +1,3 @@
-# Copyright (c) 2020, Renesh Bedre (see LICENSE)
-
 from sklearn.decomposition import PCA
 import pandas as pd
 import re
