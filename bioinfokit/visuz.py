@@ -319,6 +319,7 @@ class general:
                    '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
                    '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
 
+    @staticmethod
     def get_figure(show, r, figtype, fig_name):
         if show:
             plt.show()
@@ -326,12 +327,14 @@ class general:
             plt.savefig(fig_name+'.'+figtype, format=figtype, bbox_inches='tight', dpi=r)
         plt.close()
 
+    @staticmethod
     def axis_labels(x, y, axlabelfontsize=None, axlabelfontname=None):
         plt.xlabel(x, fontsize=axlabelfontsize, fontname=axlabelfontname)
         plt.ylabel(y, fontsize=axlabelfontsize, fontname=axlabelfontname)
         # plt.xticks(fontsize=9, fontname="sans-serif")
         # plt.yticks(fontsize=9, fontname="sans-serif")
 
+    @staticmethod
     def axis_ticks(xlm=None, ylm=None, axtickfontsize=None, axtickfontname=None, ar=None):
         if xlm:
             plt.xlim(left=xlm[0], right=xlm[1])
@@ -345,16 +348,19 @@ class general:
         else:
             plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
 
+    @staticmethod
     def depr_mes(func_name):
         print("This function is deprecated. Please use", func_name )
         print("Read docs at https://reneshbedre.github.io/blog/howtoinstall.html")
 
+    @staticmethod
     def check_for_nonnumeric(pd_series=None):
         if pd.to_numeric(pd_series, errors='coerce').isna().sum() == 0:
             return 0
         else:
             return 1
 
+    @staticmethod
     def pvalue_symbol(pv=None, symbol=None):
         if 0.05 >= pv > 0.01:
             return symbol
@@ -364,6 +370,12 @@ class general:
             return 3 * symbol
         else:
             return None
+
+    @staticmethod
+    def get_file_from_gd(url=None):
+        get_path = 'https://drive.google.com/uc?export=download&id=' + url.split('/')[-2]
+        return pd.read_csv(get_path, comment='#')
+
 
 class marker:
 

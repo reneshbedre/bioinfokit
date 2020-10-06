@@ -94,17 +94,7 @@ def rev_com(seq=None, file=None):
 
 # extract subseq from genome sequence
 def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
-    fasta_iter = fasta_reader(file)
-    for record in fasta_iter:
-        fasta_header, seq = record
-        if id == fasta_header.strip() and strand == "plus":
-            # -1 is necessary as it counts from 0
-            sub_seq = seq[int(st-1):int(end)]
-            print(sub_seq)
-        elif id == fasta_header.strip() and strand == "minus":
-            seq = rev_com(seq)
-            sub_seq = seq[int(st-1):int(end)]
-            print(sub_seq)
+    general.depr_mes("bioinfokit.analys.fasta.ext_subseq")
 
 
 def fastq_format_check(file="fastq_file"):
@@ -1865,6 +1855,25 @@ class lncrna:
                             k + '\t' + checked_2[k1][1] + '\t' + checked_2[k1][2] + '\t' + str(checked_2[k1][0]) + '\n')
             if x == 0:
                 out_file_3.write(k + '\t' + checked[k][1] + '\t' + checked[k][2] + '\t' + str(checked[k][0]) + '\n')
+
+
+class anot:
+
+    def __init__(self):
+        self.mapped_ids = None
+
+    def id_map(self, species=None, input_id=None, look_id=None, fetch_id=None):
+        if input_id is None or look_id is None or fetch_id is None:
+            raise ValueError('Invalid value for input_id or look_id or fetch_id options')
+        if species == 'stub':
+            df = general.get_file_from_gd(
+                'https://drive.google.com/file/d/1jrw95f3PX1qpFK_XYLDCwZ8hlIVUr4FM/view?usp=sharing')
+            print(df)
+            df = df[[look_id, fetch_id]]
+            input_id_df = pd.read_csv(input_id, header=None)
+            input_id_df.rename(columns={input_id_df.columns[0]: look_id}, inplace=True)
+            print(input_id_df)
+            # self.mapped_ids = pd.merge(input_id_df, df, how='left', on=look_id)
 
 
 class get_data:
