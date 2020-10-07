@@ -1939,10 +1939,82 @@ class genfam:
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Ld57aW3j7GT7J6YSlfDou32pxsIlnB-S/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Ostreococcus lucimarinus v2.0'
+        elif species == 'ppat':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1uUlBWGJYiyScBLjZg67txZohtueOzo-L/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Physcomitrella patens v3.3'
+        elif species == 'ptri':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1fGsrLBwTuP72nwNTOIPR52nVu0-wzt5Z/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Populus trichocarpa v3.1 (Poplar)'
+        elif species == 'pumb':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1TdZ_bm78xP2kca6M_NY7l6lAunpkM4CU/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Porphyra umbilicalis v1.5 (Laver)'
+        elif species == 'pper':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1nfcMPj-Xmg8U7-Pfs6cJe74kQ31pZ0ac/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Prunus persica v2.1 (Peach)'
+        elif species == 'rcom':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1UYXzGirLozWX-N_uuOBirsJ0pKSJoarv/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Ricinus communis v0.1 (Castor bean)'
+        elif species == 'smoe':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1VPQfN5-_SX91JgmcIFf2ZdvsO7QWEOEr/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Selaginella moellendorffii v1.0 (Spikemoss)'
+        elif species == 'sita':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1N97CkOLPE7Atgjs9Alst3VrvsRj-igtJ/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Setaria italica v2.2 (Foxtail millet)'
+        elif species == 'slyc':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1_MxCNxyPFXk4V7-6vR9NTFhdgH2Yg04W/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Solanum lycopersicum iTAG2.4 (Tomato)'
         elif species == 'stub':
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Solanum tuberosum'
+        elif species == 'sbio':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1KXNKCiWynvev2OePQPtxIbBtjffaf3UK/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Sorghum bicolor v3.1.1 (Cereal grass)'
+        elif species == 'spol':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1i6ux7UVrEF3XNRuf3uF9ZsRThrM7jO11/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Spirodela polyrhiza v2 (Greater duckweed)'
+        elif species == 'tcac':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/10wDbFyC9uo_lmnWbdLNxecuV7ZdsuwC4/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Theobroma cacao v1.1 (Cacao)'
+        elif species == 'tpra':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Vt2lyBmOqTk1bHY6LG7Va6zMGEDZs0oq/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Trifolium pratense v2 (Red clover)'
+        elif species == 'taes':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1qOzqfXfVRstYfY7FF4EgMEjsaUiZ9au-/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Triticum aestivum v2.2 (Common wheat)'
+        elif species == 'vvin':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1-B0Rut8GZ_buDCsDM723kevbNeBNGnXg/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Vitis vinifera Genoscope.12X (Common grape vine)'
+        elif species == 'vcar':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1QFDNUoPXhxkSfnf8qC5UQxxn1KqKWVdb/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Volvox carteri v2.1 (Volvox)'
+        elif species == 'zmay':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Zea mays Ensembl-18 (Maize)'
+        elif species == 'zmay':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Zea mays Ensembl-18 (Maize)'
+        elif species == 'zmar':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
+            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+            plant_name = 'Zostera marina v2.2 (Common eelgrass)'
 
         else:
             raise ValueError('This is not valid value for plant species')
