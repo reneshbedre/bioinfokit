@@ -6,30 +6,13 @@
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analys.py" beforeDir="false" afterPath="$PROJECT_DIR$/analys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../data/genfam_species_id.md" beforeDir="false" afterPath="$PROJECT_DIR$/../data/genfam_species_id.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../data/genfam_species_id.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>flat</find>
-      <find>or</find>
-      <find>reduce</find>
-      <find>itert</find>
-      <find>high</find>
-      <find>br&gt;</find>
-      <find>cov</find>
-      <find>seqco</find>
-      <find>seqcov</find>
-      <find>seqc</find>
-      <find>stats</find>
-      <find>ttest</find>
-      <find>single</find>
-      <find>print</find>
-      <find>alpha</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />

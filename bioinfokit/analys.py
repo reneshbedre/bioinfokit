@@ -1768,8 +1768,6 @@ class genfam:
         if multi_test_corr not in [1, 2, 3]:
             raise ValueError('This is not valid value for multi_test_corr')
 
-
-        # solanum tuberosum potato
         if species == 'ahyp':
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1Y5WHC-G7idvaMa_sX5xyy99MLXENaSfS/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
@@ -2007,25 +2005,12 @@ class genfam:
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Zea mays Ensembl-18 (Maize)'
-        elif species == 'zmay':
-            df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
-            bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
-            plant_name = 'Zea mays Ensembl-18 (Maize)'
         elif species == 'zmar':
             df = genfam.get_file_from_gd('https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
             bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
             plant_name = 'Zostera marina v2.2 (Common eelgrass)'
-
         else:
             raise ValueError('This is not valid value for plant species')
-
-
-
-
-
-
-
-
 
         # phytozome locus == 1
         get_gene_ids_from_user = dict()
