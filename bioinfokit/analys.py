@@ -2016,7 +2016,7 @@ class genfam:
         return df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc
 
     def fam_enrich(self, species=None, id_type=None, id_file='text_file_with_gene_ids', stat_sign_test=1,
-                   multi_test_corr=1, min_map_ids=5, alpha=0.05):
+                   multi_test_corr=3, min_map_ids=5, alpha=0.05):
         if id_type not in [1, 2, 3]:
             raise ValueError('Invalid value for id_type')
         if stat_sign_test not in [1, 2, 3, 4]:
@@ -2126,6 +2126,7 @@ class genfam:
         fdr[fdr > 1] = 1
         fam_out_enrich_file = open('fam_enrich_out.txt', 'w')
         fam_out_all_file = open('fam_all_out.txt', 'w')
+        cell_ct_chi = 0
         # Query IDs = total query ids from user (k)
         # Annotated query IDs = query ids annotated to particular gene family
         # background ids = particular gene family ids present in whole genome backround
@@ -2166,23 +2167,30 @@ class genfam:
             # check pvalue less than 0.05
             if float(enrichment_result[x][8]) <= alpha:
                 fam_out_enrich_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
-                # print(enrichment_result[x])
                 genfam_for_df.append(enrichment_result[x][0])
                 sname_for_df.append(enrichment_result[x][1])
                 pv_for_df.append(enrichment_result[x][8])
                 fdr_for_df.append(enrichment_result[x][9])
+                if stat_sign_test == 4:
+                    if float(enrichment_result[x][14]) > 20.0:
+                        cell_ct_chi += 1
 
+        if cell_ct_chi > 0:
+            print('\n WARNING: Some gene families have more than 20% cells with expected frequency count < 5. \n '
+                  'Chi-square test may not be valid test. You can validate those gene families \n for enrichment using '
+                  'fisher exact test. \n Please check output file and see last column for expected frequency count. \n')
         # console result
         self.df_enrich = pd.DataFrame({'Gene Family': genfam_for_df, 'Short name': sname_for_df, 'p value': pv_for_df,
                                   'FDR': fdr_for_df})
         self.df_enrich = self.df_enrich.sort_values(by=['p value'])
 
         # console info
-        self.genfam_info = pd.DataFrame({'Parameter': ['Total query gene IDs', 'Number of genes annotated', 'Plant species',
+        self.genfam_info = pd.DataFrame({'Parameter': ['Total query gene IDs', 'Number of genes annotated',
+                                                       'Number of enriched gene families (p < 0.05)', 'Plant species',
                                                 'Statistical test for enrichment', 'Multiple testing correction method',
                                                 'Significance level'],
-                                  'Value':[len(user_provided_uniq_ids), mapped_query_ids, plant_name, stat_test_name,
-                                           mult_test_name, alpha]})
+                                  'Value':[len(user_provided_uniq_ids), mapped_query_ids, self.df_enrich.shape[0],
+                                           plant_name, stat_test_name, mult_test_name, alpha]})
 
         fam_out_all_file.close()
         fam_out_enrich_file.close()
@@ -2205,16 +2213,6 @@ class genfam:
                            df['trn_array'].iloc[0].strip('\{').split(',')[0],
                            df['phyt_id_array'].iloc[0].strip('\{').split(',')[0],
                            plant_name)
-
-        # print(df['array_agg'].iloc[0].strip('\{').split(',')[0])
-        # print(df['trn_array'].iloc[0].strip('\{').split(',')[0])
-        # print(df['phyt_id_array'].iloc[0].strip('\{').split(',')[0])
-
-        # if species == 'stub':
-        #    genfam.allowed_ids('PGSC0003DMG400014174', 'PGSC0003DMT400036749', '37453284', 'Solanum tuberosum')
-        # else:
-        #    raise ValueError('Invalid value for species \n')
-
 
 
 class get_data:
