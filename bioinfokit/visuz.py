@@ -835,7 +835,7 @@ class stat:
     def normal_bar(df='dataframe', x_col_name=None, y_col_name=None, dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", r=300,
                    ar=(0, 0), valphabar=1, show=False, ylm=None, axtickfontsize=9, axtickfontname='Arial',
                    ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname='Arial', axxlabel=None, axylabel=None,
-                   figtype='png'):
+                   figtype='png', figname='normal_bar'):
         # set axis labels to None
         _x = None
         _y = None
@@ -857,7 +857,7 @@ class stat:
             plt.ylim(bottom=ylm[0], top=ylm[1])
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         plt.yticks(fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
-        general.get_figure(show, r, figtype, 'normal_bar')
+        general.get_figure(show, r, figtype, figname)
 
 
 

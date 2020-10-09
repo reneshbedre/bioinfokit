@@ -895,7 +895,7 @@ FASTQ files for each SRA accession in the current directory unless specified by 
 
 <b>Gene family enrichment analysis (GenFam)</b>
 
-`bioinfokit.analys.genfam.fam_enrich(species, id_type, id_file, stat_sign_test, multi_test_corr, min_map_ids)`
+`bioinfokit.analys.genfam.fam_enrich(id_file, species, id_type, stat_sign_test, multi_test_corr, min_map_ids, alpha)`
 
 GenFam is a comprehensive classification and enrichment analysis tool for plant genomes. It provides a unique way to 
 characterize the large-scale gene datasets such as those from transcriptome analysis.
@@ -910,11 +910,13 @@ Parameters | Description
 `min_map_ids` | Minimum number of gene IDs from user list (`id_file`) must be mapped to background database for performing GenFam analysis [default=5]
 `alpha` | Significance level [float][default: 0.05]
 
-
-
 Returns:
-
-fam_enrich_out.txt (enriched gene families), fam_all_out.txt (all mapped gene families) will be saved in same directory
+Attribute | Description
+------------ | -------------
+df_enrich | Enriched gene families with p < 0.05
+genfam_info | GenFam run information
+check_allowed_ids | Check allowed ID types of plant specied for GenFam
+Output files | Output figures and files from GenFam analysis <br> <strong><em>genfam_enrich.png</em></strong>: GenFam figure for enriched gene families <br> <strong><em>fam_enrich_out.txt</em></strong>: List of enriched gene families with mapped gene IDs, GO annotation, and detailed statistcs <br> <strong><em>fam_all_out.txt</em></strong>: List of all gene families with mapped gene IDs, GO annotation, and detailed statistcs
 
 
 How to cite bioinfokit?

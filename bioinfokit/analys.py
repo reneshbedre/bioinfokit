@@ -2015,7 +2015,7 @@ class genfam:
         df_dict_glist = {key: value[0].split(',') for key, value in df_dict_glist.items()}
         return df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc
 
-    def fam_enrich(self, species=None, id_type=None, id_file='text_file_with_gene_ids', stat_sign_test=1,
+    def fam_enrich(self, id_file='text_file_with_gene_ids', species=None, id_type=None,  stat_sign_test=1,
                    multi_test_corr=3, min_map_ids=5, alpha=0.05):
         if id_type not in [1, 2, 3]:
             raise ValueError('Invalid value for id_type')
@@ -2054,6 +2054,7 @@ class genfam:
                 uniq_p[item] = df_dict_gop[item]
                 uniq_f[item] = df_dict_gof[item]
                 uniq_c[item] = df_dict_goc[item]
+                bg_gene_count = bg_gene_count
         # phytozome transcript
         elif id_type == 2:
             df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
@@ -2073,6 +2074,7 @@ class genfam:
                 uniq_p[item] = df_dict_gop[item]
                 uniq_f[item] = df_dict_gof[item]
                 uniq_c[item] = df_dict_goc[item]
+                bg_gene_count = bg_trn_count
         # phytozome  pacId
         elif id_type == 3:
             df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
@@ -2092,6 +2094,7 @@ class genfam:
                 uniq_p[item] = df_dict_gop[item]
                 uniq_f[item] = df_dict_gof[item]
                 uniq_c[item] = df_dict_goc[item]
+                bg_gene_count = bg_phytid_count
 
         read_id_file = open(id_file, 'r')
         for gene_id in read_id_file:
@@ -2199,7 +2202,7 @@ class genfam:
         df_enrich_fig = self.df_enrich.copy()
         df_enrich_fig['log10p'] = -(np.log10(df_enrich_fig['p value']))
         visuz.stat.normal_bar(df=df_enrich_fig, x_col_name='Short name', y_col_name='log10p', axxlabel='Gene Family',
-                        axylabel='-log10(p value)', ar=(90, 0))
+                        axylabel='-log10(p value)', ar=(90, 0), figname='genfam_enrich', r=1000)
 
     @staticmethod
     def allowed_ids(locus=None, trn=None, pacid=None, species=None):
