@@ -743,10 +743,11 @@ class stat:
             data_summary_dict['Max'].append(temp.describe().to_numpy()[7])
         return pd.DataFrame(data_summary_dict)
 
-    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_xfac_var=None, phalpha=0.05):
+    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_xfac_var=None, anova_model=None,
+                  phalpha=0.05):
         df = df.dropna()
-        if xfac_var is None or anova_xfac_var is None:
-            raise ValueError('Invalid value for xfac_var or anova_xfac_var')
+        if xfac_var is None or anova_model is None or res_var is None:
+            raise ValueError('Invalid value for xfac_var or anova_model or res_var')
         tukey_phoc = dict()
         tukey_phoc['group1'] = []
         tukey_phoc['group2'] = []
@@ -760,22 +761,68 @@ class stat:
         group_pval = dict()
         # group_let = dict()
         # share_let = dict()
-        levels = df[xfac_var].unique()
+        mult_group = dict()
+        mult_group_count = dict()
+        if isinstance(xfac_var, list) and len(xfac_var) == 2:
+            levels1 = df[xfac_var[0]].unique()
+            levels2 = df[xfac_var[1]].unique()
+            sample_size_r = len(levels1) * len(levels2)
+            for ele1 in levels1:
+                for ele2 in levels2:
+                    mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].mean().value
+                    mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].shape[0]
+        elif isinstance(xfac_var, str):
+            levels = df[xfac_var].unique()
+            sample_size_r = len(levels)
+            for ele in levels:
+                mult_group[ele] = df[df[xfac_var] == ele].mean().value
+                mult_group_count[ele] = df[df[xfac_var] == ele].shape[0]
 
-        self.anova_stat(df, res_var, anova_xfac_var)
+        # self.anova_stat(df, res_var, anova_xfac_var)
+        self.anova_stat(df, anova_model)
         df_res = self.anova_summary.df.Residual
         mse = self.anova_summary.sum_sq.Residual / df_res
-        self.data_summary = stat._data_summary(df, xfac_var, res_var)
+        # self.data_summary = stat._data_summary(df, xfac_var, res_var)
 
         # q critical
-        q_crit = qsturng(1 - phalpha, len(levels), df_res)
+        q_crit = qsturng(1 - phalpha, sample_size_r, df_res)
         # t critical tcrit = qcrit /\sqrt 2.
         # t_crit = q_crit / np.sqrt(2)
-        tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
+        # tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
         # let_num = 97
         # let_num_list = []
         # sharing_letter = dict()
+        comp_pairs = [(ele1, ele2) for i, ele1 in enumerate(list(mult_group)) for ele2 in list(mult_group)[i + 1:]]
+        for p in comp_pairs:
+            mean_diff = max(mult_group[p[0]], mult_group[p[1]]) - min(mult_group[p[0]], mult_group[p[1]])
+            # count for groups; this is useful when sample size not equal -- Tukey-Kramer
+            group1_count, group2_count = mult_group_count[p[0]], mult_group_count[p[1]]
+            # https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
+            # also for considering unequal sample size
+            mse_factor = np.sqrt(np.divide(mse, group1_count) + np.divide(mse, group2_count))
+            q_val = mean_diff / np.divide(mse_factor, np.sqrt(2))
+            tukey_phoc['group1'].append(p[0])
+            tukey_phoc['group2'].append(p[1])
+            tukey_phoc['Diff'].append(mean_diff)
+            # when equal sample size
+            tukey_phoc['Lower'].append(mean_diff - (q_crit * np.sqrt(np.divide(mse, 2) *
+                                                                     (np.divide(1, group1_count) +
+                                                                      np.divide(1, group2_count)))))
+            tukey_phoc['Upper'].append(mean_diff + (q_crit * np.sqrt(np.divide(mse, 2) *
+                                                                     (np.divide(1, group1_count) +
+                                                                      np.divide(1, group2_count)))))
+            # tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
+            # t test related to qvalue as q = sqrt(2) t
+            # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
+            tukey_phoc['q-value'].append(q_val)
+            if isinstance(psturng(np.abs(q_val), sample_size_r, df_res), np.ndarray):
+                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), group1_count, df_res)[0]
+                tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res)[0])
+            else:
+                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), group1_count, df_res)
+                tukey_phoc['p-value'].append(psturng(np.abs(q_val), group1_count, df_res))
 
+        '''
         for i in range(len(levels)):
             for j in range(len(levels)):
                 if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1] and j+1 > i:
@@ -815,7 +862,9 @@ class stat:
                         group_pval[(levels[i], levels[j + 1])] = psturng(np.abs(q_val), len(levels), df_res)
                         tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res))
 
-                    '''
+        '''
+
+        '''
                     if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
                         if levels[i] not in group_letter and levels[j+1] not in group_letter:
                             assigned = 1
@@ -862,7 +911,8 @@ class stat:
                             group_letter[levels[j + 1]] = group_letter[levels[i]]
                             let_num_list.append(group_letter[levels[i]])
                             print(levels[i], levels[j+1], let_num_list, 'h')
-                    '''
+        '''
+
         '''
         # print(group_letter)
         # group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
@@ -934,25 +984,29 @@ class stat:
         # self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
         #    list(group_letter_chars.values())})
 
-    def anova_stat(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
+    def anova_stat(self, df="dataframe", anova_model=None, res_var=None, xfac_var=None, phalpha=0.05):
         # x = '{} ~ '
-        x = res_var + '~'
+        if res_var:
+            x = res_var + '~'
         # y = 'C({})'
         z = '+'
-        if isinstance(xfac_var, list) and len(xfac_var) > 1:
+        if isinstance(xfac_var, list) and len(xfac_var) > 1 and anova_model is None:
             for i in range(len(xfac_var)):
                 x += 'C({})'.format(xfac_var[i])
                 if i < len(xfac_var) - 1:
                     x += z
             model = ols(x, data=df).fit()
-        elif isinstance(xfac_var, str):
+        elif isinstance(xfac_var, str) and anova_model is None:
             # create and run model
             # model = ols('{} ~ C({})'.format(res_var, xfac_var), data=df).fit()
             x += 'C({})'.format(xfac_var)
             model = ols(x, data=df).fit()
+        elif anova_model:
+            model = ols(anova_model, data=df).fit()
         else:
             raise TypeError('xfac_var in anova must be string or list')
         anova_table = sm.stats.anova_lm(model, typ=2)
+
 
         # treatments
         # this is for bartlett test
