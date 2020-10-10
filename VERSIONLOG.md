@@ -1,3 +1,7 @@
+v1.0.0  has the following updates and changes (October 10, 2020)
+- genFam enrichment analysis function added (`bioinfokit.analys.genfam.fam_enrich`)
+- genfam test added
+
 v0.9.9  has the following updates and changes (October 04, 2020)
 - Tukey HSD test added to perform multiple pairwise comparisons (`bioinfokit.analys.stat.tukey_hsd`)
 

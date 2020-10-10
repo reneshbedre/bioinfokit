@@ -2338,12 +2338,17 @@ class genfam:
                 uniq_c[item] = df_dict_goc[item]
                 bg_gene_count = bg_phytid_count
 
-        read_id_file = open(id_file, 'r')
-        for gene_id in read_id_file:
-            gene_id = gene_id.strip().upper()
+        if isinstance(id_file, pd.DataFrame):
+            for ix, rows in id_file.iterrows():
+                gene_id = rows[0].strip().upper()
+                user_provided_uniq_ids[gene_id] = 0
+        else:
+            read_id_file = open(id_file, 'r')
+            for gene_id in read_id_file:
+                gene_id = gene_id.strip().upper()
             # remove the duplicate ids and keep unique
-            user_provided_uniq_ids[gene_id] = 0
-        read_id_file.close()
+                user_provided_uniq_ids[gene_id] = 0
+            read_id_file.close()
 
         # get the annotation count. number of genes from user input present in genfam database
         anot_count = 0

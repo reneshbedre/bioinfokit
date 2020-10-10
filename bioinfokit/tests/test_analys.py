@@ -1,8 +1,9 @@
-from bioinfokit.analys import norm, get_data
+from bioinfokit.analys import norm, get_data, genfam
 import pytest
 import numpy as np
 import pandas as pd
 from unittest import TestCase
+import urllib.request
 
 
 class TestNormalization(TestCase):
@@ -33,3 +34,9 @@ class TestNormalization(TestCase):
         np.testing.assert_array_equal(round(nm.tpm_norm.iloc[0], 2).to_numpy(),
                                       np.asarray([99.730156, 97.641941, 72.361658, 89.606265, 69.447237, 90.643338])
                                       .round(2))
+
+    def test_genfam(self):
+        id_data = pd.read_csv('https://reneshbedre.github.io/assets/posts/genfam/grai_id.txt', header=None)
+        res = genfam()
+        res.fam_enrich(id_file=id_data, species='grai', id_type=1)
+        np.testing.assert_array_equal(res.df_enrich.iloc[0][1], 'MYB')
