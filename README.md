@@ -893,48 +893,6 @@ FASTQ files for each SRA accession in the current directory unless specified by 
 -->
 
 
-<b>Gene family enrichment analysis (GenFam)</b>
-
-latest update v1.0.0
-
-`bioinfokit.analys.genfam.fam_enrich(id_file, species, id_type, stat_sign_test, multi_test_corr, min_map_ids, alpha)`
-
-GenFam is a comprehensive classification and enrichment analysis tool for plant genomes. It provides a unique way to 
-characterize the large-scale gene datasets such as those from transcriptome analysis (read <a href='https://onlinelibrary.wiley.com/doi/full/10.1002/pld3.191'>GenFam</a> paper for more details)
-
-Parameters | Description
------------- | -------------
-`id_file` | Text file containing the list of gene IDs to analyze using GenFam. IDs must be separated by newline.
-`species` | Plant species ID for GenFam analysis. All plant species ID provided [here](https://github.com/reneshbedre/reneshbedre.github.io/blob/master/assets/posts/genfam/genfam_species_id.md)
-`id_type` | Plant species ID type  <br> <strong><em>1</em></strong>: Phytozome locus ID <br> <strong><em>2</em></strong>: Phytozome transcript ID <br> <strong><em>3</em></strong>: Phytozome PAC ID <br> 
-`stat_sign_test` | Statistical significance test for enrichment analysis [default=1]. <br> <strong><em>1</em></strong>: Fisher exact test <br> <strong><em>2</em></strong>: Hypergeometric distribution <br> <strong><em>3</em></strong>: Binomial distribution <br> <strong><em>4</em></strong>: Chi-squared distribution <br>
-`multi_test_corr` | Multiple testing correction test [default=3]. <br> <strong><em>1</em></strong>: Bonferroni <br> <strong><em>2</em></strong>: Bonferroni-Holm <br> <strong><em>3</em></strong>: Benjamini-Hochberg <br> 
-`min_map_ids` | Minimum number of gene IDs from the user list (`id_file`) must be mapped to the background database for performing GenFam analysis [default=5]
-`alpha` | Significance level [float][default: 0.05]
-
-Returns:
-Attribute | Description
------------- | -------------
-df_enrich | Enriched gene families with p < 0.05
-genfam_info | GenFam run information
-Output files | Output figures and files from GenFam analysis <br> <strong><em>genfam_enrich.png</em></strong>: GenFam figure for enriched gene families <br> <strong><em>fam_enrich_out.txt</em></strong>: List of enriched gene families with mapped gene IDs, GO annotation, and detailed statistics <br> <strong><em>fam_all_out.txt</em></strong>: List of all gene families with mapped gene IDs, GO annotation, and detailed statistics
-
-<a href="https://reneshbedre.github.io/blog/genfam.html" target="_blank">Description and working example</a>
-
-<b>Check allowed ID types for plant species for GenFam</b>
-
-latest update v1.0.0
-
-`bioinfokit.analys.genfam.check_allowed_ids(species)`
-
-Parameters | Description
------------- | -------------
-`species` | Plant species ID to check for allowed ID type. All plant species ID provided [here](https://github.com/reneshbedre/reneshbedre.github.io/blob/master/assets/posts/genfam/genfam_species_id.md)
-
-Returns:
-Allowed ID types for GenFam
-
-<a href="https://reneshbedre.github.io/blog/genfam.html" target="_blank">Description and working example</a>
 
 
 How to cite bioinfokit?
