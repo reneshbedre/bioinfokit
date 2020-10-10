@@ -1162,6 +1162,35 @@ class stat:
 
         general.get_figure(show, r, figtype, 'singlebar')
 
+    @staticmethod
+    def normal_bar(df='dataframe', x_col_name=None, y_col_name=None, dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", r=300,
+                   ar=(0, 0), valphabar=1, show=False, ylm=None, axtickfontsize=9, axtickfontname='Arial',
+                   ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname='Arial', axxlabel=None, axylabel=None,
+                   figtype='png', figname='normal_bar'):
+        # set axis labels to None
+        _x = None
+        _y = None
+        xbar = np.arange(len(df[x_col_name]))
+        plt.subplots(figsize=dim)
+        plt.bar(x=xbar, height=df[y_col_name], width=bw, color=colorbar, alpha=valphabar)
+        if ax_x_ticklabel:
+            x_ticklabel = ax_x_ticklabel
+        else:
+            x_ticklabel = df[x_col_name].to_numpy()
+        plt.xticks(ticks=xbar, labels=x_ticklabel, fontsize=axtickfontsize, rotation=ar[0], fontname=axtickfontname)
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
+        # ylm must be tuple of start, end, interval
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+        plt.yticks(fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
+        general.get_figure(show, r, figtype, figname)
+
+
 
 class cluster:
     def __init__(self):

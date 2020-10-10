@@ -1,24 +1,21 @@
-from sklearn.decomposition import PCA
 import pandas as pd
 import re
 import os
 import numpy as np
-from bioinfokit.visuz import screeplot, pcaplot, general
-from itertools import groupby, chain, combinations
-import string
+from bioinfokit.visuz import general
+from bioinfokit import visuz
+from itertools import groupby, chain
 import sys
 import csv
-import matplotlib.pyplot as plt
 import scipy.stats as stats
 from tabulate import tabulate
-from statsmodels.graphics.mosaicplot import mosaic
+from statsmodels.stats.multitest import multipletests
 from textwrap3 import wrap
 from statsmodels.formula.api import ols
 import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from decimal import Decimal
 from pathlib import Path
-from sklearn.metrics import mean_squared_error
 from collections import defaultdict
 from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
@@ -1743,6 +1740,7 @@ class assembly:
 
 
 class lncrna:
+    @staticmethod
     def lincrna_types(gff_file='gff_file_with_lincrna', map_factor=200):
         read_gff_file = open(gff_file, 'r')
         out_file = open('same_conv_out.txt', 'w')
@@ -1865,6 +1863,604 @@ class lncrna:
                             k + '\t' + checked_2[k1][1] + '\t' + checked_2[k1][2] + '\t' + str(checked_2[k1][0]) + '\n')
             if x == 0:
                 out_file_3.write(k + '\t' + checked[k][1] + '\t' + checked[k][2] + '\t' + str(checked[k][0]) + '\n')
+
+
+class genfam:
+    def __init__(self):
+        self.species_df = None
+        self.genfam_info= None
+        self.df_enrich = None
+
+    @staticmethod
+    def enrichment_analysis(user_provided_uniq_ids_len=None, get_user_id_count_for_gene_fam=None, gene_fam_count=None,
+                            bg_gene_count=None, df_dict_glist=None, stat_sign_test=None, multi_test_corr=None,
+                            uniq_p=None, uniq_c=None, uniq_f=None, get_gene_ids_from_user=None, short_fam_name=None,
+                            min_map_ids=None):
+        pvalues = []
+        enrichment_result = []
+        # get total mapped genes from user list
+        mapped_query_ids = sum(get_user_id_count_for_gene_fam.values())
+
+        for k in get_user_id_count_for_gene_fam:
+            # first row and first column (k)
+            # from user list
+            # number of genes mapped to family in subset
+            gene_in_category = get_user_id_count_for_gene_fam[k]
+            short_fam = short_fam_name[k]
+            # first row and second column (m-k)  _uniq_id_count_dict (m)
+            # n-k (n total mappable deg)
+            # from user list
+            # total subset - gene mapped to family
+            # gene_not_in_category_but_in_sample = _uniq_id_count_dict-gene_in_category
+            # calculate stat sign based on only ids mapped and not all query ids as in agrigo
+            gene_not_in_category_but_in_sample = mapped_query_ids - gene_in_category
+            # second row and first column (n-k)
+            # m-k
+            # genes that mapped to family are in genome - genes in category from user list
+            gene_not_in_catgory_but_in_genome = gene_fam_count[k] - gene_in_category
+            bg_gene_fam_ids = gene_fam_count[k]
+            # second row and second column gene_in_category+gene_not_in_catgory_and_in_genome (n)
+            # N-m-n+k
+            bg_in_genome = bg_gene_count - mapped_query_ids - (gene_in_category + gene_not_in_catgory_but_in_genome) \
+                           + gene_in_category
+            # for go terms
+            process = uniq_p[k]
+            function = uniq_f[k]
+            comp = uniq_c[k]
+            # gene ids from user list mapped to particular gene family
+            gene_ids = get_gene_ids_from_user[k]
+
+            # fisher exact test
+            if stat_sign_test == 1:
+                stat_test_name = 'Fisher exact test'
+                # run analysis if only mappable ids are >= 5
+                # if mapped_query_ids >= 5:
+                oddsratio, pvalue = stats.fisher_exact([[gene_in_category, gene_not_in_category_but_in_sample],
+                                                        [gene_not_in_catgory_but_in_genome, bg_in_genome]], 'greater')
+
+                if int(gene_in_category) > 0:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids])
+                    pvalues.append(pvalue)
+            # Hypergeometric
+            elif stat_sign_test == 2:
+                stat_test_name = 'Hypergeometric distribution'
+                oddsratio = 'NA'
+                pvalue = stats.hypergeom.sf(gene_in_category - 1, bg_gene_count, gene_fam_count[k], mapped_query_ids)
+                if int(gene_in_category) > 0:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids])
+                    pvalues.append(pvalue)
+            # Binomial
+            elif stat_sign_test == 3:
+                stat_test_name = 'Binomial distribution'
+                oddsratio = 'NA'
+                # probability from the reference set for particular category
+                exp_pvalue = (gene_fam_count[k] / bg_gene_count)
+                pvalue = stats.binom_test(gene_in_category, mapped_query_ids, exp_pvalue, alternative='greater')
+                if int(gene_in_category) > 0:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids])
+                    pvalues.append(pvalue)
+            # Chi-Square
+            elif stat_sign_test == 4:
+                stat_test_name = 'Chi-squared distribution'
+                oddsratio = 'NA'
+                chi2, pvalue, dof, exp = stats.chi2_contingency([[gene_in_category, gene_not_in_category_but_in_sample],
+                                                                 [gene_not_in_catgory_but_in_genome, bg_in_genome]],
+                                                                correction=False)
+                # count cells where expected frequency < 5
+                cell_ct = sum(sum(i < 5 for i in exp))
+                cell_ct_per = 100 * float(cell_ct) / float(4)
+                # only report the family where observed count is more than expected gene in category count
+                # this is for getting highly enriched genes other under-represented genes will also be found
+                if int(gene_in_category) > 0 and gene_in_category >= exp[0][0]:
+                    enrichment_result.append([k, short_fam, user_provided_uniq_ids_len, gene_in_category, bg_gene_count,
+                                              bg_gene_fam_ids, oddsratio, pvalue, process, function, comp, gene_ids,
+                                              cell_ct_per])
+                    # print key, chi2, pvalue
+                    pvalues.append(pvalue)
+
+        # FDR Bonferroni
+        if multi_test_corr == 1:
+            mult_test_name = 'Bonferroni'
+            fdr = multipletests(pvals=pvalues, method='bonferroni')[1]
+        # FDR Bonferroni-Holm
+        elif multi_test_corr == 2:
+            mult_test_name = 'Bonferroni-Holm'
+            fdr = multipletests(pvals=pvalues, method='holm')[1]
+        # FDR Benjamini-Hochberg
+        elif multi_test_corr == 3:
+            mult_test_name = 'Benjamini-Hochberg'
+            fdr = multipletests(pvals=pvalues, method='fdr_bh')[1]
+
+        return enrichment_result, fdr, mapped_query_ids, stat_test_name, mult_test_name
+
+    @staticmethod
+    def get_file_from_gd(url=None):
+        get_path = 'https://drive.google.com/uc?export=download&id=' + url.split('/')[-2]
+        return pd.read_csv(get_path)
+
+    @staticmethod
+    def get_bg_counts(species=None, check_ids=False):
+        if species == 'ahyp':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1Y5WHC-G7idvaMa_sX5xyy99MLXENaSfS/view?usp=sharing')
+            plant_name = 'Amaranthus hypochondriacus v2.1 (Amaranth)'
+        elif species == 'atri':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1PeuE4_r4o3YdczEwuJhiJgpS0SAD6kWi/view?usp=sharing')
+            plant_name = 'Amborella trichopoda v1.0 (Amborella)'
+        elif species == 'acom':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/198lQk2_kvI78qqE15QmEiuKNmR7IjIy0/view?usp=sharing')
+            plant_name = 'Ananas comosus v3 (Pineapple)'
+        elif species == 'alyr':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1xa8V_g0fJLJRuZ9lbJooZy_QC1xNypnC/view?usp=sharing')
+            plant_name = 'Arabidopsis lyrata v2.1 (Lyre-leaved rock cress)'
+        elif species == 'atha':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1akf_2LJU0ULLB31o7smQI6NwUC0_Cg1T/view?usp=sharing')
+            plant_name = 'Arabidopsis thaliana TAIR10 (Thale cress)'
+        elif species == 'aoff':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1D5dkCEwEf7uwPsb1bJySKQcH3HukDLUD/view?usp=sharing')
+            plant_name = 'Asparagus officinalis V1.1 (Asparagus)'
+        elif species == 'bstr':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1uJtA-WpEfgYdjDsiCAZbPdRX9OyMAmb1/view?usp=sharing')
+            plant_name = 'Boechera stricta v1.2 (Drummond rock cress)'
+        elif species == 'bdis':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1ju40AJAw9vYcm3CdKEYOnL8LonXF9t5H/view?usp=sharing')
+            plant_name = 'Brachypodium distachyon v3.1 (Purple false brome)'
+        elif species == 'bole':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1NOAEvLJBKPFKogwyUkQ_8bXCO4Wz8ZqF/view?usp=sharing')
+            plant_name = 'Brassica oleracea capitata v1.0 (Savoy cabbage)'
+        elif species == 'cgra':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1SI7PLZOuc5GTnuFxYA-zdCHZShLvleSk/view?usp=sharing')
+            plant_name = 'Capsella grandiflora v1.1'
+        elif species == 'crub':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1Sz9yPe67BzLujVj_N4Hpgvu8rG7rFSLl/view?usp=sharing')
+            plant_name = 'Capsella rubella v1.0 (Pink shepherds purse)'
+        elif species == 'cpap':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1pFLQJt2m-TDA2zGBDBCFQSiiiA5SEfQO/view?usp=sharing')
+            plant_name = 'Carica papaya ASGPBv0.4 (Papaya)'
+        elif species == 'cqui':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/10KLHnBgB-OC7aTEEhxYqp3BYbLqchfcj/view?usp=sharing')
+            plant_name = 'Chenopodium quinoa v1.0 (Quinoa)'
+        elif species == 'crei':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1YbQ457hRuKZ2KsuVhfSShgCeso9QTPZP/view?usp=sharing')
+            plant_name = 'Chlamydomonas reinhardtii v5.5 (Green algae)'
+        elif species == 'czof':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1WftatxF-m11Q7WWxvbSV_gEIJlLUp4X5/view?usp=sharing')
+            plant_name = 'Chromochloris zofingiensis v5.2.3.2'
+        elif species == 'cari':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/14EldoR_JBgvFAgyOa_MW4IqaE-_IVEA3/view?usp=sharing')
+            plant_name = 'Cicer arietinum v1.0 (Chickpea)'
+        elif species == 'ccle':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1xTrCDPgnWwfIObZFxeMdp0v-iNL2aO69/view?usp=sharing')
+            plant_name = 'Citrus clementina v1.0 (Clementine)'
+        elif species == 'csin':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1Zaif12UzenScHAuNP7NY2bqSHplBpx9a/view?usp=sharing')
+            plant_name = 'Citrus sinensis v1.1 (Sweet orange)'
+        elif species == 'csub':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1UXEF9n1kKNXtEDv-e9pGYJkKcMsJ203S/view?usp=sharing')
+            plant_name = 'Coccomyxa subellipsoidea C-169 v2.0'
+        elif species == 'csat':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1DeuURHM1yFtHk7TUjh341Au43BdXQqQK/view?usp=sharing')
+            plant_name = 'Cucumis sativus v1.0'
+        elif species == 'dcar':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1dUO1umk6RvzXdT7jilx7NYmXz6xWXWBj/view?usp=sharing')
+            plant_name = 'Daucus carota v2.0'
+        elif species == 'dsal':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1EibVmaLKl9jqIECQ5eI35dd1ePpycKw_/view?usp=sharing')
+            plant_name = 'Dunaliella salina v1.0'
+        elif species == 'egra':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1s6-HTCXKtd8TCvEzYSb2t2T_sCnJF3GT/view?usp=sharing')
+            plant_name = 'Eucalyptus grandis v2.0'
+        elif species == 'esal':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/18sMv6sK4DzWqEhpU7JuMQzwoI-DdPAgZ/view?usp=sharing')
+            plant_name = 'Eutrema salsugineum v1.0'
+        elif species == 'fves':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1GhNX0dkRZHOZiQIxuPTrPuOX6Yf7HZ4z/view?usp=sharing')
+            plant_name = 'Fragaria vesca v1.1'
+        elif species == 'gmax':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1j9nENpp5_bWnuuiM0ojoB3-shltl7QMn/view?usp=sharing')
+            plant_name = 'Glycine max Wm82.a2.v1'
+        elif species == 'grai':
+            df = genfam.get_file_from_gd('https://drive.google.com/file/d/11_Atm8NQpt87KzBS7hEVwnadq19x7SPk/view?usp=sharing')
+            plant_name = 'Gossypium raimondii v2.1'
+        elif species == 'hvul':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1gQmt5j8o4TaRrl-RE4GVUV5_a19haR5N/view?usp=sharing')
+            plant_name = 'Hordeum vulgare r1 (Barley)'
+        elif species == 'kfed':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1te-KkIUkKhwyaJeyMzxruji20VzV2Jp-/view?usp=sharing')
+            plant_name = 'Kalanchoe fedtschenkoi v1.1 (diploid Kalanchoe)'
+        elif species == 'lsat':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1V-fXPzpR2hV_FKGed1bcnVV0LCnA36vd/view?usp=sharing')
+            plant_name = 'Lactuca sativa V5 (Lettuce)'
+        elif species == 'lusi':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1RY97um9edfEyC_HoPLmi5FZuGvBvYK6M/view?usp=sharing')
+            plant_name = 'Linum usitatissimum v1.0 (Flax)'
+        elif species == 'mdom':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1d05-57Uxc-Zpg1P42oCmZWQscBETzwru/view?usp=sharing')
+            plant_name = 'Malus domestica v1.0 (Apple)'
+        elif species == 'mesc':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/131d1eiwgeRt691GASO9hEi5j2AVlgA5f/view?usp=sharing')
+            plant_name = 'Manihot esculenta v6.1 (Cassava)'
+        elif species == 'mpol':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1S4eJBldzkvov2HRigG68JDJ4kPz5o2i9/view?usp=sharing')
+            plant_name = 'Marchantia polymorpha v3.1 (Common liverwort)'
+        elif species == 'mtru':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/111BzdpRL6Vmrq32ErujKmRJGi8EZmQWG/view?usp=sharing')
+            plant_name = 'Medicago truncatula Mt4.0v1 (Barrel medic)'
+        elif species == 'mpus':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/109eZLEkzQFSyeq1DYHiznDPUuZ1X9D1y/view?usp=sharing')
+            plant_name = 'Micromonas pusilla CCMP1545 v3.0'
+        elif species == 'mgut':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1Ewqr7_xeSSMzADQgzEBJseu9YVyfsHC7/view?usp=sharing')
+            plant_name = 'Mimulus guttatus v2.0 (Monkey flower)'
+        elif species == 'macu':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1v9q_voRcqaMDXc7CpfYdkAt0uUwbHRbb/view?usp=sharing')
+            plant_name = 'Musa acuminata v1 (Banana)'
+        elif species == 'oeur':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1dJAipHwx4mPZmMAs53gJG0EiCzgizGtx/view?usp=sharing')
+            plant_name = 'Olea europaea var. sylvestris v1.0 (Wild olive)'
+        elif species == 'otho':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1eUnTqx4WMRG0HHZS2HBAhi0vil1a9_xj/view?usp=sharing')
+            plant_name = 'Oropetium thomaeum v1.0'
+        elif species == 'osat':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1GsQgmFrwxtlSMCgDAyamAvMXQvEaYjcE/view?usp=sharing')
+            plant_name = 'Oryza sativa v7_JGI (Rice)'
+        elif species == 'oluc':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1Ld57aW3j7GT7J6YSlfDou32pxsIlnB-S/view?usp=sharing')
+            plant_name = 'Ostreococcus lucimarinus v2.0'
+        elif species == 'ppat':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1uUlBWGJYiyScBLjZg67txZohtueOzo-L/view?usp=sharing')
+            plant_name = 'Physcomitrella patens v3.3'
+        elif species == 'ptri':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1fGsrLBwTuP72nwNTOIPR52nVu0-wzt5Z/view?usp=sharing')
+            plant_name = 'Populus trichocarpa v3.1 (Poplar)'
+        elif species == 'pumb':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1TdZ_bm78xP2kca6M_NY7l6lAunpkM4CU/view?usp=sharing')
+            plant_name = 'Porphyra umbilicalis v1.5 (Laver)'
+        elif species == 'pper':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1nfcMPj-Xmg8U7-Pfs6cJe74kQ31pZ0ac/view?usp=sharing')
+            plant_name = 'Prunus persica v2.1 (Peach)'
+        elif species == 'rcom':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1UYXzGirLozWX-N_uuOBirsJ0pKSJoarv/view?usp=sharing')
+            plant_name = 'Ricinus communis v0.1 (Castor bean)'
+        elif species == 'smoe':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1VPQfN5-_SX91JgmcIFf2ZdvsO7QWEOEr/view?usp=sharing')
+            plant_name = 'Selaginella moellendorffii v1.0 (Spikemoss)'
+        elif species == 'sita':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1N97CkOLPE7Atgjs9Alst3VrvsRj-igtJ/view?usp=sharing')
+            plant_name = 'Setaria italica v2.2 (Foxtail millet)'
+        elif species == 'slyc':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1_MxCNxyPFXk4V7-6vR9NTFhdgH2Yg04W/view?usp=sharing')
+            plant_name = 'Solanum lycopersicum iTAG2.4 (Tomato)'
+        elif species == 'stub':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1XttvKbhHr4oEKiHSWKFYIN0gWAjO6oTC/view?usp=sharing')
+            plant_name = 'Solanum tuberosum'
+        elif species == 'sbio':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1KXNKCiWynvev2OePQPtxIbBtjffaf3UK/view?usp=sharing')
+            plant_name = 'Sorghum bicolor v3.1.1 (Cereal grass)'
+        elif species == 'spol':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1i6ux7UVrEF3XNRuf3uF9ZsRThrM7jO11/view?usp=sharing')
+            plant_name = 'Spirodela polyrhiza v2 (Greater duckweed)'
+        elif species == 'tcac':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/10wDbFyC9uo_lmnWbdLNxecuV7ZdsuwC4/view?usp=sharing')
+            plant_name = 'Theobroma cacao v1.1 (Cacao)'
+        elif species == 'tpra':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1Vt2lyBmOqTk1bHY6LG7Va6zMGEDZs0oq/view?usp=sharing')
+            plant_name = 'Trifolium pratense v2 (Red clover)'
+        elif species == 'taes':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1qOzqfXfVRstYfY7FF4EgMEjsaUiZ9au-/view?usp=sharing')
+            plant_name = 'Triticum aestivum v2.2 (Common wheat)'
+        elif species == 'vvin':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1-B0Rut8GZ_buDCsDM723kevbNeBNGnXg/view?usp=sharing')
+            plant_name = 'Vitis vinifera Genoscope.12X (Common grape vine)'
+        elif species == 'vcar':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1QFDNUoPXhxkSfnf8qC5UQxxn1KqKWVdb/view?usp=sharing')
+            plant_name = 'Volvox carteri v2.1 (Volvox)'
+        elif species == 'zmay':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
+            plant_name = 'Zea mays Ensembl-18 (Maize)'
+        elif species == 'zmar':
+            df = genfam.get_file_from_gd(
+                'https://drive.google.com/file/d/1ufO2Ueml0i0bqw2aWAa6rF7zI52JKC3Z/view?usp=sharing')
+            plant_name = 'Zostera marina v2.2 (Common eelgrass)'
+        else:
+            raise ValueError('Invalid value for species \n')
+
+        bg_gene_count, bg_trn_count, bg_phytid_count = df['loc_len'].sum(), df['trn_len'].sum(), df['phyt_id_len'].sum()
+
+        if check_ids:
+            return df, plant_name
+        else:
+            return df, bg_gene_count, bg_trn_count, bg_phytid_count, plant_name
+
+        # bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
+        # plant_name = 'Amaranthus hypochondriacus v2.1 (Amaranth)'
+        # bg_gene_count = df['loc_len'].sum()
+        # bg_trn_count = df['trn_len'].sum()
+        # bg_phytid_count = df['phyt_id_len'].sum()
+        # return bg_gene_count, bg_trn_count, bg_phytid_count
+
+    @staticmethod
+    def get_rec_dicts(df=None, glist=None, sname=None, loclen=None, gop=None, gof=None, goc=None):
+        df1_glist = df[glist]
+        df1_sname = df[sname]
+        df1_loclen = df[loclen]
+        df1_gop = df[gop]
+        df1_gof = df[gof]
+        df1_goc = df[goc]
+        df2_glist = df1_glist.replace('(^\{|\}$)', '', regex=True)
+        df_dict_glist = df2_glist.set_index('gene_fam').T.to_dict('list')
+        df_dict_sname = df1_sname.set_index('gene_fam').T.to_dict('list')
+        df_dict_loclen = df1_loclen.set_index('gene_fam').T.to_dict('list')
+        df_dict_gop = df1_gop.set_index('gene_fam').T.to_dict('list')
+        df_dict_gof = df1_gof.set_index('gene_fam').T.to_dict('list')
+        df_dict_goc = df1_goc.set_index('gene_fam').T.to_dict('list')
+        df_dict_glist = {key: value[0].split(',') for key, value in df_dict_glist.items()}
+        return df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc
+
+    def fam_enrich(self, id_file='text_file_with_gene_ids', species=None, id_type=None,  stat_sign_test=1,
+                   multi_test_corr=3, min_map_ids=5, alpha=0.05):
+        if id_type not in [1, 2, 3]:
+            raise ValueError('Invalid value for id_type')
+        if stat_sign_test not in [1, 2, 3, 4]:
+            raise ValueError('Invalid value for stat_sign_test')
+        if multi_test_corr not in [1, 2, 3]:
+            raise ValueError('Invalid value for multi_test_corr')
+
+        df, bg_gene_count, bg_trn_count, bg_phytid_count, plant_name = genfam.get_bg_counts(species)
+
+        # phytozome locus == 1
+        get_gene_ids_from_user = dict()
+        gene_fam_count = dict()
+        short_fam_name = dict()
+        get_user_id_count_for_gene_fam = dict()
+        uniq_p = dict()
+        uniq_f = dict()
+        uniq_c = dict()
+        user_provided_uniq_ids = dict()
+        # phytozome locus
+        if id_type == 1:
+            df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
+                genfam.get_rec_dicts(df, ['gene_fam', 'array_agg'], ['gene_fam', 'fam_short'], ['gene_fam', 'loc_len'],
+                                     ['gene_fam', 'uniq_p'], ['gene_fam', 'uniq_f'], ['gene_fam', 'uniq_c'])
+
+            for item in df_dict_glist:
+                df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
+                get_gene_ids_from_user[item] = []
+                # gene family short name
+                short_fam_name[item] = df_dict_sname[item][0]
+                # count for each gene family for background genome
+                gene_fam_count[item] = df_dict_loclen[item][0]
+                # user gene id counts for each gene family
+                get_user_id_count_for_gene_fam[item] = 0
+                # GO terms
+                uniq_p[item] = df_dict_gop[item]
+                uniq_f[item] = df_dict_gof[item]
+                uniq_c[item] = df_dict_goc[item]
+                bg_gene_count = bg_gene_count
+        # phytozome transcript
+        elif id_type == 2:
+            df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
+                genfam.get_rec_dicts(df, ['gene_fam', 'trn_array'], ['gene_fam', 'fam_short'], ['gene_fam', 'trn_len'],
+                                     ['gene_fam', 'uniq_p'], ['gene_fam', 'uniq_f'], ['gene_fam', 'uniq_c'])
+
+            for item in df_dict_glist:
+                df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
+                get_gene_ids_from_user[item] = []
+                # gene family short name
+                short_fam_name[item] = df_dict_sname[item][0]
+                # count for each gene family for background genome
+                gene_fam_count[item] = df_dict_loclen[item][0]
+                # user gene id counts for each gene family
+                get_user_id_count_for_gene_fam[item] = 0
+                # GO terms
+                uniq_p[item] = df_dict_gop[item]
+                uniq_f[item] = df_dict_gof[item]
+                uniq_c[item] = df_dict_goc[item]
+                bg_gene_count = bg_trn_count
+        # phytozome  pacId
+        elif id_type == 3:
+            df_dict_glist, df_dict_sname, df_dict_loclen, df_dict_gop, df_dict_gof, df_dict_goc = \
+                genfam.get_rec_dicts(df, ['gene_fam', 'phyt_id_array'], ['gene_fam', 'fam_short'], ['gene_fam', 'phyt_id_len'],
+                                     ['gene_fam', 'uniq_p'], ['gene_fam', 'uniq_f'], ['gene_fam', 'uniq_c'])
+
+            for item in df_dict_glist:
+                df_dict_glist[item] = [x.upper() for x in df_dict_glist[item]]
+                get_gene_ids_from_user[item] = []
+                # gene family short name
+                short_fam_name[item] = df_dict_sname[item][0]
+                # count for each gene family for background genome
+                gene_fam_count[item] = df_dict_loclen[item][0]
+                # user gene id counts for each gene family
+                get_user_id_count_for_gene_fam[item] = 0
+                # GO terms
+                uniq_p[item] = df_dict_gop[item]
+                uniq_f[item] = df_dict_gof[item]
+                uniq_c[item] = df_dict_goc[item]
+                bg_gene_count = bg_phytid_count
+
+        read_id_file = open(id_file, 'r')
+        for gene_id in read_id_file:
+            gene_id = gene_id.strip().upper()
+            # remove the duplicate ids and keep unique
+            user_provided_uniq_ids[gene_id] = 0
+        read_id_file.close()
+
+        # get the annotation count. number of genes from user input present in genfam database
+        anot_count = 0
+        for k1 in df_dict_glist:
+            for k2 in user_provided_uniq_ids:
+                if k2 in df_dict_glist[k1]:
+                    # if the user input id present in df_dict_glist increment count
+                    get_gene_ids_from_user[k1].append(k2)
+                    get_user_id_count_for_gene_fam[k1] += 1
+                    anot_count += 1
+
+        if anot_count == 0:
+            raise Exception('Provided gene ID does not match to selected ID type')
+
+        enrichment_result, fdr, mapped_query_ids, stat_test_name, mult_test_name = \
+            genfam.enrichment_analysis(len(user_provided_uniq_ids), get_user_id_count_for_gene_fam, gene_fam_count,
+                                       bg_gene_count, df_dict_glist, stat_sign_test, multi_test_corr, uniq_p, uniq_c,
+                                       uniq_f, get_gene_ids_from_user, short_fam_name, min_map_ids)
+
+        # if the number input ids are less than 5, the process will stop
+        # check if list is empty; this is in case of wrong input by user for gene ids or not as per phytozome format or
+        # wrong species selected
+        # if len(uniq_id_count_dict) >= 5 and enrichment_result and _plant_select!="z":
+        if mapped_query_ids < min_map_ids:
+            raise Exception('The minimum mapped gene IDs must be greater than ', min_map_ids)
+
+        # replace all fdr values which are greater than 1 to 1
+        fdr[fdr > 1] = 1
+        fam_out_enrich_file = open('fam_enrich_out.txt', 'w')
+        fam_out_all_file = open('fam_all_out.txt', 'w')
+        cell_ct_chi = 0
+        # Query IDs = total query ids from user (k)
+        # Annotated query IDs = query ids annotated to particular gene family
+        # background ids = particular gene family ids present in whole genome backround
+        # background total = total genome ids
+        for x in range(0, len(fdr)):
+            enrichment_result[x].insert(3, anot_count)
+            enrichment_result[x].insert(9, fdr[x])
+
+        if stat_sign_test == 4:
+            # chi-s test only
+            fam_out_enrich_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" +
+                "Annotated query per family" + "\t" + "Background annotated total" + "\t" +
+                "Background annotated per family" + "\t" + "Odds ratio" + "\t" + "P-value" + "\t" + "FDR" + "\t" +
+                "GO biological process" + "\t" + "GO molecular function" + "\t" + "GO cellular component" + "\t" +
+                "Gene IDs" + "\t" + "Cells with expected frequency <5 (%)" + "\n")
+            fam_out_all_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" + "Annotated query per family"
+                + "\t" + "Background annotated total" + "\t" + "Background annotated per family" + "\t" + "Odds ratio" +
+                "\t" + "P-value" + "\t" + "FDR" + "\t" + "GO biological process" + "\t" + "GO molecular function" + "\t" +
+                "GO cellular component" + "\t" + "Gene IDs" + "\t" + "Cells with expected frequency <5 (%)" + "\n")
+        else:
+            fam_out_enrich_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" +
+                "Annotated query per family" + "\t" + "Background annotated total" + "\t" +
+                "Background annotated per family" + "\t" + "Odds ratio" + "\t" + "P-value" + "\t" + "FDR" + "\t" +
+                "GO biological process" + "\t" + "GO molecular function" + "\t" + "GO cellular component" + "\t" +
+                "Gene IDs" + "\n")
+            fam_out_all_file.write(
+                "Gene Family" + "\t" + "Short Name" + "\t" + "Query total" + "\t" + "Annotated query total" + "\t" + "Annotated query per family"
+                + "\t" + "Background annotated total" + "\t" + "Background annotated per family" + "\t" + "Odds ratio" +
+                "\t" + "P-value" + "\t" + "FDR" + "\t" + "GO biological process" + "\t" + "GO molecular function" + "\t" +
+                "GO cellular component" + "\t" + "Gene IDs" + "\n")
+
+        genfam_for_df, sname_for_df, pv_for_df, fdr_for_df = [], [], [], []
+        for x in range(0, len(enrichment_result)):
+            fam_out_all_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
+            # check pvalue less than 0.05
+            if float(enrichment_result[x][8]) <= alpha:
+                fam_out_enrich_file.write('\t'.join(str(v) for v in enrichment_result[x]) + "\n")
+                genfam_for_df.append(enrichment_result[x][0])
+                sname_for_df.append(enrichment_result[x][1])
+                pv_for_df.append(enrichment_result[x][8])
+                fdr_for_df.append(enrichment_result[x][9])
+                if stat_sign_test == 4:
+                    if float(enrichment_result[x][14]) > 20.0:
+                        cell_ct_chi += 1
+
+        if cell_ct_chi > 0:
+            print('\n WARNING: Some gene families have more than 20% cells with expected frequency count < 5. \n '
+                  'Chi-square test may not be valid test. You can validate those gene families \n for enrichment using '
+                  'fisher exact test. \n Please check output file and see last column for expected frequency count. \n')
+        # console result
+        self.df_enrich = pd.DataFrame({'Gene Family': genfam_for_df, 'Short name': sname_for_df, 'p value': pv_for_df,
+                                  'FDR': fdr_for_df})
+        self.df_enrich = self.df_enrich.sort_values(by=['p value'])
+
+        # console info
+        self.genfam_info = pd.DataFrame({'Parameter': ['Total query gene IDs', 'Number of genes annotated',
+                                                       'Number of enriched gene families (p < 0.05)', 'Plant species',
+                                                'Statistical test for enrichment', 'Multiple testing correction method',
+                                                'Significance level'],
+                                  'Value':[len(user_provided_uniq_ids), mapped_query_ids, self.df_enrich.shape[0],
+                                           plant_name, stat_test_name, mult_test_name, alpha]})
+
+        fam_out_all_file.close()
+        fam_out_enrich_file.close()
+
+        # get figure for enrichment results
+        df_enrich_fig = self.df_enrich.copy()
+        df_enrich_fig['log10p'] = -(np.log10(df_enrich_fig['p value']))
+        visuz.stat.normal_bar(df=df_enrich_fig, x_col_name='Short name', y_col_name='log10p', axxlabel='Gene Family',
+                        axylabel='-log10(p value)', ar=(90, 0), figname='genfam_enrich', r=1000)
+
+    @staticmethod
+    def allowed_ids(locus=None, trn=None, pacid=None, species=None):
+        print('\nAllowed ID types for ', species, '\n\n', 'Phytozome locus: ', locus, '\n', 'Phytozome transcript: ', trn,
+              '\n', 'Phytozome pacID: ', pacid, '\n')
+
+    @staticmethod
+    def check_allowed_ids(species=None):
+        df, plant_name = genfam.get_bg_counts(species, True)
+        genfam.allowed_ids(df['array_agg'].iloc[0].strip('\{').split(',')[0],
+                           df['trn_array'].iloc[0].strip('\{').split(',')[0],
+                           df['phyt_id_array'].iloc[0].strip('\{').split(',')[0],
+                           plant_name)
 
 
 class get_data:
