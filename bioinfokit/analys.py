@@ -1626,6 +1626,8 @@ class lncrna:
 class genfam:
     def __init__(self):
         self.species_df = None
+        self.genfam_info= None
+        self.df_enrich = None
 
     @staticmethod
     def enrichment_analysis(user_provided_uniq_ids_len=None, get_user_id_count_for_gene_fam=None, gene_fam_count=None,
