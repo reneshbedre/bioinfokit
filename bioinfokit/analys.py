@@ -1723,8 +1723,6 @@ class genfam:
         if multi_test_corr == 1:
             mult_test_name = 'Bonferroni'
             fdr = multipletests(pvals=pvalues, method='bonferroni')[1]
-            n = len(pvalues)
-            print(n)
         # FDR Bonferroni-Holm
         elif multi_test_corr == 2:
             mult_test_name = 'Bonferroni-Holm'
