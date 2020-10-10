@@ -4,11 +4,8 @@
     <list default="true" id="71e75625-13c9-4fcc-a08d-c45d9475d173" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/bioinfokit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/bioinfokit.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analys.py" beforeDir="false" afterPath="$PROJECT_DIR$/analys.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visuz.py" beforeDir="false" afterPath="$PROJECT_DIR$/visuz.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/../setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,5 +53,11 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="305" y="124" width="670" height="676" key="search.everywhere.popup" timestamp="1602262847718">
+      <screen x="0" y="23" width="1280" height="777" />
+    </state>
+    <state x="305" y="124" width="670" height="676" key="search.everywhere.popup/0.23.1280.777@0.23.1280.777" timestamp="1602262847718" />
   </component>
 </project>

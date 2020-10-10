@@ -900,7 +900,7 @@ latest update v1.0.0
 `bioinfokit.analys.genfam.fam_enrich(id_file, species, id_type, stat_sign_test, multi_test_corr, min_map_ids, alpha)`
 
 GenFam is a comprehensive classification and enrichment analysis tool for plant genomes. It provides a unique way to 
-characterize the large-scale gene datasets such as those from transcriptome analysis.
+characterize the large-scale gene datasets such as those from transcriptome analysis (read <a href='https://onlinelibrary.wiley.com/doi/full/10.1002/pld3.191'>GenFam</a> paper for more details)
 
 Parameters | Description
 ------------ | -------------

@@ -2113,6 +2113,9 @@ class genfam:
                     get_user_id_count_for_gene_fam[k1] += 1
                     anot_count += 1
 
+        if anot_count == 0:
+            raise Exception('Provided gene ID does not match to selected ID type')
+
         enrichment_result, fdr, mapped_query_ids, stat_test_name, mult_test_name = \
             genfam.enrichment_analysis(len(user_provided_uniq_ids), get_user_id_count_for_gene_fam, gene_fam_count,
                                        bg_gene_count, df_dict_glist, stat_sign_test, multi_test_corr, uniq_p, uniq_c,
@@ -2123,7 +2126,7 @@ class genfam:
         # wrong species selected
         # if len(uniq_id_count_dict) >= 5 and enrichment_result and _plant_select!="z":
         if mapped_query_ids < min_map_ids:
-            raise Exception('The minimum mapped gene IDs must be greater than ', min_map_ids, '\n')
+            raise Exception('The minimum mapped gene IDs must be greater than ', min_map_ids)
 
         # replace all fdr values which are greater than 1 to 1
         fdr[fdr > 1] = 1
