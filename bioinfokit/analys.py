@@ -682,6 +682,11 @@ class stat:
         self.data_summary = None
         self.tukey_summary = None
         self.tukey_groups = None
+        # unstack single factor
+        self.unstack_single_df = None
+        # chi square
+        self.expected_df = None
+        self.summary =None
 
     '''
     def anova(self, df='dataframe', xfac=None, res=None):
@@ -1345,6 +1350,21 @@ class stat:
             self.summary = '\nChi-squared goodness of fit test\n' + '\n' + \
                            tabulate(tabulate_list, headers=["Chi-Square", "Df", "P-value", "Sample size"]) + '\n'
             self.expected_df = df
+
+    def unstack_single_factor(self, df='dataframe', xfac=None, res=None):
+        sample_dict = dict((k, 1) for k in df[xfac].unique())
+        df = df.set_index(xfac)
+        unstack_dict = dict()
+        df_dict = {k: v.to_dict(orient='records') for k, v in df.groupby(level=0)}
+        for k, v in df_dict.items():
+            if k in sample_dict:
+                unstack_dict[k] = []
+                for ele in v:
+                    unstack_dict[k].append(ele[res])
+
+        self.unstack_single_df = pd.DataFrame(unstack_dict)
+
+
 
 
 class gff:
