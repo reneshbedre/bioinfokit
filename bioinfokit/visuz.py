@@ -1310,25 +1310,25 @@ class stat:
                               ylm=None, box_line_style='-', box_line_width=1, box_line_color='b', med_line_style='-',
                               med_line_width=1, med_line_color='g', whisk_line_color='b', cap_color='b',
                               add_sign_symbol=False, symb_dist=None, sign_symbol_opts={'symbol': '*', 'fontsize': 8 },
-                              pv=None):
+                              pv=None, notch=False, outliers=True, fill_box_color=True):
         plt.subplots()
         if column_names:
             plot_xbar = column_names
         else:
             plot_xbar = list(df.columns)
             # rot is x axis rotation
+        other_args = {'grid': grid, 'rot': ar[0], 'fontsize': axtickfontsize, 'notch':notch, 'showfliers':outliers,
+                      'figsize': dim, 'patch_artist': fill_box_color}
+        color_args = {'medians': med_line_color, 'boxes': box_line_color, 'whiskers': whisk_line_color,
+                      'caps': cap_color}
+        medianprops_args = {'linestyle': med_line_style, 'linewidth': med_line_width}
+        boxprops_args = {'linestyle': box_line_style, 'linewidth': box_line_width}
+
         if isinstance(column_names, list):
-            df.boxplot(column=column_names, grid=grid, rot=ar[0], fontsize=axtickfontsize, figsize=dim,
-                       boxprops={'linestyle': box_line_style, 'linewidth': box_line_width},
-                       medianprops={'linestyle': med_line_style, 'linewidth': med_line_width},
-                       color={'medians': med_line_color, 'boxes': box_line_color, 'whiskers': whisk_line_color,
-                              'caps': cap_color})
+            df.boxplot(column=column_names, **other_args, boxprops=boxprops_args, medianprops=medianprops_args,
+                       color=color_args)
         else:
-            df.boxplot(grid=grid, rot=ar[0], fontsize=axtickfontsize, figsize=dim, boxprops={'linestyle':box_line_style,
-                       'linewidth':box_line_width},
-                       medianprops={'linestyle': med_line_style, 'linewidth': med_line_width},
-                       color={'medians': med_line_color, 'boxes': box_line_color, 'whiskers': whisk_line_color,
-                              'caps': cap_color})
+            df.boxplot(**other_args, boxprops=boxprops_args, color=color_args, medianprops=medianprops_args)
 
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
@@ -1341,37 +1341,18 @@ class stat:
             if isinstance(pv, dict):
                 for k, v in pv.items():
                     if isinstance(symb_dist, dict):
+                        if k not in symb_dist:
+                            symb_dist[k] = 0
                         y_pos = df[k].max() + size_factor_to_start_line + symb_dist[k]
                     else:
                         y_pos = df[k].max() + size_factor_to_start_line
 
                     if y_pos > 0 and v <= 0.05:
-                        print(k, v, plot_xbar.index(k))
                         pv_symb = general.pvalue_symbol(v, sign_symbol_opts['symbol'])
                         if pv_symb:
-                            plt.annotate(pv_symb, xy=((plot_xbar.index(k))+1, y_pos), fontsize=sign_symbol_opts['fontsize'],
+                            plt.annotate(pv_symb, xy=((plot_xbar.index(k))+1, y_pos),
+                                         fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
-
-            '''
-            # p should be dict
-            if pv is None:
-                raise Exception("Provide p values to add star symbols")
-            for i in xbar:
-                x_pos = xbar[i]
-
-                if symb_dist:
-                    y_pos = df[list(df.columns)[i]].max() + size_factor_to_start_line + symb_dist[i]
-                else:
-                    y_pos = df[list(df.columns)[i]].max() + size_factor_to_start_line
-
-                # only if y axis is positive
-                if pv:
-                    if y_pos > 0:
-                        pv_symb = general.pvalue_symbol(pv[i], sign_symbol_opts['symbol'])
-                        print(list(df.columns)[i])
-                        if pv_symb:
-                            plt.annotate(pv_symb, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'], ha="center")
-            '''
 
         general.get_figure(show, r, figtype, figname)
 
