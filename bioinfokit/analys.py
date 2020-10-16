@@ -23,6 +23,7 @@ from collections import defaultdict
 from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
 from statsmodels.stats.libqsturng import psturng, qsturng
+import collections
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -683,7 +684,7 @@ class stat:
         self.tukey_summary = None
         self.tukey_groups = None
         # unstack single factor
-        self.unstack_single_df = None
+        self.unstack_df = None
         # chi square
         self.expected_df = None
         self.summary =None
@@ -1362,9 +1363,49 @@ class stat:
                 for ele in v:
                     unstack_dict[k].append(ele[res])
 
-        self.unstack_single_df = pd.DataFrame(unstack_dict)
+        self.unstack_df = pd.DataFrame(unstack_dict)
 
+    def unstack_two_factor(self, df='dataframe', row_fac=None, col_fac=None, res=None):
+        sample_row_dict = dict((k, 1) for k in df[row_fac].unique())
+        sample_col_dict = dict((k, 1) for k in df[col_fac].unique())
+        df = df.set_index(row_fac)
+        unstack_dict = dict()
+        for k in sample_row_dict:
+            for k1 in sample_col_dict:
+                unstack_dict[(k, k1)] = []
+        df_dict = {k: v.to_dict(orient='records') for k, v in df.groupby(level=0)}
+        max_rep = 1
+        for k, v in df_dict.items():
+            if k in sample_row_dict:
+                for ele in v:
+                    if ele[col_fac] in sample_col_dict:
+                        unstack_dict[(k, ele[col_fac])].append(ele[res])
 
+        for k, v in unstack_dict.items():
+            if len(v) > max_rep:
+                max_rep = len(v)
+
+        process_unstack_dict = dict()
+        for k in sample_col_dict:
+            process_unstack_dict[k] = []
+        sample_row_list = []
+        for k in sample_row_dict:
+            sample_row_list.extend(max_rep * [k])
+        sample_row_list.sort()
+        process_unstack_dict['sample'] = sample_row_list
+        sample_col_list = df[col_fac].unique()
+
+        unstack_dict_sorted = collections.OrderedDict(sorted(unstack_dict.items()))
+        print(unstack_dict_sorted)
+        for ele1 in sample_col_list:
+            for ele in list(set(sample_row_list)):
+                for k, v in unstack_dict_sorted.items():
+                    # print(k, v, ele1, ele, 'jjjjjjj')
+                    if k[0] == ele and k[1] == ele1:
+                        # print(k, v, ele1, ele)
+                        process_unstack_dict[k[1]].extend(v)
+
+        self.unstack_df = pd.DataFrame(process_unstack_dict)
 
 
 class gff:

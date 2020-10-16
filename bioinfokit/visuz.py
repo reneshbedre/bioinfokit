@@ -756,7 +756,8 @@ class stat:
                   dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
                   sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=1, legendfontsize=8,
                   ax_y_label=None, ax_x_label=None, symb_dist=None, axlabelfontsize=(9,9), axlabelar=(0, 90), sub_cat=None,
-                  sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 8}, sub_cat_label_dist=None, legendlabelframe=False):
+                  sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'}, sub_cat_label_dist=None,
+                      legendlabelframe=False):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
@@ -1120,12 +1121,14 @@ class stat:
                             plt.annotate(sub_cat[k], xy=(np.mean([cat_x_pos, cat_x_pos_2]),
                                                          cat_y_pos - size_factor_to_start_line - sub_cat_label_dist[
                                                              sub_cat_i]),
-                                         ha="center", fontsize=sub_cat_opts['fontsize'], annotation_clip=False)
+                                         ha="center", fontsize=sub_cat_opts['fontsize'], annotation_clip=False,
+                                         fontfamily=sub_cat_opts['fontname'])
                             sub_cat_i += 1
                         else:
                             plt.annotate(sub_cat[k], xy=(np.mean([cat_x_pos, cat_x_pos_2]),
                                                          cat_y_pos - size_factor_to_start_line),
-                                         ha="center", fontsize=sub_cat_opts['fontsize'], annotation_clip=False)
+                                         ha="center", fontsize=sub_cat_opts['fontsize'], annotation_clip=False,
+                                         fontfamily=sub_cat_opts['fontname'])
                     else:
                         raise KeyError("Sub category keys must be tuple of size 2")
 
