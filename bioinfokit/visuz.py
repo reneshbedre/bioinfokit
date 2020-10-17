@@ -326,8 +326,9 @@ class general:
             plt.show()
         else:
             plt.savefig(fig_name+'.'+figtype, format=figtype, bbox_inches='tight', dpi=r)
-        plt.close()
         plt.clf()
+        plt.close()
+
 
     @staticmethod
     def axis_labels(x, y, axlabelfontsize=None, axlabelfontname=None):
@@ -750,12 +751,12 @@ class stat:
                   show=False, axtickfontname="Arial", axtickfontsize=(9, 9), ax_x_ticklabel=None, ar=(0, 90), figtype='png',
                   figname='multi_bar', valphabar=1, legendpos='best', errorbar=False, yerrlw=None, yerrcw=None,
                   plotlegend=False, hbsize=4, ylm=None, add_sign_line=False, pv=None,
-                  sign_line_opts={'symbol': '*', 'fontsize': 8, 'linewidth': 0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
-                                  'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
-                                                                                               'fontsize': 8},
+                  sign_line_opts={'symbol': '*', 'fontsize': 9, 'linewidth': 0.8, 'arrowstyle': '-', 'dist_y_pos': 2.5,
+                                  'dist_y_neg': 4.2}, add_sign_symbol=False,
+                      sign_symbol_opts={'symbol': '*', 'fontsize': 9, 'fontname':'Arial', 'rotation':0},
                   dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
                   sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=1, legendfontsize=8,
-                  ax_y_label=None, ax_x_label=None, symb_dist=None, axlabelfontsize=(9,9), axlabelar=(0, 90), sub_cat=None,
+                  ax_y_label=None, ax_x_label=None, symb_dist=None, axlabelfontsize=(9, 9), axlabelar=(0, 90), sub_cat=None,
                   sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'}, sub_cat_label_dist=None,
                       legendlabelframe=False):
         if samp_col_name is None or colorbar is None:
@@ -933,23 +934,35 @@ class stat:
                     if isinstance(group_let_df, pd.DataFrame):
                         # only if y axis is positive
                         if y_pos > 0:
-                            plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                            if not pd.isnull(group_let_df.loc[colbar[0], xbarcol[i]]):
+                                plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
+                                             fontsize=sign_symbol_opts['fontsize'], ha='center',
+                                             fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                         if y_pos_2 > 0:
-                            plt.annotate(group_let_df.loc[colbar[1], xbarcol[i]], xy=(x_pos_2, y_pos_2),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                            if not pd.isnull(group_let_df.loc[colbar[1], xbarcol[i]]):
+                                plt.annotate(group_let_df.loc[colbar[1], xbarcol[i]], xy=(x_pos_2, y_pos_2),
+                                             fontsize=sign_symbol_opts['fontsize'], ha='center',
+                                             fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                     # only if y axis is positive
                     # need to verify this
-                    if pv:
+                    elif pv:
                         if y_pos > 0:
                             pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
                             pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
                             if pv_symb_1:
                                 plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
-                                         ha="center")
+                                         ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                             if pv_symb_2:
                                 plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
-                                         ha="center")
+                                         ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
+                    else:
+                        raise Exception('Either group dataframe of p value list is required')
+
+
             elif len(colbar) == 3:
                 for i in xbar:
                     x_pos = xbar[i]
