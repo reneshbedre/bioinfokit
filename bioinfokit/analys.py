@@ -1304,7 +1304,7 @@ class gff:
     def __init__(self):
         pass
 
-    def gff_to_gtf(file='gff_file', mrna_feature_name=None):
+    def gff_to_gtf(file='gff_file', mrna_feature_name=None, parent_attr='Parent'):
         read_gff_file_cds = open(file, 'r')
         cds_dict_st, cds_dict_st_phase  = dict(), dict()
         cds_dict_end, cds_dict_end_phase = dict(), dict()
@@ -1347,6 +1347,7 @@ class gff:
         gene_id = ''
         transcript_id = ''
         gene_name = ''
+        mirna_id = ''
         first_cds_present, last_cds_present, start_codon_present, end_codon_present = 0, 0, 0, 0
         gene_trn = dict()
         ttr_i, cds_i, exon_i, ftr_i = dict(), dict(), dict(), dict()
@@ -1392,11 +1393,12 @@ class gff:
                     if line[2] == 'mRNA' or line[2] == mrna_feature_name:
                         line[2] = 'transcript'
 
-                    gene_trn[gene_id].append(transcript_id)
-                    ttr_i[transcript_id] = 0
-                    cds_i[transcript_id] = 0
-                    exon_i[transcript_id] = 0
-                    ftr_i[transcript_id] = 0
+                    if gene_id != '':
+                        gene_trn[gene_id].append(transcript_id)
+                        ttr_i[transcript_id] = 0
+                        cds_i[transcript_id] = 0
+                        exon_i[transcript_id] = 0
+                        ftr_i[transcript_id] = 0
 
                     gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id + \
                                     '"; gene_source "' + line[1] + '";'
@@ -1518,6 +1520,24 @@ class gff:
                         gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id + '"; gene_name "' + \
                                             gene_name+ '"; gene_source "' + line[1] + '";'
                     out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+                elif line[2] == 'miRNA':
+                    if parent_attr+'=' in line[8]:
+                        transcript_id_temp = re.search(parent_attr+'=(.+?)(;|$)', line[8]).group(1)
+                    if 'ID=' in line[8]:
+                        mirna_id = re.search('ID=(.+?)(;|$)', line[8]).group(1)
+
+                    if parent_attr+'=' not in line[8]:
+                        raise Exception(
+                            "Parent field required in GFF3 file in attribute field for CDS"
+                            " feature type")
+
+                    # for transcripts with shared CDS
+                    gene_attr_gtf = 'gene_id "' + gene_id + '"; transcript_id "' + transcript_id + \
+                                    '"; miRNA_id "' + mirna_id + '"; gene_source "' + line[1] + '";'
+                        # cds_i += 1
+
+                    out_gtf_file.write('\t'.join(line[0:8])+'\t'+gene_attr_gtf+'\n')
+
 
                 if first_cds_present == 1 and start_codon_present == 0:
                     first_cds_present = 0
