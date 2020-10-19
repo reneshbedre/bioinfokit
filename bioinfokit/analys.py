@@ -1409,7 +1409,6 @@ class stat:
         sample_col_list = df[col_fac].unique()
 
         unstack_dict_sorted = collections.OrderedDict(sorted(unstack_dict.items()))
-        print(unstack_dict_sorted)
         for ele1 in sample_col_list:
             for ele in list(set(sample_row_list)):
                 for k, v in unstack_dict_sorted.items():
