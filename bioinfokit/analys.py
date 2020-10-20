@@ -760,7 +760,6 @@ class stat:
         tukey_phoc['Diff'] = []
         tukey_phoc['Lower'] = []
         tukey_phoc['Upper'] = []
-        # tukey_phoc['Significant'] = []
         tukey_phoc['q-value'] = []
         tukey_phoc['p-value'] = []
         # group_letter = dict()
@@ -775,14 +774,28 @@ class stat:
             sample_size_r = len(levels1) * len(levels2)
             for ele1 in levels1:
                 for ele2 in levels2:
-                    mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].mean().value
+                    mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].mean().loc[res_var]
                     mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].shape[0]
+        elif isinstance(xfac_var, list) and len(xfac_var) == 3:
+            levels1 = df[xfac_var[0]].unique()
+            levels2 = df[xfac_var[1]].unique()
+            levels3 = df[xfac_var[2]].unique()
+            sample_size_r = len(levels1) * len(levels2) * len(levels3)
+            for ele1 in levels1:
+                for ele2 in levels2:
+                    for ele3 in levels3:
+                        mult_group[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
+                                                            (df[xfac_var[2]] == ele3)].mean().loc[res_var]
+                        mult_group_count[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
+                                                            (df[xfac_var[2]] == ele3)].shape[0]
         elif isinstance(xfac_var, str):
             levels = df[xfac_var].unique()
             sample_size_r = len(levels)
             for ele in levels:
-                mult_group[ele] = df[df[xfac_var] == ele].mean().value
+                mult_group[ele] = df[df[xfac_var] == ele].mean().loc[res_var]
                 mult_group_count[ele] = df[df[xfac_var] == ele].shape[0]
+        elif isinstance(xfac_var, list) and len(xfac_var) > 3:
+            raise Exception('Only three factors supported')
 
         # self.anova_stat(df, res_var, anova_xfac_var)
         self.anova_stat(df, anova_model)
@@ -822,11 +835,11 @@ class stat:
             # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
             tukey_phoc['q-value'].append(q_val)
             if isinstance(psturng(np.abs(q_val), sample_size_r, df_res), np.ndarray):
-                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), group1_count, df_res)[0]
+                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), sample_size_r, df_res)
                 tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res)[0])
             else:
-                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), group1_count, df_res)
-                tukey_phoc['p-value'].append(psturng(np.abs(q_val), group1_count, df_res))
+                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), sample_size_r, df_res)
+                tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res))
 
         '''
         for i in range(len(levels)):
