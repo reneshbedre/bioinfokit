@@ -1325,7 +1325,7 @@ class gff:
                     cds_dict_st[transcript_id] = []
                     cds_dict_end[transcript_id] = []
                 elif line[2] == 'CDS':
-                    if 'Parent=' in line[8]:
+                    if parent_attr+'=' in line[8]:
                         transcript_id_cds = re.search('Parent=(.+?)(;|$)', line[8]).group(1)
                     else:
                         raise Exception(
