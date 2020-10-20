@@ -1160,7 +1160,12 @@ class stat:
                   sign_line_pairs=None, sub_cat=None, sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'},
                   sub_cat_label_dist=None, symb_dist=None, group_let=None, df_format=None, samp_col_name=None,
                   col_order=False, dotplot=False, dotsize=6, colordot=['#101820ff'], valphadot=1, markerdot='o',
-                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None):
+                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20):
+        plt.rcParams['mathtext.fontset'] = 'custom'
+        plt.rcParams['mathtext.default'] = 'regular'
+        plt.rcParams['mathtext.it'] = 'Arial:italic'
+        plt.rcParams['mathtext.bf'] = 'Arial:italic:bold'
+
         # set axis labels to None
         _x = None
         _y = None
@@ -1220,7 +1225,7 @@ class stat:
                     y=df[df.columns[cols]].dropna(), s=dotsize, color=color_list_dot[cols], zorder=10, alpha=valphadot,
                     marker=markerdot)
 
-        size_factor_to_start_line = max(bar_h) / 20
+        size_factor_to_start_line = max(bar_h) / div_fact
         # for only adjacent bars (not for multiple bars with single control)
         if add_sign_line:
             for i in xbar:
@@ -1318,8 +1323,9 @@ class stat:
                     y_pos = bar_h.to_numpy()[i] + bar_se.to_numpy()[i] + \
                             size_factor_to_start_line + symb_dist[i]
                 else:
-                    y_pos = bar_h.to_numpy()[i] + bar_h.to_numpy()[i] + \
+                    y_pos = bar_h.to_numpy()[i] + bar_se.to_numpy()[i] + \
                             size_factor_to_start_line
+                    print(x_pos, y_pos)
 
                 # group_let list
                 if isinstance(group_let, list):

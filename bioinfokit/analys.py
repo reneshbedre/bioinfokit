@@ -1448,7 +1448,7 @@ class gff:
 
         # check if CDS feature present in GFF3 file
         if cds_ct == 0:
-            print ("Warning: No CDS feature type found in given GFF3 file. GTF file requires CDS feature type\n")
+            print("Warning: No CDS feature type found in given GFF3 file. GTF file requires CDS feature type\n")
         read_gff_file = open(file, 'r')
         out_gtf_file = open(Path(file).stem+'.gtf', 'w')
         gene_id = ''
