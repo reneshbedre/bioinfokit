@@ -422,9 +422,9 @@ Summary and expected counts as class attributes (summary and expected_df)
 
 <b> Tukey HSD test </b>
 
-`latest update v0.9.9`
+`latest update v1.0.1`
 
-`bioinfokit.analys.stat.tukey_hsd(df, res_var, xfac_var, anova_xfac_var, phalpha)`
+`bioinfokit.analys.stat.tukey_hsd(df, res_var, xfac_var, anova_model, ss_typ, phalpha)`
 
 It performs multiple pairwise comparisons of treatment groups using Tukey's HSD (Honestly Significant Difference) test 
 to check if group means are significantly different from each other. It uses the Tukey-Kramer approach if the sample sizes
@@ -435,15 +435,16 @@ Parameters | Description
 `df` | Pandas dataframe with the variables mentioned in the `res_var`, `xfac_var` and `anova_xfac_var` options. It should not have missing data. The missing data will be omitted.
 `res_var` | Name of a column having response variable [string][default: None]
 `xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
-`anova_xfac_var` | Names of a column having factors or groups for ANOVA analysis. In case of one-way ANOVA, `xfac_var` and `anova_xfac_var` should be similar  [string or list][default: None]
+`anova_model` | ANOVA model (calculated using statsmodels `ols` function) [string][default: None]
+`ss_typ` | Type of sum of square test to perform ANOVA [int][default: 2]
 `phalpha` | Significance level [float][default: 0.05]
 
 Returns:
 
 Attribute | Description
 ------------ | -------------
-`tukey_summary` | Pairwise comparisons of group by Tukey HSD test 
-`data_summary` | Data summary 
+`tukey_summary` | Pairwise comparisons for main and interaction effects by Tukey HSD test 
+
 
 <a href="https://reneshbedre.github.io/blog/anova.html" target="_blank">Description and Working example</a>
 

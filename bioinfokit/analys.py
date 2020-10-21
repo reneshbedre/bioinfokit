@@ -749,11 +749,12 @@ class stat:
             data_summary_dict['Max'].append(temp.describe().to_numpy()[7])
         return pd.DataFrame(data_summary_dict)
 
-    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_xfac_var=None, anova_model=None,
-                  phalpha=0.05):
+    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_model=None, phalpha=0.05, ss_typ=2):
         df = df.dropna()
         if xfac_var is None or anova_model is None or res_var is None:
             raise ValueError('Invalid value for xfac_var or anova_model or res_var')
+        if ss_typ not in [1, 2, 3]:
+            raise ValueError('Invalid SS type')
         tukey_phoc = dict()
         tukey_phoc['group1'] = []
         tukey_phoc['group2'] = []
@@ -798,7 +799,7 @@ class stat:
             raise Exception('Only three factors supported')
 
         # self.anova_stat(df, res_var, anova_xfac_var)
-        self.anova_stat(df, anova_model)
+        self.anova_stat(df, anova_model, ss_typ)
         df_res = self.anova_summary.df.Residual
         mse = self.anova_summary.sum_sq.Residual / df_res
         # self.data_summary = stat._data_summary(df, xfac_var, res_var)
@@ -840,48 +841,6 @@ class stat:
             else:
                 group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), sample_size_r, df_res)
                 tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res))
-
-        '''
-        for i in range(len(levels)):
-            for j in range(len(levels)):
-                if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1] and j+1 > i:
-                    mean_diff = max(self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Mean'].to_numpy()[0],
-                                    self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[0]) - \
-                                min(self.data_summary.loc[
-                                        self.data_summary['Group'] == levels[j + 1], 'Mean'].to_numpy()[0],
-                                    self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[
-                                        0])
-                    t_val = mean_diff / np.sqrt(2 * (mse / len(levels) ) )
-                    # count for groups; this is useful when sample size not equal -- Tukey-Kramer
-                    group1_count = self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Count'].to_numpy()[0]
-                    group2_count = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Count'].to_numpy()[
-                        0]
-                    # https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
-                    # also for considering unequal sample size
-                    mse_factor = np.sqrt(np.divide(mse, group1_count) + np.divide(mse, group2_count))
-                    q_val = mean_diff / np.divide(mse_factor, np.sqrt(2))
-                    tukey_phoc['group1'].append(levels[i])
-                    tukey_phoc['group2'].append(levels[j+1])
-                    tukey_phoc['Diff'].append(mean_diff)
-                    # when equal sample size
-                    tukey_phoc['Lower'].append(mean_diff - (q_crit * np.sqrt(np.divide(mse, 2) *
-                                                                             (np.divide(1, group1_count) +
-                                                                              np.divide(1, group2_count)) ) ) )
-                    tukey_phoc['Upper'].append(mean_diff + (q_crit * np.sqrt(np.divide(mse, 2) *
-                                                                             (np.divide(1, group1_count) +
-                                                                              np.divide(1, group2_count))) ) )
-                    # tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
-                    # t test related to qvalue as q = sqrt(2) t
-                    # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
-                    tukey_phoc['q-value'].append(q_val)
-                    if isinstance(psturng(np.abs(q_val), len(levels), df_res), np.ndarray):
-                        group_pval[(levels[i], levels[j+1])] = psturng(np.abs(q_val), len(levels), df_res)[0]
-                        tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res)[0])
-                    else:
-                        group_pval[(levels[i], levels[j + 1])] = psturng(np.abs(q_val), len(levels), df_res)
-                        tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res))
-
-        '''
 
         '''
                     if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
@@ -1003,7 +962,7 @@ class stat:
         # self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
         #    list(group_letter_chars.values())})
 
-    def anova_stat(self, df="dataframe", anova_model=None, res_var=None, xfac_var=None, phalpha=0.05):
+    def anova_stat(self, df="dataframe", anova_model=None, ss_typ=2, res_var=None, xfac_var=None):
         # x = '{} ~ '
         if res_var:
             x = res_var + '~'
@@ -1024,7 +983,7 @@ class stat:
             model = ols(anova_model, data=df).fit()
         else:
             raise TypeError('xfac_var in anova must be string or list')
-        anova_table = sm.stats.anova_lm(model, typ=2)
+        anova_table = sm.stats.anova_lm(model, typ=ss_typ)
 
 
         # treatments
@@ -1044,17 +1003,6 @@ class stat:
         #        print("Warning: treatments do not have equal variances")
 
         self.anova_summary = anova_table
-
-        '''
-        if ph:
-            # perform multiple pairwise comparison (Tukey HSD)
-            m_comp = pairwise_tukeyhsd(endog=df[res], groups=df[xfac], alpha=phalpha)
-            print("\nPost-hoc Tukey HSD test\n")
-            print(m_comp, "\n")
-        '''
-        # print("ANOVA Assumption tests\n")
-        # print("Shapiro-Wilk (P-value):", pvalue1, "\n")
-        # print("Bartlett (P-value):", pvalue2, "\n")
 
     def lin_reg(self, df="dataframe", y=None, x=None):
         df = df.dropna()
