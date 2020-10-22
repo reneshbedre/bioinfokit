@@ -20,6 +20,7 @@ from collections import defaultdict
 from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
 from statsmodels.stats.libqsturng import psturng, qsturng
+import collections
 
 
 def seqcov(file="fastq_file", gs="genome_size"):
@@ -91,17 +92,7 @@ def rev_com(seq=None, file=None):
 
 # extract subseq from genome sequence
 def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
-    fasta_iter = fasta_reader(file)
-    for record in fasta_iter:
-        fasta_header, seq = record
-        if id == fasta_header.strip() and strand == "plus":
-            # -1 is necessary as it counts from 0
-            sub_seq = seq[int(st-1):int(end)]
-            print(sub_seq)
-        elif id == fasta_header.strip() and strand == "minus":
-            seq = rev_com(seq)
-            sub_seq = seq[int(st-1):int(end)]
-            print(sub_seq)
+    general.depr_mes("bioinfokit.analys.fasta.ext_subseq")
 
 
 def fastq_format_check(file="fastq_file"):
@@ -689,6 +680,11 @@ class stat:
         self.data_summary = None
         self.tukey_summary = None
         self.tukey_groups = None
+        # unstack single factor
+        self.unstack_df = None
+        # chi square
+        self.expected_df = None
+        self.summary =None
 
     '''
     def anova(self, df='dataframe', xfac=None, res=None):
@@ -750,79 +746,100 @@ class stat:
             data_summary_dict['Max'].append(temp.describe().to_numpy()[7])
         return pd.DataFrame(data_summary_dict)
 
-    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_xfac_var=None, phalpha=0.05):
+    def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_model=None, phalpha=0.05, ss_typ=2):
         df = df.dropna()
-        if xfac_var is None or anova_xfac_var is None:
-            raise ValueError('Invalid value for xfac_var or anova_xfac_var')
+        if xfac_var is None or anova_model is None or res_var is None:
+            raise ValueError('Invalid value for xfac_var or anova_model or res_var')
+        if ss_typ not in [1, 2, 3]:
+            raise ValueError('Invalid SS type')
         tukey_phoc = dict()
         tukey_phoc['group1'] = []
         tukey_phoc['group2'] = []
         tukey_phoc['Diff'] = []
         tukey_phoc['Lower'] = []
         tukey_phoc['Upper'] = []
-        # tukey_phoc['Significant'] = []
         tukey_phoc['q-value'] = []
         tukey_phoc['p-value'] = []
         # group_letter = dict()
         group_pval = dict()
         # group_let = dict()
         # share_let = dict()
-        levels = df[xfac_var].unique()
+        mult_group = dict()
+        mult_group_count = dict()
+        if isinstance(xfac_var, list) and len(xfac_var) == 2:
+            levels1 = df[xfac_var[0]].unique()
+            levels2 = df[xfac_var[1]].unique()
+            sample_size_r = len(levels1) * len(levels2)
+            for ele1 in levels1:
+                for ele2 in levels2:
+                    mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].mean().loc[res_var]
+                    mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].shape[0]
+        elif isinstance(xfac_var, list) and len(xfac_var) == 3:
+            levels1 = df[xfac_var[0]].unique()
+            levels2 = df[xfac_var[1]].unique()
+            levels3 = df[xfac_var[2]].unique()
+            sample_size_r = len(levels1) * len(levels2) * len(levels3)
+            for ele1 in levels1:
+                for ele2 in levels2:
+                    for ele3 in levels3:
+                        mult_group[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
+                                                            (df[xfac_var[2]] == ele3)].mean().loc[res_var]
+                        mult_group_count[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
+                                                            (df[xfac_var[2]] == ele3)].shape[0]
+        elif isinstance(xfac_var, str):
+            levels = df[xfac_var].unique()
+            sample_size_r = len(levels)
+            for ele in levels:
+                mult_group[ele] = df[df[xfac_var] == ele].mean().loc[res_var]
+                mult_group_count[ele] = df[df[xfac_var] == ele].shape[0]
+        elif isinstance(xfac_var, list) and len(xfac_var) > 3:
+            raise Exception('Only three factors supported')
 
-        self.anova_stat(df, res_var, anova_xfac_var)
+        # self.anova_stat(df, res_var, anova_xfac_var)
+        self.anova_stat(df, anova_model, ss_typ)
         df_res = self.anova_summary.df.Residual
         mse = self.anova_summary.sum_sq.Residual / df_res
-        self.data_summary = stat._data_summary(df, xfac_var, res_var)
+        # self.data_summary = stat._data_summary(df, xfac_var, res_var)
 
         # q critical
-        q_crit = qsturng(1 - phalpha, len(levels), df_res)
+        q_crit = qsturng(1 - phalpha, sample_size_r, df_res)
         # t critical tcrit = qcrit /\sqrt 2.
         # t_crit = q_crit / np.sqrt(2)
-        tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
+        # tuke_hsd_crit = q_crit * np.sqrt(mse / len(levels))
         # let_num = 97
         # let_num_list = []
         # sharing_letter = dict()
+        comp_pairs = [(ele1, ele2) for i, ele1 in enumerate(list(mult_group)) for ele2 in list(mult_group)[i + 1:]]
+        for p in comp_pairs:
+            mean_diff = max(mult_group[p[0]], mult_group[p[1]]) - min(mult_group[p[0]], mult_group[p[1]])
+            # count for groups; this is useful when sample size not equal -- Tukey-Kramer
+            group1_count, group2_count = mult_group_count[p[0]], mult_group_count[p[1]]
+            # https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
+            # also for considering unequal sample size
+            mse_factor = np.sqrt(np.divide(mse, group1_count) + np.divide(mse, group2_count))
+            q_val = mean_diff / np.divide(mse_factor, np.sqrt(2))
+            tukey_phoc['group1'].append(p[0])
+            tukey_phoc['group2'].append(p[1])
+            tukey_phoc['Diff'].append(mean_diff)
+            # when equal sample size
+            tukey_phoc['Lower'].append(mean_diff - (q_crit * np.sqrt(np.divide(mse, 2) *
+                                                                     (np.divide(1, group1_count) +
+                                                                      np.divide(1, group2_count)))))
+            tukey_phoc['Upper'].append(mean_diff + (q_crit * np.sqrt(np.divide(mse, 2) *
+                                                                     (np.divide(1, group1_count) +
+                                                                      np.divide(1, group2_count)))))
+            # tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
+            # t test related to qvalue as q = sqrt(2) t
+            # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
+            tukey_phoc['q-value'].append(q_val)
+            if isinstance(psturng(np.abs(q_val), sample_size_r, df_res), np.ndarray):
+                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), sample_size_r, df_res)
+                tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res)[0])
+            else:
+                group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), sample_size_r, df_res)
+                tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res))
 
-        for i in range(len(levels)):
-            for j in range(len(levels)):
-                if i < len(levels)-1 and j < len(levels)-1 and levels[i] != levels[j+1] and j+1 > i:
-                    mean_diff = max(self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Mean'].to_numpy()[0],
-                                    self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[0]) - \
-                                min(self.data_summary.loc[
-                                        self.data_summary['Group'] == levels[j + 1], 'Mean'].to_numpy()[0],
-                                    self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Mean'].to_numpy()[
-                                        0])
-                    t_val = mean_diff / np.sqrt(2 * (mse / len(levels) ) )
-                    # count for groups; this is useful when sample size not equal -- Tukey-Kramer
-                    group1_count = self.data_summary.loc[self.data_summary['Group'] == levels[i], 'Count'].to_numpy()[0]
-                    group2_count = self.data_summary.loc[self.data_summary['Group'] == levels[j+1], 'Count'].to_numpy()[
-                        0]
-                    # https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
-                    # also for considering unequal sample size
-                    mse_factor = np.sqrt(np.divide(mse, group1_count) + np.divide(mse, group2_count))
-                    q_val = mean_diff / np.divide(mse_factor, np.sqrt(2))
-                    tukey_phoc['group1'].append(levels[i])
-                    tukey_phoc['group2'].append(levels[j+1])
-                    tukey_phoc['Diff'].append(mean_diff)
-                    # when equal sample size
-                    tukey_phoc['Lower'].append(mean_diff - (q_crit * np.sqrt(np.divide(mse, 2) *
-                                                                             (np.divide(1, group1_count) +
-                                                                              np.divide(1, group2_count)) ) ) )
-                    tukey_phoc['Upper'].append(mean_diff + (q_crit * np.sqrt(np.divide(mse, 2) *
-                                                                             (np.divide(1, group1_count) +
-                                                                              np.divide(1, group2_count))) ) )
-                    # tukey_phoc['Significant'].append(np.abs(mean_diff) > tuke_hsd_crit)
-                    # t test related to qvalue as q = sqrt(2) t
-                    # ref https://www.real-statistics.com/one-way-analysis-of-variance-anova/unplanned-comparisons/tukey-hsd/
-                    tukey_phoc['q-value'].append(q_val)
-                    if isinstance(psturng(np.abs(q_val), len(levels), df_res), np.ndarray):
-                        group_pval[(levels[i], levels[j+1])] = psturng(np.abs(q_val), len(levels), df_res)[0]
-                        tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res)[0])
-                    else:
-                        group_pval[(levels[i], levels[j + 1])] = psturng(np.abs(q_val), len(levels), df_res)
-                        tukey_phoc['p-value'].append(psturng(np.abs(q_val), len(levels), df_res))
-
-                    '''
+        '''
                     if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
                         if levels[i] not in group_letter and levels[j+1] not in group_letter:
                             assigned = 1
@@ -869,7 +886,8 @@ class stat:
                             group_letter[levels[j + 1]] = group_letter[levels[i]]
                             let_num_list.append(group_letter[levels[i]])
                             print(levels[i], levels[j+1], let_num_list, 'h')
-                    '''
+        '''
+
         '''
         # print(group_letter)
         # group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
@@ -941,54 +959,30 @@ class stat:
         # self.tukey_groups = pd.DataFrame({'': list(group_letter_chars.keys()), 'groups':
         #    list(group_letter_chars.values())})
 
-    def anova_stat(self, df="dataframe", res_var=None, xfac_var=None, phalpha=0.05):
+    def anova_stat(self, df="dataframe", anova_model=None, ss_typ=2, res_var=None, xfac_var=None):
         # x = '{} ~ '
-        x = res_var + '~'
+        if res_var:
+            x = res_var + '~'
         # y = 'C({})'
         z = '+'
-        if isinstance(xfac_var, list) and len(xfac_var) > 1:
+        if isinstance(xfac_var, list) and len(xfac_var) > 1 and anova_model is None:
             for i in range(len(xfac_var)):
                 x += 'C({})'.format(xfac_var[i])
                 if i < len(xfac_var) - 1:
                     x += z
             model = ols(x, data=df).fit()
-        elif isinstance(xfac_var, str):
+        elif isinstance(xfac_var, str) and anova_model is None:
             # create and run model
             # model = ols('{} ~ C({})'.format(res_var, xfac_var), data=df).fit()
             x += 'C({})'.format(xfac_var)
             model = ols(x, data=df).fit()
+        elif anova_model:
+            model = ols(anova_model, data=df).fit()
         else:
             raise TypeError('xfac_var in anova must be string or list')
-        anova_table = sm.stats.anova_lm(model, typ=2)
-
-        # treatments
-        # this is for bartlett test
-        # levels = df[xfac_var].unique()
-        # self.data_summary = stat._data_summary(df, xfac_var, res_var)
-
-        # check assumptions
-        # Shapiro-Wilk  data is drawn from normal distribution.
-        # w, pvalue1 = stats.shapiro(model.resid)
-        # w, pvalue2 = stats.bartlett(*fac_list)
-        # if pvalue1 < 0.05:
-        #    print("Warning: Data is not drawn from normal distribution")
-        # else:
-            # samples from populations have equal variances.
-        #    if pvalue2 < 0.05:
-        #        print("Warning: treatments do not have equal variances")
+        anova_table = sm.stats.anova_lm(model, typ=ss_typ)
 
         self.anova_summary = anova_table
-
-        '''
-        if ph:
-            # perform multiple pairwise comparison (Tukey HSD)
-            m_comp = pairwise_tukeyhsd(endog=df[res], groups=df[xfac], alpha=phalpha)
-            print("\nPost-hoc Tukey HSD test\n")
-            print(m_comp, "\n")
-        '''
-        # print("ANOVA Assumption tests\n")
-        # print("Shapiro-Wilk (P-value):", pvalue1, "\n")
-        # print("Bartlett (P-value):", pvalue2, "\n")
 
     def lin_reg(self, df="dataframe", y=None, x=None):
         df = df.dropna()
@@ -1299,6 +1293,60 @@ class stat:
                            tabulate(tabulate_list, headers=["Chi-Square", "Df", "P-value", "Sample size"]) + '\n'
             self.expected_df = df
 
+    def unstack_single_factor(self, df='dataframe', xfac=None, res=None):
+        sample_dict = dict((k, 1) for k in df[xfac].unique())
+        df = df.set_index(xfac)
+        unstack_dict = dict()
+        df_dict = {k: v.to_dict(orient='records') for k, v in df.groupby(level=0)}
+        for k, v in df_dict.items():
+            if k in sample_dict:
+                unstack_dict[k] = []
+                for ele in v:
+                    unstack_dict[k].append(ele[res])
+
+        self.unstack_df = pd.DataFrame(unstack_dict)
+
+    def unstack_two_factor(self, df='dataframe', row_fac=None, col_fac=None, res=None):
+        sample_row_dict = dict((k, 1) for k in df[row_fac].unique())
+        sample_col_dict = dict((k, 1) for k in df[col_fac].unique())
+        df = df.set_index(row_fac)
+        unstack_dict = dict()
+        for k in sample_row_dict:
+            for k1 in sample_col_dict:
+                unstack_dict[(k, k1)] = []
+        df_dict = {k: v.to_dict(orient='records') for k, v in df.groupby(level=0)}
+        max_rep = 1
+        for k, v in df_dict.items():
+            if k in sample_row_dict:
+                for ele in v:
+                    if ele[col_fac] in sample_col_dict:
+                        unstack_dict[(k, ele[col_fac])].append(ele[res])
+
+        for k, v in unstack_dict.items():
+            if len(v) > max_rep:
+                max_rep = len(v)
+
+        process_unstack_dict = dict()
+        for k in sample_col_dict:
+            process_unstack_dict[k] = []
+        sample_row_list = []
+        for k in sample_row_dict:
+            sample_row_list.extend(max_rep * [k])
+        sample_row_list.sort()
+        process_unstack_dict['sample'] = sample_row_list
+        sample_col_list = df[col_fac].unique()
+
+        unstack_dict_sorted = collections.OrderedDict(sorted(unstack_dict.items()))
+        for ele1 in sample_col_list:
+            for ele in list(set(sample_row_list)):
+                for k, v in unstack_dict_sorted.items():
+                    # print(k, v, ele1, ele, 'jjjjjjj')
+                    if k[0] == ele and k[1] == ele1:
+                        # print(k, v, ele1, ele)
+                        process_unstack_dict[k[1]].extend(v)
+
+        self.unstack_df = pd.DataFrame(process_unstack_dict)
+
 
 class gff:
     def __init__(self):
@@ -1341,7 +1389,7 @@ class gff:
 
         # check if CDS feature present in GFF3 file
         if cds_ct == 0:
-            print ("Warning: No CDS feature type found in given GFF3 file. GTF file requires CDS feature type\n")
+            print("Warning: No CDS feature type found in given GFF3 file. GTF file requires CDS feature type\n")
         read_gff_file = open(file, 'r')
         out_gtf_file = open(Path(file).stem+'.gtf', 'w')
         gene_id = ''
@@ -2466,6 +2514,24 @@ class genfam:
                            df['trn_array'].iloc[0].strip('\{').split(',')[0],
                            df['phyt_id_array'].iloc[0].strip('\{').split(',')[0],
                            plant_name)
+
+class anot:
+
+    def __init__(self):
+        self.mapped_ids = None
+
+    def id_map(self, species=None, input_id=None, look_id=None, fetch_id=None):
+        if input_id is None or look_id is None or fetch_id is None:
+            raise ValueError('Invalid value for input_id or look_id or fetch_id options')
+        if species == 'stub':
+            df = general.get_file_from_gd(
+                'https://drive.google.com/file/d/1jrw95f3PX1qpFK_XYLDCwZ8hlIVUr4FM/view?usp=sharing')
+            print(df)
+            df = df[[look_id, fetch_id]]
+            input_id_df = pd.read_csv(input_id, header=None)
+            input_id_df.rename(columns={input_id_df.columns[0]: look_id}, inplace=True)
+            print(input_id_df)
+            # self.mapped_ids = pd.merge(input_id_df, df, how='left', on=look_id)
 
 
 class get_data:
