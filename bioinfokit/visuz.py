@@ -1325,7 +1325,6 @@ class stat:
                 else:
                     y_pos = bar_h.to_numpy()[i] + bar_se.to_numpy()[i] + \
                             size_factor_to_start_line
-                    print(x_pos, y_pos)
 
                 # group_let list
                 if isinstance(group_let, list):
