@@ -1389,6 +1389,7 @@ class stat:
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
         general.get_figure(show, r, figtype, figname)
 
+    @staticmethod
     def boxplot_single_factor(df='dataframe', column_names=None, grid=False, ar=(0, 0), axtickfontsize=9,
                               axtickfontname='Arial', dim=(6, 4), show=False, figtype='png', figname='boxplot', r=300,
                               ylm=None, box_line_style='-', box_line_width=1, box_line_color='b', med_line_style='-',
@@ -1439,6 +1440,34 @@ class stat:
                                          fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
 
+        general.get_figure(show, r, figtype, figname)
+
+    @staticmethod
+    def stacked_bar(df='dataframe', stack_col_name=None, group_col_name=None, dim=(6, 4), bw=0.4,
+                    stack_color="#f2aa4cff", r=300, ar=(0, 0), valphabar=1, show=False, ylm=None, axtickfontsize=9,
+                    axtickfontname='Arial', ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname='Arial',
+                    axxlabel=None, axylabel=None, figtype='png', figname='stacked_bar'):
+        xbar = np.arange(len(df[stack_col_name[0]]))
+        fig, ax = plt.subplots(figsize=dim)
+        # for multiple groups
+        # should work only for two stacks
+        if stack_col_name is not None and group_col_name is not None:
+            b1 = ax.bar(x=xbar, height=df[group_col_name[0]], width=bw, color=stack_color[0], alpha=valphabar)
+            b2 = ax.bar(x=xbar, height=df[stack_col_name[0]], bottom=df[group_col_name[0]], width=bw,
+                         color=stack_color[1], alpha=valphabar)
+            b3 = ax.bar(x=xbar+bw, height=df[group_col_name[1]], width=bw, color=stack_color[1], alpha=valphabar)
+            b4 = ax.bar(x=xbar+bw, height=df[stack_col_name[1]], bottom=df[group_col_name[1]], width=bw,
+                         color=stack_color[1], alpha=valphabar)
+        ax.set_xticks(xbar + ((bw * (len(group_col_name) - 1)) / (1 + (len(group_col_name) - 1))))
+        if ax_x_ticklabel:
+            x_ticklabel = ax_x_ticklabel
+        else:
+            x_ticklabel = df[xbarcol]
+        ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+        # ylm must be tuple of start, end, interval
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         general.get_figure(show, r, figtype, figname)
 
 
