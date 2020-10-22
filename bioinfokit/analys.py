@@ -985,23 +985,6 @@ class stat:
             raise TypeError('xfac_var in anova must be string or list')
         anova_table = sm.stats.anova_lm(model, typ=ss_typ)
 
-
-        # treatments
-        # this is for bartlett test
-        # levels = df[xfac_var].unique()
-        # self.data_summary = stat._data_summary(df, xfac_var, res_var)
-
-        # check assumptions
-        # Shapiro-Wilk  data is drawn from normal distribution.
-        # w, pvalue1 = stats.shapiro(model.resid)
-        # w, pvalue2 = stats.bartlett(*fac_list)
-        # if pvalue1 < 0.05:
-        #    print("Warning: Data is not drawn from normal distribution")
-        # else:
-            # samples from populations have equal variances.
-        #    if pvalue2 < 0.05:
-        #        print("Warning: treatments do not have equal variances")
-
         self.anova_summary = anova_table
 
     def lin_reg(self, df="dataframe", y=None, x=None):
