@@ -1446,7 +1446,8 @@ class stat:
     def stacked_bar(df='dataframe', group_col_name=None, stack_col_name=None, dim=(6, 4), bw=0.4,
                     stack_color="#f2aa4cff", r=300, ar=(0, 0), valphabar=1, show=False, ylm=None, axtickfontsize=9,
                     axtickfontname='Arial', ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname='Arial',
-                    axxlabel=None, axylabel=None, figtype='png', figname='stacked_bar'):
+                    axxlabel=None, axylabel=None, figtype='png', figname='stacked_bar', plotlegend=False,
+                    legendpos='best', legendcols=1, legendanchor=None, legendfontsize=8, legendlabelframe=False):
         xbar = np.arange(len(df[stack_col_name[0]]))
         xbar_temp = xbar
         fig, ax = plt.subplots(figsize=dim)
@@ -1455,7 +1456,7 @@ class stat:
         # for multiple groups
         # should work only for two stacks
         color_ind = 0
-        legend_list = []
+        legend_list, legend_name = [], []
         if stack_col_name is not None and group_col_name is not None:
             for ind in range(len(group_col_name)):
                 p1 = ax.bar(x=xbar_temp, height=df[group_col_name[ind]], width=bw, color=stack_color[color_ind], alpha=valphabar)
@@ -1464,9 +1465,13 @@ class stat:
                 color_ind += 2
                 xbar_temp = xbar_temp + bw
                 legend_list.extend([p1, p2])
+                legend_name.extend([group_col_name[ind], stack_col_name[ind]])
         ax.set_xticks(xbar + ((bw * (len(group_col_name) - 1)) / (1 + (len(group_col_name) - 1))))
         general.axis_ticks(None, ylm, axtickfontsize, axtickfontname, ar[0])
-
+        if plotlegend:
+            plt.legend(handles=legend_list, labels=legend_name, loc=legendpos, bbox_to_anchor=legendanchor,
+                       ncol=legendcols, fontsize=legendfontsize, frameon=legendlabelframe)
+        print(legend_list)
         # if ax_x_ticklabel:
         #    x_ticklabel = ax_x_ticklabel
         # else:
