@@ -128,7 +128,7 @@ class gene_exp:
                         sys.exit(1)
 
     def volcano(df="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "grey", "red"), valpha=1,
-                geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
+                geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=(0, 0), dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                 axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
                 axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
@@ -178,7 +178,7 @@ class gene_exp:
         general.get_figure(show, r, figtype, figname)
 
     def involcano(df="dataframe", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "grey", "red"),
-                  valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
+                  valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=(0, 0), dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
                 axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
@@ -229,7 +229,7 @@ class gene_exp:
         general.get_figure(show, r, figtype, figname)
 
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
-           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "grey", "red"), ar=90, figtype='png', axtickfontsize=9,
+           markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "grey", "red"), ar=(0, 0), figtype='png', axtickfontsize=9,
            axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
            axylabel=None, xlm=None, ylm=None, fclines=False, fclinescolor='#2660a4', legendpos='best',
            figname='ma', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down'],
@@ -338,18 +338,25 @@ class general:
         # plt.yticks(fontsize=9, fontname="sans-serif")
 
     @staticmethod
-    def axis_ticks(xlm=None, ylm=None, axtickfontsize=None, axtickfontname=None, ar=None):
+    def axis_ticks(xlm=None, ylm=None, axtickfontsize=None, axtickfontname=None, ar=None, ax_x_ticklabel=None,
+                   xticks_pos=None, ax=None):
         if xlm:
             plt.xlim(left=xlm[0], right=xlm[1])
-            plt.xticks(np.arange(xlm[0], xlm[1], xlm[2]),  fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+            plt.xticks(np.arange(xlm[0], xlm[1], xlm[2]),  fontsize=axtickfontsize, rotation=ar[0], fontname=axtickfontname)
         else:
-            plt.xticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+            plt.xticks(fontsize=axtickfontsize, rotation=ar[0], fontname=axtickfontname)
 
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
-            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]),  fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]),  fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
         else:
-            plt.yticks(fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+            plt.yticks(fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
+
+        if isinstance(xticks_pos, (list, np.ndarray)):
+            ax.set_xticks(xticks_pos)
+
+        if ax_x_ticklabel:
+            ax.set_xticklabels(ax_x_ticklabel, fontsize=axtickfontsize, rotation=ar[0], fontname=axtickfontname)
 
     @staticmethod
     def depr_mes(func_name):
@@ -543,7 +550,7 @@ class stat:
         general.get_figure(show, r, figtype, 'bardot')
 
     def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='#4a4e4d', colorline='#fe8a71', r=300,
-                ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o", show=False, axtickfontsize=9,
+                ar=(0, 0), dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o", show=False, axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", ylm=None, xlm=None, axxlabel=None,
                 axylabel=None, figtype='png'):
         fig, ax = plt.subplots(figsize=dim)
@@ -1459,24 +1466,21 @@ class stat:
         legend_list, legend_name = [], []
         if stack_col_name is not None and group_col_name is not None:
             for ind in range(len(group_col_name)):
-                p1 = ax.bar(x=xbar_temp, height=df[group_col_name[ind]], width=bw, color=stack_color[color_ind], alpha=valphabar)
+                p1 = ax.bar(x=xbar_temp, height=df[group_col_name[ind]], width=bw, color=stack_color[color_ind],
+                            alpha=valphabar)
                 p2 = ax.bar(x=xbar_temp, height=df[stack_col_name[ind]], bottom=df[group_col_name[ind]], width=bw,
                          color=stack_color[color_ind+1], alpha=valphabar)
                 color_ind += 2
                 xbar_temp = xbar_temp + bw
                 legend_list.extend([p1, p2])
                 legend_name.extend([group_col_name[ind], stack_col_name[ind]])
-        ax.set_xticks(xbar + ((bw * (len(group_col_name) - 1)) / (1 + (len(group_col_name) - 1))))
-        general.axis_ticks(None, ylm, axtickfontsize, axtickfontname, ar[0])
+        general.axis_ticks(None, ylm, axtickfontsize, axtickfontname, ar, ax_x_ticklabel,
+                           xbar + ((bw * (len(group_col_name) - 1)) / (1 + (len(group_col_name) - 1))), ax)
+
         if plotlegend:
             plt.legend(handles=legend_list, labels=legend_name, loc=legendpos, bbox_to_anchor=legendanchor,
                        ncol=legendcols, fontsize=legendfontsize, frameon=legendlabelframe)
-        print(legend_list)
-        # if ax_x_ticklabel:
-        #    x_ticklabel = ax_x_ticklabel
-        # else:
-        #    x_ticklabel = df[xbarcol]
-        # ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize, rotation=ar, fontname=axtickfontname)
+
         general.get_figure(show, r, figtype, figname)
 
 
