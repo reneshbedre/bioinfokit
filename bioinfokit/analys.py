@@ -767,6 +767,8 @@ class stat:
         mult_group = dict()
         mult_group_count = dict()
         if isinstance(xfac_var, list) and len(xfac_var) == 2:
+            # exclude if same group provided multiple times
+            xfac_var = list(set(xfac_var))
             levels1 = df[xfac_var[0]].unique()
             levels2 = df[xfac_var[1]].unique()
             sample_size_r = len(levels1) * len(levels2)
@@ -775,6 +777,8 @@ class stat:
                     mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].mean().loc[res_var]
                     mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].shape[0]
         elif isinstance(xfac_var, list) and len(xfac_var) == 3:
+            # exclude if same group provided multiple times
+            xfac_var = list(set(xfac_var))
             levels1 = df[xfac_var[0]].unique()
             levels2 = df[xfac_var[1]].unique()
             levels3 = df[xfac_var[2]].unique()
