@@ -40,6 +40,7 @@ class TestNormalization(TestCase):
         res.fam_enrich(id_file=id_data, species='grai', id_type=1)
         np.testing.assert_array_equal(res.df_enrich.iloc[0][1], 'MYB')
 
+    '''
     def test_tukeyhsd(self):
         d = pd.read_csv("https://reneshbedre.github.io/assets/posts/anova/twowayanova.txt", sep="\t")
         d_melt = pd.melt(d, id_vars=['Genotype'], value_vars=['1_year', '2_year', '3_year'])
@@ -50,3 +51,4 @@ class TestNormalization(TestCase):
         print(res.tukey_summary.head())
         np.testing.assert_array_equal(round(res.tukey_summary[(res.tukey_summary['group1'] == ('A', '1_year')) & (res.tukey_summary['group2'] == ('A', '2_year'))].iloc[0]['Diff'], 2), 2.38)
         np.testing.assert_array_equal(round(res.tukey_summary[(res.tukey_summary['group1'] == ('A', '1_year')) & (res.tukey_summary['group2'] == ('A', '2_year'))].iloc[0]['q-value'], 2), 6.89)
+    '''
