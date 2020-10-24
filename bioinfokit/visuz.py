@@ -334,8 +334,6 @@ class general:
     def axis_labels(x, y, axlabelfontsize=None, axlabelfontname=None):
         plt.xlabel(x, fontsize=axlabelfontsize, fontname=axlabelfontname)
         plt.ylabel(y, fontsize=axlabelfontsize, fontname=axlabelfontname)
-        # plt.xticks(fontsize=9, fontname="sans-serif")
-        # plt.yticks(fontsize=9, fontname="sans-serif")
 
     @staticmethod
     def axis_ticks(xlm=None, ylm=None, axtickfontsize=None, axtickfontname=None, ar=None, ax_x_ticklabel=None,
@@ -1454,9 +1452,11 @@ class stat:
                     stack_color="#f2aa4cff", r=300, ar=(0, 0), valphabar=1, show=False, ylm=None, axtickfontsize=9,
                     axtickfontname='Arial', ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname='Arial',
                     axxlabel=None, axylabel=None, figtype='png', figname='stacked_bar', plotlegend=False,
-                    legendpos='best', legendcols=1, legendanchor=None, legendfontsize=8, legendlabelframe=False):
+                    legendpos='best', legendcols=1, legendanchor=None, legendfontsize=8, legendlabelframe=False,
+                    custom_legends=None):
         xbar = np.arange(len(df[stack_col_name[0]]))
         xbar_temp = xbar
+        xlab, ylab = None, None
         fig, ax = plt.subplots(figsize=dim)
         if len(stack_color) != len(stack_col_name) + len(group_col_name):
             raise TypeError('color list should be equaivalent to group and stack columns')
@@ -1474,12 +1474,23 @@ class stat:
                 xbar_temp = xbar_temp + bw
                 legend_list.extend([p1, p2])
                 legend_name.extend([group_col_name[ind], stack_col_name[ind]])
+        if not ax_x_ticklabel:
+            ax_x_ticklabel = list(df.index)
         general.axis_ticks(None, ylm, axtickfontsize, axtickfontname, ar, ax_x_ticklabel,
                            xbar + ((bw * (len(group_col_name) - 1)) / (1 + (len(group_col_name) - 1))), ax)
+        if axxlabel:
+            xlab = axxlabel
+        if axylabel:
+            ylab = axylabel
+        general.axis_labels(xlab, ylab, axlabelfontsize, axlabelfontname)
 
         if plotlegend:
-            plt.legend(handles=legend_list, labels=legend_name, loc=legendpos, bbox_to_anchor=legendanchor,
-                       ncol=legendcols, fontsize=legendfontsize, frameon=legendlabelframe)
+            if isinstance(custom_legends, list):
+                plt.legend(handles=legend_list, labels=custom_legends, loc=legendpos, bbox_to_anchor=legendanchor,
+                           ncol=legendcols, fontsize=legendfontsize, frameon=legendlabelframe)
+            else:
+                plt.legend(handles=legend_list, labels=legend_name, loc=legendpos, bbox_to_anchor=legendanchor,
+                        ncol=legendcols, fontsize=legendfontsize, frameon=legendlabelframe)
 
         general.get_figure(show, r, figtype, figname)
 
