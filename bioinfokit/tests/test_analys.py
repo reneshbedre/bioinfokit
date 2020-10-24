@@ -47,5 +47,6 @@ class TestNormalization(TestCase):
         res = stat()
         res.tukey_hsd(df=d_melt, res_var='value', xfac_var=['Genotype', 'years'],
                       anova_model='value ~ C(Genotype) + C(years) + C(Genotype):C(years)')
-        np.testing.assert_array_equal(round(res.tukey_summary.iloc[0]['Diff'], 2), 2.38)
-        np.testing.assert_array_equal(round(res.tukey_summary.iloc[0]['q-value'], 2), 6.89)
+        print(res.tukey_summary.head())
+        np.testing.assert_array_equal(round(res.tukey_summary[(res.tukey_summary['group1'] == ('A', '1_year')) & (res.tukey_summary['group2'] == ('A', '2_year'))].iloc[0]['Diff'], 2), 2.38)
+        np.testing.assert_array_equal(round(res.tukey_summary[(res.tukey_summary['group1'] == ('A', '1_year')) & (res.tukey_summary['group2'] == ('A', '2_year'))].iloc[0]['q-value'], 2), 6.89)
