@@ -1,7 +1,7 @@
 
 [![DOI](https://zenodo.org/badge/174428856.svg)](https://zenodo.org/badge/latestdoi/174428856)
 [![PyPI version](https://badge.fury.io/py/bioinfokit.svg)](https://badge.fury.io/py/bioinfokit)
-[![Downloads](https://pepy.tech/badge/bioinfokit/month)](https://pepy.tech/project/bioinfokit/month)
+[![Downloads](https://static.pepy.tech/personalized-badge/bioinfokit?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/bioinfokit)
 [![Build Status](https://travis-ci.org/reneshbedre/bioinfokit.svg?branch=master)](https://travis-ci.org/reneshbedre/bioinfokit)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/bioinfokit/badges/version.svg)](https://anaconda.org/bioconda/bioinfokit)
 
