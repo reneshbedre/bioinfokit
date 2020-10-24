@@ -1,9 +1,8 @@
-from bioinfokit.analys import norm, get_data, genfam
+from bioinfokit.analys import norm, get_data, genfam, stat
 import pytest
 import numpy as np
 import pandas as pd
 from unittest import TestCase
-import urllib.request
 
 
 class TestNormalization(TestCase):
@@ -40,3 +39,13 @@ class TestNormalization(TestCase):
         res = genfam()
         res.fam_enrich(id_file=id_data, species='grai', id_type=1)
         np.testing.assert_array_equal(res.df_enrich.iloc[0][1], 'MYB')
+
+    def test_tukeyhsd(self):
+        d = pd.read_csv("https://reneshbedre.github.io/assets/posts/anova/twowayanova.txt", sep="\t")
+        d_melt = pd.melt(d, id_vars=['Genotype'], value_vars=['1_year', '2_year', '3_year'])
+        d_melt.columns = ['Genotype', 'years', 'value']
+        res = stat()
+        res.tukey_hsd(df=d_melt, res_var='value', xfac_var=['Genotype', 'years'],
+                      anova_model='value ~ C(Genotype) + C(years) + C(Genotype):C(years)')
+        np.testing.assert_array_equal(round(res.tukey_summary.iloc[0]['Diff'], 2), 2.38)
+        np.testing.assert_array_equal(round(res.tukey_summary.iloc[0]['q-value'], 2), 6.89)

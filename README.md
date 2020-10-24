@@ -432,11 +432,11 @@ are unequal among the groups.
 
 Parameters | Description
 ------------ | -------------
-`df` | Pandas dataframe with the variables mentioned in the `res_var`, `xfac_var` and `anova_xfac_var` options. It should not have missing data. The missing data will be omitted.
+`df` | Pandas dataframe with the variables mentioned in the `res_var`, `xfac_var` and `anova_model` options. It should not have missing data. The missing data will be omitted.
 `res_var` | Name of a column having response variable [string][default: None]
 `xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
 `anova_model` | ANOVA model (calculated using statsmodels `ols` function) [string][default: None]
-`ss_typ` | Type of sum of square test to perform ANOVA [int][default: 2]
+`ss_typ` | Type of sum of square to perform ANOVA [int][default: 2]
 `phalpha` | Significance level [float][default: 0.05]
 
 Returns:

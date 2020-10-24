@@ -1,3 +1,8 @@
+v1.0.1  has the following updates and changes (October 24, 2020)
+- Tukey HSD test updated for interaction effect. Pairwise comparison for interaction effect can be calculated.
+- `gff_to_gtf` function updated for the GFF3 file for non-coding RNA transcripts. GFF3 files with non-coding transcripts 
+  (e.g. from miRBase GFF3) can be converted to GTF
+
 v1.0.0  has the following updates and changes (October 10, 2020)
 - genFam enrichment analysis function added (`bioinfokit.analys.genfam.fam_enrich`)
 - genfam test added
