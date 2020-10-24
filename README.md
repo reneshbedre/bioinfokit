@@ -654,14 +654,14 @@ Regression plot image in same directory (reg_plot.png)
 
 <b>GFF3 to GTF file format conversion</b>
 
-`latest update v0.9.8`
+`latest update v1.0.1`
 
-`bioinfokit.analys.gff.gff_to_gtf(file, mrna_feature_name)`
+`bioinfokit.analys.gff.gff_to_gtf(file, trn_feature_name)`
 
 Parameters | Description
 ------------ | -------------
 `file` | GFF3 genome annotation file
-`mrna_feature_name` | Name of the feature (column 3 of GFF3 file) of protein coding mRNA if other than 'mRNA' or 'transcript'
+`trn_feature_name` | Name of the feature (column 3 of GFF3 file) of RNA transcripts if other than 'mRNA' or 'transcript'
 
 Returns:
 
