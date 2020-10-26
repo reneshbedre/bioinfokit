@@ -910,8 +910,6 @@ File generator object (can be iterated only once) that can be parsed for the rec
 <a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
 
 
-
-
 ## High-throughput sequence analysis
 
 ### FASTQ batch downloads from SRA database
@@ -934,6 +932,8 @@ FASTQ files for each SRA accession in the current directory unless specified by 
 <a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
 
 ### Extract sequences from FASTA file
+
+latest update v1.0.2
 
 `bioinfokit.analys.fasta.extract_seq(file, id)`
 
