@@ -910,7 +910,11 @@ File generator object (can be iterated only once) that can be parsed for the rec
 <a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
 
 
-<b>FASTQ batch downloads from SRA database</b>
+
+
+## High-throughput sequence analysis
+
+### FASTQ batch downloads from SRA database
 
 `bioinfokit.analys.fastq.sra_bd(file, t, other_opts)`
 
@@ -928,6 +932,22 @@ Returns:
 FASTQ files for each SRA accession in the current directory unless specified by `other_opts`
 
 <a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
+
+### Extract sequences from FASTA file
+
+`bioinfokit.analys.fasta.extract_seq(file, id)`
+
+Extract the sequences from FASTA file based on the list of sequence IDs provided from other file
+
+Parameters | Description
+------------ | -------------
+`file` | FASTA file [file] 
+`id` | List of sequences IDs separated by new line [file]
+
+Returns:
+
+Sequences extracted from FASTA file based on the given IDs provided in id file. Output FASTA file will be saved as 
+output.fasta in current working directory.
 
 
 ## Functional enrichment analysis

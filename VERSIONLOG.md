@@ -1,3 +1,8 @@
+v1.0.2  has the following updates and changes (October 26, 2020)
+- `extract_seq` function moved to `fasta` class
+- `extract_seq` function deprecated from `analys`
+- visualization for single and multiple statistical bar charts updated for future releases
+ 
 v1.0.1  has the following updates and changes (October 24, 2020)
 - Tukey HSD test updated for interaction effect. Pairwise comparison for interaction effect can be calculated.
 - `gff_to_gtf` function updated for the GFF3 file for non-coding RNA transcripts. GFF3 files with non-coding transcripts 

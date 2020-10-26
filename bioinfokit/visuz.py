@@ -756,9 +756,9 @@ class stat:
                       sign_symbol_opts={'symbol': '*', 'fontsize': 9, 'fontname':'Arial', 'rotation':0},
                   dotplot=False, dotplot_opts={'dotsize': 5, 'color':'#7d0013', 'valpha': 1, 'marker': 'o'},
                   sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=1, legendfontsize=8,
-                  ax_y_label=None, ax_x_label=None, symb_dist=None, axlabelfontsize=(9, 9), axlabelar=(0, 90), sub_cat=None,
+                  axylabel=None, axxlabel=None, symb_dist=None, axlabelfontsize=(9, 9), axlabelar=(0, 90), sub_cat=None,
                   sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'}, sub_cat_label_dist=None,
-                      legendlabelframe=False):
+                      legendlabelframe=False, div_fact=20):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
@@ -796,10 +796,10 @@ class stat:
         else:
             x_ticklabel = df[xbarcol]
         ax.set_xticklabels(x_ticklabel, fontsize=axtickfontsize[0], rotation=ar[0], fontname=axtickfontname)
-        if ax_y_label:
-            ax.set_ylabel(ax_y_label, fontsize=axlabelfontsize[1], rotation=axlabelar[1], fontname=axtickfontname)
-        if ax_x_label:
-            ax.set_xlabel(ax_x_label, fontsize=axlabelfontsize[0], rotation=axlabelar[0], fontname=axtickfontname)
+        if axylabel:
+            ax.set_ylabel(axylabel, fontsize=axlabelfontsize[1], rotation=axlabelar[1], fontname=axtickfontname)
+        if axxlabel:
+            ax.set_xlabel(axxlabel, fontsize=axlabelfontsize[0], rotation=axlabelar[0], fontname=axtickfontname)
         # ylm must be tuple of start, end, interval
         if ylm:
             plt.ylim(bottom=ylm[0], top=ylm[1])
@@ -821,8 +821,7 @@ class stat:
                                marker=dotplot_opts['marker'])
                         move_fact += 2 * bw_fact
 
-
-        size_factor_to_start_line = max(df_mean.max()) / 20
+        size_factor_to_start_line = max(df_mean.max()) / div_fact
         y_pos_dict = dict()
         y_pos_dict_trt = dict()
         if add_sign_line:
@@ -961,7 +960,6 @@ class stat:
                                              rotation=sign_symbol_opts['rotation'])
                     else:
                         raise Exception('Either group dataframe of p value list is required')
-
 
             elif len(colbar) == 3:
                 for i in xbar:
@@ -1160,7 +1158,7 @@ class stat:
                   sign_line_pairs=None, sub_cat=None, sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'},
                   sub_cat_label_dist=None, symb_dist=None, group_let=None, df_format=None, samp_col_name=None,
                   col_order=False, dotplot=False, dotsize=6, colordot=['#101820ff'], valphadot=1, markerdot='o',
-                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20):
+                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None):
         plt.rcParams['mathtext.fontset'] = 'custom'
         plt.rcParams['mathtext.default'] = 'regular'
         plt.rcParams['mathtext.it'] = 'Arial:italic'
@@ -1363,6 +1361,9 @@ class stat:
                                          fontfamily=sub_cat_opts['fontname'])
                     else:
                         raise KeyError("Sub category keys must be tuple of size 2")
+
+        if isinstance(add_text, list):
+            plt.text(add_text[0], add_text[1], add_text[2], fontsize=9, fontfamily='Arial')
 
         general.get_figure(show, r, figtype, 'singlebar')
 

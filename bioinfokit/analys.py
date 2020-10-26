@@ -34,28 +34,6 @@ def mergevcf(file="vcf_file_com_sep"):
 def pca(table="p_df"):
     print("This function is deprecated")
 
-
-def extract_seq(file="fasta_file", id="id_file"):
-    # extract seq from fasta file based on id match
-    id_list = []
-    id_file = open(id, "rU")
-    out_file = open("output.fasta", 'w')
-    for line in id_file:
-        id_name = line.rstrip('\n')
-        id_list.append(id_name)
-    list_len = len(id_list)
-    value = [1] * list_len
-    # id_list converted to dict for faster search
-    dict_list = dict(zip(id_list, value))
-    fasta_iter = fasta_reader(file)
-    for record in fasta_iter:
-        fasta_header, seq = record
-        if fasta_header.strip() in dict_list.keys():
-            out_file.write(">"+fasta_header+"\n"+seq+"\n")
-    out_file.close()
-    id_file.close()
-
-
 # remove seqs which match to ids in id file
 def extract_seq_nomatch(file="fasta_file", id="id_file"):
     # extract seq from fasta file based on id match
@@ -156,6 +134,26 @@ class fasta:
                 sub_seq = seq[int(st - 1):int(end)]
                 sub_seq_rc = fasta.rev_com(seq=sub_seq)
                 print(sub_seq_rc)
+
+    def extract_seq(file="fasta_file", id="id_file"):
+        # extract seq from fasta file based on id match
+        id_list = []
+        id_file = open(id, "rU")
+        out_file = open("output.fasta", 'w')
+        for line in id_file:
+            id_name = line.rstrip('\n')
+            id_list.append(id_name)
+        list_len = len(id_list)
+        value = [1] * list_len
+        # id_list converted to dict for faster search
+        dict_list = dict(zip(id_list, value))
+        fasta_iter = fasta.fasta_reader(file)
+        for record in fasta_iter:
+            fasta_header, seq = record
+            if fasta_header.strip() in dict_list.keys():
+                out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, 60)) + "\n")
+        out_file.close()
+        id_file.close()
 
 
 class fastq:
@@ -1336,13 +1334,19 @@ class stat:
         sample_row_list = []
         for k in sample_row_dict:
             sample_row_list.extend(max_rep * [k])
-        sample_row_list.sort()
+        # sample_row_list.sort()
         process_unstack_dict['sample'] = sample_row_list
         sample_col_list = df[col_fac].unique()
 
+        sample_row_list_uniq = []
+        for ele in sample_row_list:
+            if ele not in sample_row_list_uniq:
+                sample_row_list_uniq.append(ele)
+
         unstack_dict_sorted = collections.OrderedDict(sorted(unstack_dict.items()))
         for ele1 in sample_col_list:
-            for ele in list(set(sample_row_list)):
+            # for ele in list(set(sample_row_list)):
+            for ele in sample_row_list_uniq:
                 for k, v in unstack_dict_sorted.items():
                     # print(k, v, ele1, ele, 'jjjjjjj')
                     if k[0] == ele and k[1] == ele1:
