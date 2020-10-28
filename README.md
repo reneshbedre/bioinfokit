@@ -942,7 +942,7 @@ Extract the sequences from FASTA file based on the list of sequence IDs provided
 Parameters | Description
 ------------ | -------------
 `file` | FASTA file [file] 
-`id` | List of sequences IDs separated by new line [file]
+`id` | List of sequence IDs separated by new line [file]
 
 Returns:
 
