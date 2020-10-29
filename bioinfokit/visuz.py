@@ -758,7 +758,7 @@ class stat:
                   sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=1, legendfontsize=8,
                   axylabel=None, axxlabel=None, symb_dist=None, axlabelfontsize=(9, 9), axlabelar=(0, 90), sub_cat=None,
                   sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'}, sub_cat_label_dist=None,
-                      legendlabelframe=False, div_fact=20, legend_columnspacing=None):
+                      legendlabelframe=False, div_fact=20, legend_columnspacing=None, add_text=None):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
         fig, ax = plt.subplots(figsize=dim)
@@ -808,6 +808,9 @@ class stat:
         if plotlegend:
             plt.legend(loc=legendpos, bbox_to_anchor=legendanchor, ncol=legendcols, fontsize=legendfontsize,
                        frameon=legendlabelframe, columnspacing=legend_columnspacing)
+
+        if isinstance(add_text, list):
+            plt.text(add_text[0], add_text[1], add_text[2], fontsize=9, fontfamily='Arial')
 
         if dotplot:
             for cols in range(len(variable_list)):
@@ -1261,6 +1264,7 @@ class stat:
                                     fontsize=sign_line_opts['fontsize'], ha="center")
 
         # for only adjacent bars with one control but multiple treatments
+        # need to work for sign_line_pairs (update df on line 1276)
         p_index = 0
         y_pos_dict = dict()
         y_pos_dict_trt = dict()

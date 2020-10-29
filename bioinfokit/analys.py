@@ -295,6 +295,79 @@ class fastq:
         print("Sequence coverage for", file, "is", cov)
 
 
+class analys_general:
+    @staticmethod
+    def keep_uniq(_list):
+        uniq_list = []
+        for ele in _list:
+            if ele not in uniq_list:
+                uniq_list.append(ele)
+        return uniq_list
+
+    @staticmethod
+    def get_list_from_df(df=None, xfac_var=None, res_var=None, funct=None):
+        group_list = []
+        mult_group = dict()
+        mult_group_count = dict()
+        df_counts = 0
+        sample_size_r = None
+        if isinstance(xfac_var, list) and len(xfac_var) == 2:
+            # exclude if same group provided multiple times
+            xfac_var = analys_general.keep_uniq(xfac_var)
+            levels1 = df[xfac_var[0]].unique()
+            levels2 = df[xfac_var[1]].unique()
+            sample_size_r = len(levels1) * len(levels2)
+            for ele1 in levels1:
+                for ele2 in levels2:
+                    if funct == 'get_list':
+                        group_list.append(list(df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)][res_var]))
+                        df_counts += 1
+                    elif funct == 'get_dict':
+                        mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) &
+                                                      (df[xfac_var[1]] == ele2)].mean().loc[res_var]
+                        mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) &
+                                                            (df[xfac_var[1]] == ele2)].shape[0]
+
+        elif isinstance(xfac_var, list) and len(xfac_var) == 3:
+            # exclude if same group provided multiple times
+            xfac_var = analys_general.keep_uniq(xfac_var)
+            levels1 = df[xfac_var[0]].unique()
+            levels2 = df[xfac_var[1]].unique()
+            levels3 = df[xfac_var[2]].unique()
+            sample_size_r = len(levels1) * len(levels2) * len(levels3)
+            for ele1 in levels1:
+                for ele2 in levels2:
+                    for ele3 in levels3:
+                        if funct == 'get_list':
+                            group_list.append(list(df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
+                                                            (df[xfac_var[2]] == ele3)][res_var]))
+                            df_counts += 1
+                        elif funct == 'get_dict':
+                            mult_group[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
+                                                                (df[xfac_var[2]] == ele3)].mean().loc[res_var]
+                            mult_group_count[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) &
+                                                                      (df[xfac_var[1]] == ele2) &
+                                                                      (df[xfac_var[2]] == ele3)].shape[0]
+
+        elif isinstance(xfac_var, str):
+            levels = df[xfac_var].unique()
+            sample_size_r = len(levels)
+            for ele in levels:
+                if funct == 'get_list':
+                    group_list.append(list(df[df[xfac_var] == ele][res_var]))
+                    df_counts += 1
+                elif funct == 'get_dict':
+                    mult_group[ele] = df[df[xfac_var] == ele].mean().loc[res_var]
+                    mult_group_count[ele] = df[df[xfac_var] == ele].shape[0]
+        elif isinstance(xfac_var, list) and len(xfac_var) > 3:
+            raise Exception('Only three factors supported')
+
+        if funct == 'get_list':
+            return group_list, df_counts
+        elif funct == 'get_dict':
+            return mult_group, mult_group_count, sample_size_r
+
+
 class marker:
 
     def __init__(self):
@@ -683,6 +756,10 @@ class stat:
         # chi square
         self.expected_df = None
         self.summary =None
+        self.bartlett_summary = None
+        self.anova_model_out = None
+        self.levene_summary = None
+        self.anova_std_residuals = None
 
     '''
     def anova(self, df='dataframe', xfac=None, res=None):
@@ -718,6 +795,7 @@ class stat:
             print(tabulate(anova_table, headers=["Source", "Df", "Sum Squares", "Mean Squares", "F", "Pr(>F)"]),
                   "\n")
     '''
+
     @staticmethod
     def _data_summary(df='dataframe', xfac_var=None, res_var=None):
         data_summary_dict = dict()
@@ -744,6 +822,30 @@ class stat:
             data_summary_dict['Max'].append(temp.describe().to_numpy()[7])
         return pd.DataFrame(data_summary_dict)
 
+    def bartlett(self, df=None, xfac_var=None, res_var=None):
+        # get bartlett test from stacked dataframe
+        df = df.dropna()
+        if xfac_var is None or res_var is None:
+            raise ValueError('Invalid value for xfac_var or res_var')
+        group_list, df_counts = analys_general.get_list_from_df(df, xfac_var, res_var, 'get_list')
+        test_stat, p = stats.bartlett(*group_list)
+        df_counts = df_counts-1
+        self.bartlett_summary = pd.DataFrame({'Parameter':
+                                                         ['Test statistics (T)', 'Degrees of freedom (Df)', 'p value'],
+                                              'Value': [test_stat, df_counts, p]}).round(4)
+
+    def levene(self, df=None, xfac_var=None, res_var=None, center='median'):
+        # get bartlett test from stacked dataframe
+        df = df.dropna()
+        if xfac_var is None or res_var is None:
+            raise ValueError('Invalid value for xfac_var or res_var')
+        group_list, df_counts = analys_general.get_list_from_df(df, xfac_var, res_var, 'get_list')
+        test_stat, p = stats.levene(*group_list, center=center)
+        df_counts = df_counts-1
+        self.levene_summary = pd.DataFrame({'Parameter':
+                                                         ['Test statistics (W)', 'Degrees of freedom (Df)', 'p value'],
+                                              'Value': [test_stat, df_counts, p]}).round(4)
+
     def tukey_hsd(self, df="dataframe", res_var=None, xfac_var=None, anova_model=None, phalpha=0.05, ss_typ=2):
         df = df.dropna()
         if xfac_var is None or anova_model is None or res_var is None:
@@ -762,40 +864,8 @@ class stat:
         group_pval = dict()
         # group_let = dict()
         # share_let = dict()
-        mult_group = dict()
-        mult_group_count = dict()
-        if isinstance(xfac_var, list) and len(xfac_var) == 2:
-            # exclude if same group provided multiple times
-            xfac_var = list(set(xfac_var))
-            levels1 = df[xfac_var[0]].unique()
-            levels2 = df[xfac_var[1]].unique()
-            sample_size_r = len(levels1) * len(levels2)
-            for ele1 in levels1:
-                for ele2 in levels2:
-                    mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].mean().loc[res_var]
-                    mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2)].shape[0]
-        elif isinstance(xfac_var, list) and len(xfac_var) == 3:
-            # exclude if same group provided multiple times
-            xfac_var = list(set(xfac_var))
-            levels1 = df[xfac_var[0]].unique()
-            levels2 = df[xfac_var[1]].unique()
-            levels3 = df[xfac_var[2]].unique()
-            sample_size_r = len(levels1) * len(levels2) * len(levels3)
-            for ele1 in levels1:
-                for ele2 in levels2:
-                    for ele3 in levels3:
-                        mult_group[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
-                                                            (df[xfac_var[2]] == ele3)].mean().loc[res_var]
-                        mult_group_count[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
-                                                            (df[xfac_var[2]] == ele3)].shape[0]
-        elif isinstance(xfac_var, str):
-            levels = df[xfac_var].unique()
-            sample_size_r = len(levels)
-            for ele in levels:
-                mult_group[ele] = df[df[xfac_var] == ele].mean().loc[res_var]
-                mult_group_count[ele] = df[df[xfac_var] == ele].shape[0]
-        elif isinstance(xfac_var, list) and len(xfac_var) > 3:
-            raise Exception('Only three factors supported')
+
+        mult_group, mult_group_count, sample_size_r = analys_general.get_list_from_df(df, xfac_var, res_var, 'get_dict')
 
         # self.anova_stat(df, res_var, anova_xfac_var)
         self.anova_stat(df, anova_model, ss_typ)
@@ -985,6 +1055,12 @@ class stat:
         anova_table = sm.stats.anova_lm(model, typ=ss_typ)
 
         self.anova_summary = anova_table
+        self.anova_summary.insert(loc=2, column='mean_sq', value=list(anova_table.sum_sq/anova_table.df))
+        column_names = ['df', 'sum_sq', 'mean_sq', 'F', 'PR(>F)']
+        self.anova_summary = self.anova_summary.reindex(columns=column_names)
+        # self.anova_summary = anova_table
+        self.anova_model_out = model
+        self.anova_std_residuals = model.resid / np.sqrt(self.anova_summary.loc['Residual', 'mean_sq'])
 
     def lin_reg(self, df="dataframe", y=None, x=None):
         df = df.dropna()
@@ -2505,6 +2581,7 @@ class genfam:
                            df['trn_array'].iloc[0].strip('\{').split(',')[0],
                            df['phyt_id_array'].iloc[0].strip('\{').split(',')[0],
                            plant_name)
+
 
 class anot:
 
