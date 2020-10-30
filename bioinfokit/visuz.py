@@ -1174,7 +1174,7 @@ class stat:
                   sign_line_pairs=None, sub_cat=None, sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'},
                   sub_cat_label_dist=None, symb_dist=None, group_let=None, df_format=None, samp_col_name=None,
                   col_order=False, dotplot=False, dotsize=6, colordot=['#101820ff'], valphadot=1, markerdot='o',
-                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None):
+                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None, figname='singlebar'):
         plt.rcParams['mathtext.fontset'] = 'custom'
         plt.rcParams['mathtext.default'] = 'regular'
         plt.rcParams['mathtext.it'] = 'Arial:italic'
@@ -1382,7 +1382,7 @@ class stat:
         if isinstance(add_text, list):
             plt.text(add_text[0], add_text[1], add_text[2], fontsize=9, fontfamily='Arial')
 
-        general.get_figure(show, r, figtype, 'singlebar')
+        general.get_figure(show, r, figtype, figname)
 
     @staticmethod
     def normal_bar(df='dataframe', x_col_name=None, y_col_name=None, dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", r=300,
