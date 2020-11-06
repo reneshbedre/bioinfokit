@@ -73,79 +73,6 @@ python setup.py install
 ```
 
 
-
-
-
-
-
-<b>Concatenate VCF files</b>
-
-Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosome)
-
-`bioinfokit.analys.marker.concatvcf(file)`
-
-Parameters | Description
------------- | -------------
-`file` | Multiple vcf files separated by comma
-
-Returns:
-
-Concatenated VCF file (concat_vcf.vcf)
-
-<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
-
-
-<b>Split VCF file</b>
-
-`bioinfokit.analys.marker.splitvcf(file)`
-
-Split single VCF file containing variants for all chromosomes into individual file containing variants for each chromosome
-
-Parameters | Description
------------- | -------------
- `file` | VCF file to split
- `id` | chromosome id column in VCF file [string][default='#CHROM']
-
-
-Returns:
-
-VCF files for each chromosome
-
-<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
-
-
-<b>Convert TAB to CSV file</b>
-
-`bioinfokit.analys.tcsv(file)`
-
-Parameters | Description
------------- | -------------
-`file` | TAB delimited text file
-
-Returns:
-
-CSV delimited file (out.csv)
-
-
-
-
-<b>Venn Diagram</b>
-
-`bioinfokit.visuz.venn(vennset, venncolor, vennalpha, vennlabel)`
-
-Parameters | Description
------------- | -------------
-`vennset` | Venn dataset for 3 and 2-way venn. Data should be in the format of (100,010,110,001,101,011,111) for 3-way venn and 2-way venn (10, 01, 11) [default: (1,1,1,1,1,1,1)]
-`venncolor` | Color Palette for Venn [color code][default: ('#00909e', '#f67280', '#ff971d')]
-`vennalpha` | Transparency of Venn  [float (0 to 1)][default: 0.5]
-`vennlabel` | Labels to Venn [string][default: ('A', 'B', 'C')]
-
-Returns:
-
-Venn plot (venn3.png, venn2.png)
-
-<a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
-
 ## Gene expression analysis
 
 ### Volcano plot
@@ -318,6 +245,294 @@ Returns:
 heatmap plot (heatmap.png, heatmap_clus.png)
 
 <a href="https://reneshbedre.github.io/blog/hmap.html" target="_blank">Working example</a>
+
+## Clustering analysis
+### Scree plot
+
+`latest update v0.9.8`
+
+`bioinfokit.visuz.cluster.screeplot(obj, axlabelfontsize, axlabelfontname, axxlabel, axylabel,
+    figtype, r, show, dim)`
+
+Parameters | Description
+------------ | -------------
+`obj` | list of component name and component variance
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+
+
+Returns:
+
+Scree plot image (screeplot.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+
+###  Principal component analysis (PCA) loadings plots
+
+`latest update v0.9.8`
+
+`bioinfokit.visuz.cluster.pcaplot(x, y, z, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
+    figtype, r, show, plotlabels, dim)`
+
+Parameters | Description
+------------ | -------------
+`x` | loadings (correlation coefficient) for principal component 1 (PC1)
+`y` | loadings (correlation coefficient) for principal component 2 (PC2)
+`z` | loadings (correlation coefficient) for principal component 3 (PC2)
+`labels` | original variables labels from dataframe used for PCA
+`var1` | Proportion of PC1 variance [float (0 to 1)]
+`var2` | Proportion of PC2 variance [float (0 to 1)]
+`var3` | Proportion of PC3 variance [float (0 to 1)]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`plotlabels` | Plot labels as defined by labels parameter [True or False][default:True]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+
+Returns:
+
+PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+
+### Principal component analysis (PCA)  biplots
+
+`latest update v0.9.8`
+
+`bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
+    figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
+    centerlines, colorlist, legendpos, datapoints, dim)`
+
+Parameters | Description
+------------ | -------------
+`cscore` | principal component scores (obtained from PCA().fit_transfrom() function in sklearn.decomposition)
+`loadings` | loadings (correlation coefficient) for principal components
+`labels` | original variables labels from dataframe used for PCA
+`var1` | Proportion of PC1 variance [float (0 to 1)]
+`var2` | Proportion of PC2 variance [float (0 to 1)]
+`var3` | Proportion of PC3 variance [float (0 to 1)]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
+`arrowcolor` | Color of the arrow [string ][default:"#fe8a71"]
+`valphaarrow` | Transparency of the arrow [float (between 0 and 1)][default: 1]
+`arrowlinestyle` | line style of the arrow. check more styles at https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html [string][default: '-']
+`arrowlinewidth`| line width of the arrow [float][default: 1.0]
+`centerlines`| draw center lines at x=0 and y=0 for 2D plot [bool (True or False)][default: True]
+`colorlist` | list of the categories to assign the color [list][default:None]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+`datapoints`| plot data points on graph [bool (True or False)][default: True]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+
+Returns:
+
+PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+
+### t-SNE plot
+
+`latest update v0.8.5`
+
+`bioinfokit.visuz.cluster.tsneplot(score, colorlist, axlabelfontsize, axlabelfontname,
+    figtype, r, show, markerdot, dotsize, valphadot, colordot, dim, figname, legendpos,
+    legendanchor)`
+
+Parameters | Description
+------------ | -------------
+`score` | t-SNE component embeddings (obtained from TSNE().fit_transfrom() function in sklearn.manifold)
+`colorlist` | list of the categories to assign the color [list][default:None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`r` | Figure resolution in dpi [int][default: 300]
+`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
+`markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`figname` | name of figure [string ][default:"tsne_2d"]
+
+Returns:
+
+t-SNE 2D image (tsne_2d.png will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
+
+## Normalization
+
+### RPM or CPM normalization
+
+`latest update v0.8.9`
+
+Normalize raw gene expression counts into Reads per million mapped reads (RPM) or Counts per million mapped reads (CPM)
+
+`bioinfokit.analys.norm.cpm(df)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression values (NA) will be dropped.
+
+Returns:
+
+RPM or CPM normalized Pandas dataframe as class attributes (cpm_norm)
+
+<a href="https://reneshbedre.github.io/blog/expression_units.html#rpm-or-cpm-reads-per-million-mapped-reads-or-counts-per-million-mapped-reads-" target="_blank">Working Example</a>
+
+
+### RPKM or FPKM normalization
+
+`latest update v0.9`
+
+Normalize raw gene expression counts into Reads per kilo base per million mapped reads (RPKM) or 
+Fragments per kilo base per million mapped reads (FPKM)
+
+`bioinfokit.analys.norm.rpkm(df, gl)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression or gene length values (NA) will be dropped.
+`gl` | Name of a column having gene length in bp [string][default: None]
+
+Returns:
+
+RPKM or FPKM normalized Pandas dataframe as class attributes (rpkm_norm)
+
+<a href="https://reneshbedre.github.io/blog/expression_units.html#rpkm-reads-per-kilo-base-per-million-mapped-reads" target="_blank">Working Example</a>
+
+### TPM normalization
+
+`latest update v0.9.1`
+
+Normalize raw gene expression counts into Transcript per million (TPM) 
+
+`bioinfokit.analys.norm.tpm(df, gl)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression or gene length values (NA) will be dropped.
+`gl` | Name of a column having gene length in bp [string][default: None]
+
+Returns:
+
+TPM normalized Pandas dataframe as class attributes (tpm_norm)
+
+<a href="https://reneshbedre.github.io/blog/expression_units.html#tpm-transcript-per-million" target="_blank">Working Example</a>
+
+
+## Variant analysis
+
+### Manhatten plot
+
+`latest update v0.9.2`
+
+`bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
+    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname)`
+
+Parameters | Description
+------------ | -------------
+`df` |Pandas dataframe object with atleast SNP, chromosome, and P-values columns
+`chr` | Name of a column having chromosome numbers [string][default:None]
+`pv` | Name of a column having P-values. Must be numeric column [string][default:None]
+`color` | List the name of the colors to be plotted. It can accept two alternate colors or the number colors equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each chromosome [list][default:None]
+`gwas_sign_line` |Plot statistical significant threshold line defined by option `gwasp` [bool (True or False)][default: False]
+`gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markeridcol` | Name of a column having SNPs. This is necessary for plotting SNP names on the plot [string][default: None]
+`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, tuple, dict][default: True]
+`gfont` | Font size for SNP names to display on the plot [float][default: 8]. gfont not compatible with gstyle=2.
+`valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 90]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
+`figname` | name of figure [string][default:"manhatten"]
+
+Returns:
+
+Manhatten plot image in same directory (manhatten.png)
+
+<a href="https://reneshbedre.github.io/blog/manhat.html" target="_blank">Working example</a>
+
+### Variant annotation 
+
+`latest update v0.9.3`
+
+Assign genetic features and function to the variants in VCF file
+
+`bioinfokit.analys.marker.vcf_anot(file, id, gff_file, anot_attr)`
+
+Parameters | Description
+------------ | -------------
+`file` | VCF file
+`id` | chromosome id column in VCF file [string][default='#CHROM']
+`gff_file` | GFF3 genome annotation file
+`anot_attr` | Gene function tag in attributes field of GFF3 file
+
+Returns:
+
+Tab-delimited text file with annotation (annotated text file will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/vcfanot.html" target="_blank">Working Example</a>
+
+###  Concatenate VCF files
+
+`latest update v0.9.4`
+
+Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosome)
+
+`bioinfokit.analys.marker.concatvcf(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | Multiple vcf files separated by comma
+
+Returns:
+
+Concatenated VCF file (concat_vcf.vcf)
+
+<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+
+### Split VCF file
+
+`bioinfokit.analys.marker.splitvcf(file)`
+
+Split single VCF file containing variants for all chromosomes into individual file containing variants for each chromosome
+
+Parameters | Description
+------------ | -------------
+ `file` | VCF file to split
+ `id` | chromosome id column in VCF file [string][default='#CHROM']
+
+
+Returns:
+
+VCF files for each chromosome
+
+<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
 
 
 ## Biostatistical analysis
@@ -562,138 +777,6 @@ Attribute | Description
 <a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
 
 
-<b>Manhatten plot</b>
-
-`bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
-    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname)`
-
-Parameters | Description
------------- | -------------
-`df` |Pandas dataframe object with atleast SNP, chromosome, and P-values columns
-`chr` | Name of a column having chromosome numbers [string][default:None]
-`pv` | Name of a column having P-values. Must be numeric column [string][default:None]
-`color` | List the name of the colors to be plotted. It can accept two alternate colors or the number colors equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each chromosome [list][default:None]
-`gwas_sign_line` |Plot statistical significant threshold line defined by option `gwasp` [bool (True or False)][default: False]
-`gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
-`dotsize`| The size of the dots in the plot [float][default: 8]
-`markeridcol` | Name of a column having SNPs. This is necessary for plotting SNP names on the plot [string][default: None]
-`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, tuple, dict][default: True]
-`gfont` | Font size for SNP names to display on the plot [float][default: 8].  gfont not compatible with gstyle=2.
-`valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-`r` | Figure resolution in dpi [int][default: 300]
-`ar` | Rotation of X-axis labels [float][default: 90]
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
-`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
-`gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
-`figname` | name of figure [string ][default:"manhatten"]
-
-Returns:
-
-Manhatten plot image in same directory (manhatten.png)
-
-<a href="https://reneshbedre.github.io/blog/manhat.html" target="_blank">Working example</a>
-
-<b>Scree plot</b>
-
-`latest update v0.9.8`
-
-`bioinfokit.visuz.cluster.screeplot(obj, axlabelfontsize, axlabelfontname, axxlabel, axylabel,
-    figtype, r, show, dim)`
-
-Parameters | Description
------------- | -------------
-`obj` | list of component name and component variance
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
-`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`r` | Figure resolution in dpi [int][default: 300]
-`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-
-Returns:
-
-Scree plot image (screeplot.png will be saved in same directory)
-
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
-
-
-<b>Principal component analysis (PCA) loadings plots</b>
-
-`latest update v0.9.8`
-
-`bioinfokit.visuz.cluster.pcaplot(x, y, z, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
-    figtype, r, show, plotlabels, dim)`
-
-Parameters | Description
------------- | -------------
-`x` | loadings (correlation coefficient) for principal component 1 (PC1)
-`y` | loadings (correlation coefficient) for principal component 2 (PC2)
-`z` | loadings (correlation coefficient) for principal component 3 (PC2)
-`labels` | original variables labels from dataframe used for PCA
-`var1` | Proportion of PC1 variance [float (0 to 1)]
-`var2` | Proportion of PC2 variance [float (0 to 1)]
-`var3` | Proportion of PC3 variance [float (0 to 1)]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`r` | Figure resolution in dpi [int][default: 300]
-`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
-`plotlabels` | Plot labels as defined by labels parameter [True or False][default:True]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-
-Returns:
-
-PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be saved in same directory)
-
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
-
-<b>Principal component analysis (PCA)  biplots</b>
-
-`latest update v0.9.8`
-
-`bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
-    figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
-    centerlines, colorlist, legendpos, datapoints, dim)`
-
-Parameters | Description
------------- | -------------
-`cscore` | principal component scores (obtained from PCA().fit_transfrom() function in sklearn.decomposition)
-`loadings` | loadings (correlation coefficient) for principal components
-`labels` | original variables labels from dataframe used for PCA
-`var1` | Proportion of PC1 variance [float (0 to 1)]
-`var2` | Proportion of PC2 variance [float (0 to 1)]
-`var3` | Proportion of PC3 variance [float (0 to 1)]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`r` | Figure resolution in dpi [int][default: 300]
-`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
-`markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`dotsize`| The size of the dots in the plot [float][default: 6]
-`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
-`colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
-`arrowcolor` | Color of the arrow [string ][default:"#fe8a71"]
-`valphaarrow` | Transparency of the arrow [float (between 0 and 1)][default: 1]
-`arrowlinestyle` | line style of the arrow. check more styles at https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html [string][default: '-']
-`arrowlinewidth`| line width of the arrow [float][default: 1.0]
-`centerlines`| draw center lines at x=0 and y=0 for 2D plot [bool (True or False)][default: True]
-`colorlist` | list of the categories to assign the color [list][default:None]
-`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-`datapoints`| plot data points on graph [bool (True or False)][default: True]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-
-Returns:
-
-PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in same directory)
-
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
 
 <!--
 <b>Grouped bar plot</b>
@@ -720,108 +803,6 @@ Parameters | Description
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 -->
 
-<b>t-SNE plot</b>
-
-`latest update v0.8.5`
-
-`bioinfokit.visuz.cluster.tsneplot(score, colorlist, axlabelfontsize, axlabelfontname,
-    figtype, r, show, markerdot, dotsize, valphadot, colordot, dim, figname, legendpos,
-    legendanchor)`
-
-Parameters | Description
------------- | -------------
-`score` | t-SNE component embeddings (obtained from TSNE().fit_transfrom() function in sklearn.manifold)
-`colorlist` | list of the categories to assign the color [list][default:None]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`r` | Figure resolution in dpi [int][default: 300]
-`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
-`markerdot` | Shape of the dot on plot. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`dotsize`| The size of the dots in the plot [float][default: 6]
-`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
-`colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
-`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-`figname` | name of figure [string ][default:"tsne_2d"]
-
-Returns:
-
-t-SNE 2D image (tsne_2d.png will be saved in same directory)
-
-<a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
-
-
-<b>RPM or CPM normalization</b>
-
-Normalize raw gene expression counts into Reads per million mapped reads (RPM) or Counts per million mapped reads (CPM)
-
-`bioinfokit.analys.norm.cpm(df)`
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression values (NA) will be dropped.
-
-Returns:
-
-RPM or CPM normalized Pandas dataframe as class attributes (cpm_norm)
-
-<a href="https://reneshbedre.github.io/blog/expression_units.html#rpm-or-cpm-reads-per-million-mapped-reads-or-counts-per-million-mapped-reads-" target="_blank">Working Example</a>
-
-<b>RPKM or FPKM normalization</b>
-
-Normalize raw gene expression counts into Reads per kilo base per million mapped reads (RPKM) or 
-Fragments per kilo base per million mapped reads (FPKM)
-
-`bioinfokit.analys.norm.rpkm(df, gl)`
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression or gene length values (NA) will be dropped.
-`gl` | Name of a column having gene length in bp [string][default: None]
-
-Returns:
-
-RPKM or FPKM normalized Pandas dataframe as class attributes (rpkm_norm)
-
-<a href="https://reneshbedre.github.io/blog/expression_units.html#rpkm-reads-per-kilo-base-per-million-mapped-reads" target="_blank">Working Example</a>
-
-
-<b>TPM normalization</b>
-
-Normalize raw gene expression counts into Transcript per million (TPM) 
-
-`bioinfokit.analys.norm.tpm(df, gl)`
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe containing raw gene expression values. Genes with missing expression or gene length values (NA) will be dropped.
-`gl` | Name of a column having gene length in bp [string][default: None]
-
-Returns:
-
-TPM normalized Pandas dataframe as class attributes (tpm_norm)
-
-<a href="https://reneshbedre.github.io/blog/expression_units.html#tpm-transcript-per-million" target="_blank">Working Example</a>
-
-<b>VCF annotation (assign genetic features and function to the variants
-in VCF file)</b>
-
-`bioinfokit.analys.marker.vcf_anot(file, id, gff_file, anot_attr)`
-
-Parameters | Description
------------- | -------------
-`file` | VCF file
-`id` | chromosome id column in VCF file [string][default='#CHROM']
-`gff_file` | GFF3 genome annotation file
-`anot_attr` | Gene function tag in attributes field of GFF3 file
-
-Returns:
-
-Tab-delimited text file with annotation (annotated text file will be saved in same directory)
-
-<a href="https://reneshbedre.github.io/blog/vcfanot.html" target="_blank">Working Example</a>
 
 
 ## High-throughput sequence analysis
@@ -1033,6 +1014,42 @@ Returns:
 Allowed ID types for GenFam
 
 <a href="https://reneshbedre.github.io/blog/genfam.html" target="_blank">Description and working example</a>
+
+
+
+
+<b>Convert TAB to CSV file</b>
+
+`bioinfokit.analys.tcsv(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | TAB delimited text file
+
+Returns:
+
+CSV delimited file (out.csv)
+
+
+
+
+<b>Venn Diagram</b>
+
+`bioinfokit.visuz.venn(vennset, venncolor, vennalpha, vennlabel)`
+
+Parameters | Description
+------------ | -------------
+`vennset` | Venn dataset for 3 and 2-way venn. Data should be in the format of (100,010,110,001,101,011,111) for 3-way venn and 2-way venn (10, 01, 11) [default: (1,1,1,1,1,1,1)]
+`venncolor` | Color Palette for Venn [color code][default: ('#00909e', '#f67280', '#ff971d')]
+`vennalpha` | Transparency of Venn  [float (0 to 1)][default: 0.5]
+`vennlabel` | Labels to Venn [string][default: ('A', 'B', 'C')]
+
+Returns:
+
+Venn plot (venn3.png, venn2.png)
+
+<a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
+
 
 How to cite bioinfokit?
 - Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
