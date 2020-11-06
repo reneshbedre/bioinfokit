@@ -1,3 +1,9 @@
+v1.0.3  has the following updates and changes (November 06, 2020)
+- `bartlett` and `levene` function added to `analys.stat` class for checking the ANOVA assumptions
+  for datasets in stacked format
+- `tukey_hsd` function updated for grouping order
+- Pandas series added as input for `fasta.extract_seq` function
+
 v1.0.2  has the following updates and changes (October 26, 2020)
 - `extract_seq` function moved to `fasta` class
 - `extract_seq` function deprecated from `analys`

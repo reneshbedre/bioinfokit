@@ -270,36 +270,6 @@ PCA summary, scree plot (screepca.png), and 2D/3D pca plots (pcaplot_2d.png and 
 <a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
 -->
 
-<b>Reverse complement of DNA sequence</b>
-
-`bioinfokit.analys.rev_com(sequence)`
-
-Parameters | Description
------------- | -------------
-`seq` | DNA sequence to perform reverse complement
-`file` | DNA sequence in a fasta file
-
-Returns:
-
-Reverse complement of original DNA sequence
-
-<a href="https://reneshbedre.github.io/blog/revcom.html" target="_blank">Working example</a>
-
-<b>Sequencing coverage</b>
-
-`bioinfokit.analys.fastq.seqcov(file, gs)`
-
-Parameters | Description
------------- | -------------
-`file` | FASTQ file
-`gs` | Genome size in Mbp
-
-Returns:
-
-Sequencing coverage of the given FASTQ file
-
-<a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Working example</a>
-
 <b>Convert TAB to CSV file</b>
 
 `bioinfokit.analys.tcsv(file)`
@@ -559,67 +529,50 @@ Attribute | Description
 
 `bioinfokit.analys.stat.bartlett(df, xfac_var, res_var)`
 
-It performs bartlett's test to check the homogenity of variances. It accepts the input table in stacked format. 
+It performs bartlett's test to check the homogeneity of variances among the treatment groups. It accepts the input 
+table in stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.bartlett.html
 
 Parameters | Description
 ------------ | -------------
-`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in stacked format options. It should not have missing data. The missing data will be omitted.
+`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in stacked format. It should not have missing data. The missing data will be omitted.
 `res_var` | Name of a column having response variable [string][default: None]
 `xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
-`anova_model` | ANOVA model (calculated using statsmodels `ols` function) [string][default: None]
-`phalpha` | Significance level [float][default: 0.05]
-`ss_typ` | Type of sum of square to perform ANOVA [int][default: 2]
 
 Returns:
 
 Attribute | Description
 ------------ | -------------
-`tukey_summary` | Pairwise comparisons for main and interaction effects by Tukey HSD test 
+`bartlett_summary` | Pandas dataframe containing bartlett's test statistics, degree of freedom, and <i>p</i> value
 
 
-<a href="https://reneshbedre.github.io/blog/anova.html" target="_blank">Description and Working example</a>
+<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
 
 
+### Levene's test
 
+`latest update v1.0.3`
 
-<b>File format conversions</b>
+`bioinfokit.analys.stat.levene(df, xfac_var, res_var)`
 
-`bioinfokit.analys.format`
-
-Function | Parameters | Description
-------------|---------- | -------------
-`bioinfokit.analys.format.fqtofa(file)` | `FASTQ file` | Convert FASTQ file into FASTA format
-`bioinfokit.analys.format.hmmtocsv(file)` | `HMM file` | Convert HMM text output (from HMMER tool) to CSV format
-`bioinfokit.analys.format.tabtocsv(file)` | `TAB file` | Convert TAB file to CSV format
-`bioinfokit.analys.format.csvtotab(file)` | `CSV file` | Convert CSV file to TAB format
-
-
-Returns:
-
-Output will be saved in same directory
-
-<a href="https://reneshbedre.github.io/blog/format.html" target="_blank">Working example</a>
-
-<!--
-<b>One-way ANOVA</b>
-
-`bioinfokit.stat.oanova(table, res, xfac, ph, phalpha)`
+It performs levene's test to check the homogeneity of variances among the treatment groups. It accepts the input 
+table in stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.levene.html
 
 Parameters | Description
 ------------ | -------------
-`table` | Pandas dataframe in stacked table format
-`res` | Response variable (dependent variable) [string][default: None]
-`xfac` | Treatments or groups or factors (independent variable) [string][default: None]
-`ph` | perform pairwise comparisons with Tukey HSD test [bool (True or False)] [default: False]
-`phalpha` |significance level Tukey HSD test [float (0 to 1)][default: 0.05]
-
+`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in stacked format. It should not have missing data. The missing data will be omitted.
+`res_var` | Name of a column having response variable [string][default: None]
+`xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
+`center` | Choice for the levene test [string (`median`, `mean`, `trimmed`)] [default: `median`] <br> <strong><em>median</em></strong>: Brown-Forsythe Levene-type test <br> <strong><em>mean</em></strong>: original levene's test <br> <strong><em>trimmed</em></strong>: Brown-Forsythe Levene-type test 
 
 Returns:
 
-ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
+Attribute | Description
+------------ | -------------
+`levene_summary` | Pandas dataframe containing levene's test statistics, degree of freedom, and <i>p</i> value
 
-<a href="https://reneshbedre.github.io/blog/oanova.html" target="_blank">Working example</a>
--->
+
+<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
+
 
 <b>Manhatten plot</b>
 
@@ -656,54 +609,6 @@ Returns:
 Manhatten plot image in same directory (manhatten.png)
 
 <a href="https://reneshbedre.github.io/blog/manhat.html" target="_blank">Working example</a>
-
-
-<b>Extract the sequences from the FASTA file</b>
-
-`bioinfokit.analys.extract_seq(file, id)`
-
-Parameters | Description
------------- | -------------
-`file` | input FASTA file from which sequneces to be extracted
-`id` | sequence ID file
-
-Returns:
-Extracted sequences in FASTA format file in same directory (out.fasta)
-
-
-
-<b>FASTQ quality format detection</b>
-
-`bioinfokit.analys.format.fq_qual_var(file)`
-
-Parameters | Description
------------- | -------------
-`file` |FASTQ file to detect quality format [deafult: None]
-
-Returns:
-
-Quality format encoding name for FASTQ file (Supports only Sanger, Illumina 1.8+ and Illumina  1.3/1.4)
-
-<a href="https://reneshbedre.github.io/blog/fqqualfmt.html" target="_blank">Working Example</a>
-
-
-
-<b>GFF3 to GTF file format conversion</b>
-
-`latest update v1.0.1`
-
-`bioinfokit.analys.gff.gff_to_gtf(file, trn_feature_name)`
-
-Parameters | Description
------------- | -------------
-`file` | GFF3 genome annotation file
-`trn_feature_name` | Name of the feature (column 3 of GFF3 file) of RNA transcripts if other than 'mRNA' or 'transcript'
-
-Returns:
-
-GTF format genome annotation file (file.gtf will be saved in same directory)
-
-<a href="https://reneshbedre.github.io/blog/gffgtf.html" target="_blank">Working Example</a>
 
 <b>Scree plot</b>
 
@@ -930,20 +835,6 @@ Tab-delimited text file with annotation (annotated text file will be saved in sa
 
 <a href="https://reneshbedre.github.io/blog/vcfanot.html" target="_blank">Working Example</a>
 
-<b>Bioinformatics file readers and processing (FASTA, FASTQ, and VCF)</b>
-
-Function | Parameters | Description
-------------|---------- | -------------
-`bioinfokit.analys.fasta.fasta_reader(file)` | `FASTA file` | FASTA file reader
-`bioinfokit.analys.fastq.fastq_reader(file)` | `FASTQ file` | FASTQ file reader
-`bioinfokit.analys.marker.vcfreader(file)` | `VCF file` | VCF file reader
-
-Returns:
-
-File generator object (can be iterated only once) that can be parsed for the record
-
-<a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
-
 
 ## High-throughput sequence analysis
 
@@ -966,6 +857,129 @@ FASTQ files for each SRA accession in the current directory unless specified by 
 
 <a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
 
+### FASTQ quality format detection
+
+`bioinfokit.analys.format.fq_qual_var(file)`
+
+Parameters | Description
+------------ | -------------
+`file` |FASTQ file to detect quality format [deafult: None]
+
+Returns:
+
+Quality format encoding name for FASTQ file (Supports only Sanger, Illumina 1.8+ and Illumina  1.3/1.4)
+
+<a href="https://reneshbedre.github.io/blog/fqqualfmt.html" target="_blank">Working Example</a>
+
+### Sequencing coverage
+
+latest update v0.9.7
+
+`bioinfokit.analys.fastq.seqcov(file, gs)`
+
+Parameters | Description
+------------ | -------------
+`file` | FASTQ file
+`gs` | Genome size in Mbp
+
+Returns:
+
+Sequencing coverage of the given FASTQ file
+
+<a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Description and Working example</a>
+
+### Reverse complement of DNA sequence
+
+`latest update v0.9.8`
+
+`bioinfokit.analys.fasta.rev_com(sequence)`
+
+Parameters | Description
+------------ | -------------
+`seq` | DNA sequence to perform reverse complement
+`file` | DNA sequence in a fasta file
+
+Returns:
+
+Reverse complement of original DNA sequence
+
+<a href="https://reneshbedre.github.io/blog/revcom.html" target="_blank">Working example</a>
+
+### File format conversions
+
+`bioinfokit.analys.format`
+
+Function | Parameters | Description
+------------|---------- | -------------
+`bioinfokit.analys.format.fqtofa(file)` | `FASTQ file` | Convert FASTQ file into FASTA format
+`bioinfokit.analys.format.hmmtocsv(file)` | `HMM file` | Convert HMM text output (from HMMER tool) to CSV format
+`bioinfokit.analys.format.tabtocsv(file)` | `TAB file` | Convert TAB file to CSV format
+`bioinfokit.analys.format.csvtotab(file)` | `CSV file` | Convert CSV file to TAB format
+
+
+Returns:
+
+Output will be saved in same directory
+
+<a href="https://reneshbedre.github.io/blog/format.html" target="_blank">Working example</a>
+
+### GFF3 to GTF file format conversion
+
+`latest update v1.0.1`
+
+`bioinfokit.analys.gff.gff_to_gtf(file, trn_feature_name)`
+
+Parameters | Description
+------------ | -------------
+`file` | GFF3 genome annotation file
+`trn_feature_name` | Name of the feature (column 3 of GFF3 file) of RNA transcripts if other than 'mRNA' or 'transcript'
+
+Returns:
+
+GTF format genome annotation file (file.gtf will be saved in same directory)
+
+<a href="https://reneshbedre.github.io/blog/gffgtf.html" target="_blank">Working Example</a>
+
+
+### Bioinformatics file readers and processing (FASTA, FASTQ, and VCF)
+
+Function | Parameters | Description
+------------|---------- | -------------
+`bioinfokit.analys.fasta.fasta_reader(file)` | `FASTA file` | FASTA file reader
+`bioinfokit.analys.fastq.fastq_reader(file)` | `FASTQ file` | FASTQ file reader
+`bioinfokit.analys.marker.vcfreader(file)` | `VCF file` | VCF file reader
+
+Returns:
+
+File generator object (can be iterated only once) that can be parsed for the record
+
+<a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
+
+### Extract subsequence from FASTA files
+
+latest update v0.9.8
+
+`bioinfokit.analys.fasta.ext_subseq(file, id, st, end, strand)`
+
+Extract the subsequence of specified region from FASTA file. If the target subsequence region is on minus strand. the
+reverse complementary of subsequence will be printed.
+
+Parameters | Description
+------------ | -------------
+`file` | FASTA file [file]
+`id` | The ID of sequence from FASTA file to extract the subsequence [string]
+`st` | Start integer coordinate of subsequnece [int] 
+`end` | End integer coordinate of subsequnece [int]
+`strand` | Strand of the subsequence ['plus' or 'minus'][default: 'plus']  
+
+<!--
+`out_file` | Write subsequence to file instead of stdout [file][default: None]  
+-->
+
+Returns:
+
+Subsequence to stdout 
+
 ### Extract sequences from FASTA file
 
 latest update v1.0.2
@@ -977,7 +991,7 @@ Extract the sequences from FASTA file based on the list of sequence IDs provided
 Parameters | Description
 ------------ | -------------
 `file` | FASTA file [file] 
-`id` | List of sequence IDs separated by new line [file]
+`id` | List of sequence IDs separated by new line [file] or Pandas series
 
 Returns:
 
