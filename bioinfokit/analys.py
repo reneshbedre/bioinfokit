@@ -135,14 +135,18 @@ class fasta:
                 sub_seq_rc = fasta.rev_com(seq=sub_seq)
                 print(sub_seq_rc)
 
-    def extract_seq(file="fasta_file", id="id_file"):
+    @staticmethod
+    def extract_seq(file='fasta_file', id='id_file_or_pd_dataframe'):
         # extract seq from fasta file based on id match
-        id_list = []
-        id_file = open(id, "rU")
+        if isinstance(id, pd.Series):
+            id_list = list(id)
+        else:
+            id_list = []
+            id_file = open(id, "rU")
+            for line in id_file:
+                id_name = line.rstrip('\n')
+                id_list.append(id_name)
         out_file = open("output.fasta", 'w')
-        for line in id_file:
-            id_name = line.rstrip('\n')
-            id_list.append(id_name)
         list_len = len(id_list)
         value = [1] * list_len
         # id_list converted to dict for faster search
@@ -153,7 +157,8 @@ class fasta:
             if fasta_header.strip() in dict_list.keys():
                 out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, 60)) + "\n")
         out_file.close()
-        id_file.close()
+        if not isinstance(id, pd.Series):
+            id_file.close()
 
 
 class fastq:

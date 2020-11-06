@@ -1174,7 +1174,8 @@ class stat:
                   sign_line_pairs=None, sub_cat=None, sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'},
                   sub_cat_label_dist=None, symb_dist=None, group_let=None, df_format=None, samp_col_name=None,
                   col_order=False, dotplot=False, dotsize=6, colordot=['#101820ff'], valphadot=1, markerdot='o',
-                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None, figname='singlebar'):
+                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None, figname='singlebar',
+                  connectionstyle='bar, armA=50, armB=50, angle=180, fraction=0 '):
         plt.rcParams['mathtext.fontset'] = 'custom'
         plt.rcParams['mathtext.default'] = 'regular'
         plt.rcParams['mathtext.it'] = 'Arial:italic'
@@ -1256,7 +1257,7 @@ class stat:
                     pv_symb = general.pvalue_symbol(pv[int(i/2)], sign_line_opts['symbol'])
                     if pv_symb:
                         plt.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
-                                    arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                    arrowprops={'connectionstyle': connectionstyle,
                                                 'arrowstyle': sign_line_opts['arrowstyle'],
                                                 'linewidth': sign_line_opts['linewidth']})
                         plt.annotate(pv_symb, xy=(np.mean([x_pos, x_pos_2]), max(y_pos, y_pos_2) +
@@ -1319,7 +1320,7 @@ class stat:
                     y_pos_dict_trt[i[0]] = [y_pos, y_pos_2]
                     if pv_symb:
                         plt.annotate('', xy=(x_pos, max(y_pos, y_pos_2)), xytext=(x_pos_2, max(y_pos, y_pos_2)),
-                                     arrowprops={'connectionstyle': 'bar, armA=50, armB=50, angle=180, fraction=0 ',
+                                     arrowprops={'connectionstyle': connectionstyle,
                                                      'arrowstyle': sign_line_opts['arrowstyle'],
                                                      'linewidth': sign_line_opts['linewidth']})
                         # here size factor size_factor_to_start_line added instead of sign_line_opts['dist_y_pos']
