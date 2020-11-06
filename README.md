@@ -73,7 +73,82 @@ python setup.py install
 ```
 
 
-<b>Volcano plot</b>
+
+
+
+
+
+<b>Concatenate VCF files</b>
+
+Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosome)
+
+`bioinfokit.analys.marker.concatvcf(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | Multiple vcf files separated by comma
+
+Returns:
+
+Concatenated VCF file (concat_vcf.vcf)
+
+<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+
+
+<b>Split VCF file</b>
+
+`bioinfokit.analys.marker.splitvcf(file)`
+
+Split single VCF file containing variants for all chromosomes into individual file containing variants for each chromosome
+
+Parameters | Description
+------------ | -------------
+ `file` | VCF file to split
+ `id` | chromosome id column in VCF file [string][default='#CHROM']
+
+
+Returns:
+
+VCF files for each chromosome
+
+<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+
+
+<b>Convert TAB to CSV file</b>
+
+`bioinfokit.analys.tcsv(file)`
+
+Parameters | Description
+------------ | -------------
+`file` | TAB delimited text file
+
+Returns:
+
+CSV delimited file (out.csv)
+
+
+
+
+<b>Venn Diagram</b>
+
+`bioinfokit.visuz.venn(vennset, venncolor, vennalpha, vennlabel)`
+
+Parameters | Description
+------------ | -------------
+`vennset` | Venn dataset for 3 and 2-way venn. Data should be in the format of (100,010,110,001,101,011,111) for 3-way venn and 2-way venn (10, 01, 11) [default: (1,1,1,1,1,1,1)]
+`venncolor` | Color Palette for Venn [color code][default: ('#00909e', '#f67280', '#ff971d')]
+`vennalpha` | Transparency of Venn  [float (0 to 1)][default: 0.5]
+`vennlabel` | Labels to Venn [string][default: ('A', 'B', 'C')]
+
+Returns:
+
+Venn plot (venn3.png, venn2.png)
+
+<a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
+
+## Gene expression analysis
+
+### Volcano plot
 
 latest update v0.8.8
 
@@ -122,53 +197,7 @@ Returns:
 Volcano plot image in same directory (volcano.png)
 <a href="https://reneshbedre.github.io/blog/volcano.html" target="_blank">Working example</a>
 
-<b>MA plot</b>
-
-latest update v0.8.8
-
-`bioinfokit.visuz.gene_exp.ma(table, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
-    axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
-    figname, legendlabels, plotlegend, ar)`
-
-Parameters | Description
------------- | -------------
-`table` |Pandas dataframe  table having atleast gene IDs, log fold change, and normalized counts (control and treatment) columns
-`lfc` | Name of a column having log fold change values [default:logFC]
-`ct_count` | Name of a column having count values for control sample [default:value1]
-`st_count` | Name of a column having count values for treatment sample [default:value2]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-`color` | Tuple of three colors [tuple or list][default: ("green", "grey", "red")]
-`dotsize`| The size of the dots in the plot [float][default: 8]
-`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
-`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
-`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axtickfontsize` | Font size for axis ticks [float][default: 9]
-`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
-`xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
-`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
-`fclines`  | draw log fold change threshold lines as defines by `lfc`  [True or False][default:False]
-`fclinescolor`  | color of fclines  [string][default: '#2660a4']
-`plotlegend` | plot legend on MA plot  [True or False][default:False]
-`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
-`figname` | name of figure [string ][default:"ma"]
-`legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
-`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
-
-
-
-Returns:
-
-MA plot image in same directory (ma.png)
-<a href="https://reneshbedre.github.io/blog/ma.html" target="_blank">Working example</a>
-
-<b>Inverted Volcano plot</b>
+### Inverted Volcano plot
 
 latest update v0.8.8
 
@@ -207,82 +236,59 @@ Parameters | Description
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
 `ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
 
-
 Returns:
 
 Inverted volcano plot image in same directory (involcano.png)
-
 <a href="https://reneshbedre.github.io/blog/volcano.html" target="_blank">Working example</a>
 
+### MA plot
 
+latest update v0.8.8
 
-
-<a href="https://reneshbedre.github.io/blog/corr.html" target="_blank">Working example</a>
-
-<b>Concatenate VCF files</b>
-
-Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosome)
-
-`bioinfokit.analys.marker.concatvcf(file)`
+`bioinfokit.visuz.gene_exp.ma(df, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
+    axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
+    figname, legendlabels, plotlegend, ar)`
 
 Parameters | Description
 ------------ | -------------
-`file` | Multiple vcf files separated by comma
+`df` |Pandas dataframe  table having atleast gene IDs, log fold change, and normalized counts (control and treatment) columns
+`lfc` | Name of a column having log fold change values [default:logFC]
+`ct_count` | Name of a column having count values for control sample [default:value1]
+`st_count` | Name of a column having count values for treatment sample [default:value2]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
+`color` | Tuple of three colors [tuple or list][default: ("green", "grey", "red")]
+`dotsize`| The size of the dots in the plot [float][default: 8]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`xlm` | Range of ticks to plot on X-axis [float (left, right, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
+`fclines`  | draw log fold change threshold lines as defines by `lfc`  [True or False][default:False]
+`fclinescolor`  | color of fclines  [string][default: '#2660a4']
+`plotlegend` | plot legend on MA plot  [True or False][default:False]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`figname` | name of figure [string ][default:"ma"]
+`legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
+`ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
+
 
 Returns:
 
-Concatenated VCF file (concat_vcf.vcf)
+MA plot image in same directory (ma.png)
 
-<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
-
-
-<b>Split VCF file</b>
-
-`bioinfokit.analys.marker.splitvcf(file)`
-
-Split single VCF file containing variants for all chromosomes into individual file containing variants for each chromosome
-
-Parameters | Description
------------- | -------------
- `file` | VCF file to split
- `id` | chromosome id column in VCF file [string][default='#CHROM']
+<a href="https://reneshbedre.github.io/blog/ma.html" target="_blank">Working example</a>
 
 
-Returns:
-
-VCF files for each chromosome
-
-<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
-
-<!--
-<b>PCA</b>
-
-`bioinfokit.analys.pca(table)`
-
-Parameters | Description
------------- | -------------
-`table` | Dataframe object with numerical variables (columns). Dataframe should not have identifier column.
-
-Returns:
-
-PCA summary, scree plot (screepca.png), and 2D/3D pca plots (pcaplot_2d.png and pcaplot_3d.png)
-
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working example</a>
--->
-
-<b>Convert TAB to CSV file</b>
-
-`bioinfokit.analys.tcsv(file)`
-
-Parameters | Description
------------- | -------------
-`file` | TAB delimited text file
-
-Returns:
-
-CSV delimited file (out.csv)
-
-<b>Heatmap</b>
+### Heatmap
 
 `latest update v0.8.4`
 
@@ -313,22 +319,6 @@ heatmap plot (heatmap.png, heatmap_clus.png)
 
 <a href="https://reneshbedre.github.io/blog/hmap.html" target="_blank">Working example</a>
 
-<b>Venn Diagram</b>
-
-`bioinfokit.visuz.venn(vennset, venncolor, vennalpha, vennlabel)`
-
-Parameters | Description
------------- | -------------
-`vennset` | Venn dataset for 3 and 2-way venn. Data should be in the format of (100,010,110,001,101,011,111) for 3-way venn and 2-way venn (10, 01, 11) [default: (1,1,1,1,1,1,1)]
-`venncolor` | Color Palette for Venn [color code][default: ('#00909e', '#f67280', '#ff971d')]
-`vennalpha` | Transparency of Venn  [float (0 to 1)][default: 0.5]
-`vennlabel` | Labels to Venn [string][default: ('A', 'B', 'C')]
-
-Returns:
-
-Venn plot (venn3.png, venn2.png)
-
-<a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
 ## Biostatistical analysis
 
@@ -437,7 +427,7 @@ Summary and expected counts as class attributes (summary and expected_df)
 <a href="https://reneshbedre.github.io/blog/chisq.html" target="_blank">Working example</a>
 
 
-<b>Linear regression analysis</b>
+### Linear regression analysis
 
 `bioinfokit.visuz.stat.lin_reg(df, x, y)`
 
@@ -454,7 +444,7 @@ Regression analysis summary
 <a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
 
 
-<b>Regression plot</b>
+### Regression plot
 
 `bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
     valphaline, valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, xlm, ylm, axtickfontsize,
@@ -484,8 +474,6 @@ Parameters | Description
 `ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
-`colordot` | Color of dots on plot [string ][default:"#4a4e4d"]
-
 
 Returns:
 
@@ -529,20 +517,20 @@ Attribute | Description
 
 `bioinfokit.analys.stat.bartlett(df, xfac_var, res_var)`
 
-It performs bartlett's test to check the homogeneity of variances among the treatment groups. It accepts the input 
-table in stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.bartlett.html
+It performs Bartlett's test to check the homogeneity of variances among the treatment groups. It accepts the input 
+table in a stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.bartlett.html
 
 Parameters | Description
 ------------ | -------------
-`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in stacked format. It should not have missing data. The missing data will be omitted.
-`res_var` | Name of a column having response variable [string][default: None]
-`xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
+`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in a stacked format. It should not have missing data. The missing data will be omitted.
+`res_var` | Name of a column having response variable [string][default: `None`]
+`xfac_var` | Name of a column having treatment groups (independent variables) [string or list][default: `None`]
 
 Returns:
 
 Attribute | Description
 ------------ | -------------
-`bartlett_summary` | Pandas dataframe containing bartlett's test statistics, degree of freedom, and <i>p</i> value
+`bartlett_summary` | Pandas dataframe containing Bartlett's test statistics, degree of freedom, and <i>p</i> value
 
 
 <a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
@@ -554,21 +542,21 @@ Attribute | Description
 
 `bioinfokit.analys.stat.levene(df, xfac_var, res_var)`
 
-It performs levene's test to check the homogeneity of variances among the treatment groups. It accepts the input 
-table in stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.levene.html
+It performs Levene's test to check the homogeneity of variances among the treatment groups. It accepts the input 
+table in a stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.levene.html
 
 Parameters | Description
 ------------ | -------------
-`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in stacked format. It should not have missing data. The missing data will be omitted.
-`res_var` | Name of a column having response variable [string][default: None]
-`xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
-`center` | Choice for the levene test [string (`median`, `mean`, `trimmed`)] [default: `median`] <br> <strong><em>median</em></strong>: Brown-Forsythe Levene-type test <br> <strong><em>mean</em></strong>: original levene's test <br> <strong><em>trimmed</em></strong>: Brown-Forsythe Levene-type test 
+`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in a stacked format. It should not have missing data. The missing data will be omitted.
+`res_var` | Name of a column having response variable [string][default: `None`]
+`xfac_var` | Name of a column having treatment groups (independent variables) [string or list][default: `None`]
+`center` | Choice for the Levene's test [string (`median`, `mean`, `trimmed`)] [default: `median`] <br> <strong><em>median</em></strong>: Brown-Forsythe Levene-type test <br> <strong><em>mean</em></strong>: original Levene's test <br> <strong><em>trimmed</em></strong>: Brown-Forsythe Levene-type test 
 
 Returns:
 
 Attribute | Description
 ------------ | -------------
-`levene_summary` | Pandas dataframe containing levene's test statistics, degree of freedom, and <i>p</i> value
+`levene_summary` | Pandas dataframe containing Levene's test statistics, degree of freedom, and <i>p</i> value
 
 
 <a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
@@ -1053,11 +1041,25 @@ How to cite bioinfokit?
 
 References:
 - Travis E. Oliphant. A guide to NumPy, USA: Trelgol Publishing, (2006).
-- John D. Hunter. Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering, 9, 90-95 (2007), DOI:10.1109/MCSE.2007.55 (publisher link)
-- Fernando Pérez and Brian E. Granger. IPython: A System for Interactive Scientific Computing, Computing in Science & Engineering, 9, 21-29 (2007), DOI:10.1109/MCSE.2007.53 (publisher link)
-- Michael Waskom, Olga Botvinnik, Joel Ostblom, Saulius Lukauskas, Paul Hobson, MaozGelbart, … Constantine Evans. (2020, January 24). mwaskom/seaborn: v0.10.0 (January 2020) (Version v0.10.0). Zenodo. http://doi.org/10.5281/zenodo.3629446
-- Fabian Pedregosa, Gaël Varoquaux, Alexandre Gramfort, Vincent Michel, Bertrand Thirion, Olivier Grisel, Mathieu Blondel, Peter Prettenhofer, Ron Weiss, Vincent Dubourg, Jake Vanderplas, Alexandre Passos, David Cournapeau, Matthieu Brucher, Matthieu Perrot, Édouard Duchesnay. Scikit-learn: Machine Learning in Python, Journal of Machine Learning Research, 12, 2825-2830 (2011)
-- Wes McKinney. Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference, 51-56 (2010)
+- John D. Hunter. Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering, 9, 90-95 (2007), 
+  DOI:10.1109/MCSE.2007.55 (publisher link)
+- Fernando Pérez and Brian E. Granger. IPython: A System for Interactive Scientific Computing, Computing in Science & 
+  Engineering, 9, 21-29 (2007), DOI:10.1109/MCSE.2007.53 (publisher link)
+- Michael Waskom, Olga Botvinnik, Joel Ostblom, Saulius Lukauskas, Paul Hobson, MaozGelbart, … Constantine Evans. 
+  (2020, January 24). mwaskom/seaborn: v0.10.0 (January 2020) (Version v0.10.0). Zenodo. http://doi.org/10.5281/zenodo.3629446
+- Fabian Pedregosa, Gaël Varoquaux, Alexandre Gramfort, Vincent Michel, Bertrand Thirion, Olivier Grisel, Mathieu 
+  Blondel, Peter Prettenhofer, Ron Weiss, Vincent Dubourg, Jake Vanderplas, Alexandre Passos, David Cournapeau, 
+  Matthieu Brucher, Matthieu Perrot, Édouard Duchesnay. Scikit-learn: Machine Learning in Python, Journal of Machine 
+  Learning Research, 12, 2825-2830 (2011)
+- Wes McKinney. Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science 
+  Conference, 51-56 (2010)
+- Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, 
+  Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod 
+  Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu 
+  Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, 
+  Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 
+  Contributors. (2020) SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nature Methods, 17(3), 
+  261-272.  
 - David C. Howell. Multiple Comparisons With Unequal Sample Sizes. https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
 
 <!--
