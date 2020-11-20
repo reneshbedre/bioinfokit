@@ -700,7 +700,7 @@ Regression plot image in same directory (reg_plot.png)
 ### Tukey HSD test 
 
 
-`latest update v1.0.1`
+`latest update v1.0.3`
 
 `bioinfokit.analys.stat.tukey_hsd(df, res_var, xfac_var, anova_model, phalpha, ss_typ)`
 

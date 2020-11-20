@@ -132,7 +132,8 @@ class gene_exp:
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                 axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
                 axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
-                figname='volcano', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down']):
+                figname='volcano', legendanchor=None,
+                legendlabels=['significant up', 'not significant', 'significant down']):
         _x = r'$ log_{2}(Fold Change)$'
         _y = r'$ -log_{10}(P-value)$'
         color = color
@@ -147,22 +148,21 @@ class gene_exp:
         df.loc[(df[lfc] <= -lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[2]  # downregulated
         df['color_add_axy'].fillna(color[1], inplace=True)  # intermediate
         df['logpv_add_axy'] = -(np.log10(df[pv]))
-        # print(df[df['color']==color[0]].count(), 'zzzz')
         # plot
         assign_values = {col: i for i, col in enumerate(color)}
         color_result_num = [assign_values[i] for i in df['color_add_axy']]
-        assert len(set(color_result_num)) == 3, 'either significant or non-significant genes are missing; try to change lfc_thr or ' \
-                                           'pv_thr to include  both significant and non-significant genes'
+        assert len(set(color_result_num)) == 3, \
+            'either significant or non-significant genes are missing; try to change lfc_thr or pv_thr to include ' \
+            'both significant and non-significant genes'
         plt.subplots(figsize=dim)
         if plotlegend:
-            s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha, s=dotsize,
-                    marker=markerdot)
+            s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
+                            s=dotsize, marker=markerdot)
             assert len(legendlabels) == 3, 'legendlabels must be size of 3'
-            plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
-                   bbox_to_anchor=legendanchor)
+            plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos, bbox_to_anchor=legendanchor)
         else:
-            plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha, s=dotsize,
-                        marker=markerdot)
+            plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
+                        s=dotsize, marker=markerdot)
         if sign_line:
             plt.axhline(y=-np.log10(pv_thr), linestyle='--', color='#7d7d7d', linewidth=1)
             plt.axvline(x=lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
@@ -1174,8 +1174,9 @@ class stat:
                   sign_line_pairs=None, sub_cat=None, sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'},
                   sub_cat_label_dist=None, symb_dist=None, group_let=None, df_format=None, samp_col_name=None,
                   col_order=False, dotplot=False, dotsize=6, colordot=['#101820ff'], valphadot=1, markerdot='o',
-                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None, figname='singlebar',
-                  connectionstyle='bar, armA=50, armB=50, angle=180, fraction=0 '):
+                  sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None,
+                  figname='singlebar', connectionstyle='bar, armA=50, armB=50, angle=180, fraction=0',
+                  std_errs_vis='both', yerrzorder=8):
         plt.rcParams['mathtext.fontset'] = 'custom'
         plt.rcParams['mathtext.default'] = 'regular'
         plt.rcParams['mathtext.it'] = 'Arial:italic'
@@ -1186,6 +1187,8 @@ class stat:
         _y = None
         if df_format == 'stack':
             # sample_list = df[samp_col_name].unique()
+            if samp_col_name is None:
+                raise ValueError('sample column name required')
             df_mean = df.groupby(samp_col_name).mean().reset_index().set_index(samp_col_name).T
             df_sem = df.groupby(samp_col_name).sem().reset_index().set_index(samp_col_name).T
             if col_order:
@@ -1203,12 +1206,22 @@ class stat:
             sample_list = df.columns.to_numpy()
             min_value = (0, min(df.min()))[min(df.min()) < 0]
 
+        if std_errs_vis == 'upper':
+            std_errs_vis = [len(bar_se)*[0], bar_se]
+        elif std_errs_vis == 'lower':
+            std_errs_vis = [bar_se, len(bar_se)*[0]]
+        elif std_errs_vis == 'both':
+            std_errs_vis = bar_se
+        else:
+            raise ValueError('In valid value for the std_errs_vis')
+
         xbar = np.arange(len(sample_list))
         color_list_bar = colorbar
         plt.subplots(figsize=dim)
         if errorbar:
-            plt.bar(x=xbar, height=bar_h, yerr=bar_se, width=bw, color=color_list_bar,
-                    capsize=hbsize, alpha=valphabar, error_kw={'elinewidth': yerrlw, 'capthick': yerrcw})
+            plt.bar(x=xbar, height=bar_h, yerr=std_errs_vis, width=bw, color=color_list_bar,
+                    capsize=hbsize, alpha=valphabar, zorder=5, error_kw={'elinewidth': yerrlw, 'capthick': yerrcw,
+                                                                          'zorder': yerrzorder})
         else:
             plt.bar(x=xbar, height=bar_h, width=bw, color=color_list_bar, capsize=hbsize, alpha=valphabar)
 
@@ -1413,12 +1426,13 @@ class stat:
                               ylm=None, box_line_style='-', box_line_width=1, box_line_color='b', med_line_style='-',
                               med_line_width=1, med_line_color='g', whisk_line_color='b', cap_color='b',
                               add_sign_symbol=False, symb_dist=None, sign_symbol_opts={'symbol': '*', 'fontsize': 8 },
-                              pv=None, notch=False, outliers=True, fill_box_color=True):
+                              pv=None, notch=False, outliers=True, fill_box_color=True, dotplot=False, dotsize=6,
+                              colordot=['#101820ff'], valphadot=1, markerdot='o'):
         plt.subplots()
         if column_names:
-            plot_xbar = column_names
+            xbar = column_names
         else:
-            plot_xbar = list(df.columns)
+            xbar = list(df.columns)
             # rot is x axis rotation
         other_args = {'grid': grid, 'rot': ar[0], 'fontsize': axtickfontsize, 'notch':notch, 'showfliers':outliers,
                       'figsize': dim, 'patch_artist': fill_box_color}
@@ -1439,6 +1453,17 @@ class stat:
             plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
         plt.yticks(fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
 
+        color_list_dot = colordot
+        if len(color_list_dot) == 1:
+            color_list_dot = colordot * len(sample_list)
+        # checked for unstacked data
+        if dotplot:
+            for cols in range(len(xbar)):
+                plt.scatter(
+                    x=np.linspace(xbar[cols] - bw / 2, xbar[cols] + bw / 2, int(bar_counts[cols])),
+                    y=df[df.columns[cols]].dropna(), s=dotsize, color=color_list_dot[cols], zorder=10, alpha=valphadot,
+                    marker=markerdot)
+
         size_factor_to_start_line = max(df.max()) / 20
         if add_sign_symbol:
             # p and symb_dist should be dict
@@ -1454,7 +1479,7 @@ class stat:
                     if y_pos > 0 and v <= 0.05:
                         pv_symb = general.pvalue_symbol(v, sign_symbol_opts['symbol'])
                         if pv_symb:
-                            plt.annotate(pv_symb, xy=((plot_xbar.index(k))+1, y_pos),
+                            plt.annotate(pv_symb, xy=((xbar.index(k))+1, y_pos),
                                          fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
 
