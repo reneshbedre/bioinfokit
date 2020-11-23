@@ -1455,7 +1455,7 @@ class stat:
 
         color_list_dot = colordot
         if len(color_list_dot) == 1:
-            color_list_dot = colordot * len(sample_list)
+            color_list_dot = colordot * len(xbar)
         # checked for unstacked data
         if dotplot:
             for cols in range(len(xbar)):
@@ -1483,6 +1483,45 @@ class stat:
                                          fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
 
+        general.get_figure(show, r, figtype, figname)
+
+    @staticmethod
+    def roc(fpr=None, tpr=None, c_line_style='-', c_line_color='#f05f21', c_line_width=1, diag_line=True,
+            diag_line_style='--', diag_line_width=1, diag_line_color='b', auc=None, shade_auc=False,
+            shade_auc_color='#f48d60',
+            axxlabel='False Positive Rate (1 - Specificity)', axylabel='True Positive Rate (Sensitivity)', ar=(0, 0),
+            axtickfontsize=9, axtickfontname='Arial', axlabelfontsize=9, axlabelfontname='Arial',
+            plotlegend=True, legendpos='lower right', legendanchor=None, legendcols=3, legendfontsize=8,
+            legendlabelframe=False, legend_columnspacing=None, per_class=False, dim=(6, 4), show=False, figtype='png',
+            figname='roc', r=300, ylm=None):
+        plt.subplots(figsize=dim)
+        # plt.margins(x=0)
+        if auc:
+            plt.plot(fpr, tpr, color=c_line_color, linestyle=c_line_style, linewidth=c_line_width,
+                 label='AUC = %0.4f' % auc)
+        else:
+            plt.plot(fpr, tpr, color=c_line_color, linestyle=c_line_style, linewidth=c_line_width)
+        if diag_line:
+            plt.plot([0, 1], [0, 1], color=diag_line_color, linestyle=diag_line_style, linewidth=diag_line_width,
+                     label='Chance level')
+        if per_class:
+            plt.plot([0, 0], [0, 1], color='grey', linestyle='-', linewidth=1)
+            plt.plot([0, 1], [1, 1], color='grey', linestyle='-', linewidth=1, label='Perfect performance')
+        # ylm must be tuple of start, end, interval
+        if ylm:
+            plt.ylim(bottom=ylm[0], top=ylm[1])
+            plt.yticks(np.arange(ylm[0], ylm[1], ylm[2]), fontsize=axtickfontsize, fontname=axtickfontname)
+        plt.yticks(fontsize=axtickfontsize, rotation=ar[1], fontname=axtickfontname)
+        if axxlabel:
+            _x = axxlabel
+        if axylabel:
+            _y = axylabel
+        if shade_auc:
+            plt.fill_between(x=fpr, y1=tpr, color=shade_auc_color)
+        if plotlegend:
+            plt.legend(loc=legendpos, bbox_to_anchor=legendanchor, ncol=legendcols, fontsize=legendfontsize,
+                       frameon=legendlabelframe, columnspacing=legend_columnspacing)
+        general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
         general.get_figure(show, r, figtype, figname)
 
 
