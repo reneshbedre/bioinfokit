@@ -776,34 +776,56 @@ Attribute | Description
 
 <a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
 
+### ROC plot
 
+Receiver operating characteristic (ROC) curve for visualizing classification performance
 
-<!--
-<b>Grouped bar plot</b>
+`latest update v1.0.4`
 
-`latest update v0.8.4`
-
-`bioinfokit.visuz.stat.multi_bar(df, colbar, bw, colorbar, xbarcol, axtickfontsize, axtickfontname,
-    figtype, r, show, valphabar, figname, legendpos)`
+`bioinfokit.visuz.stat.roc(fpr, tpr, c_line_style, c_line_color, c_line_width, diag_line, diag_line_style, 
+    diag_line_width, diag_line_color, auc, shade_auc, shade_auc_color, axxlabel, axylabel, axtickfontsize, 
+    axtickfontname, axlabelfontsize, axlabelfontname, plotlegend, legendpos, legendanchor, legendcols, legendfontsize,
+    legendlabelframe, legend_columnspacing, dim, show, figtype, figname, r, ylm)`
 
 Parameters | Description
 ------------ | -------------
-`df` | Pandas dataframe
-`colbar` | name of columns in dataframe to plot as grouped bar [list or tuple][default: None]
-`bw` | width of bar [float][default: 0.4]
-`colorbar` | color list equivalent to number of columns in cobar [list or tuple][default: None]
-`xbarcol` | name of column in dataframe for plotting tick label on X-axis  [string][default: None]
+`fpr` | Increasing false positive rates obtained from `sklearn.metrics.roc_curve` [list][default:None]
+`tpr` | Increasing true positive rates obtained from `sklearn.metrics.roc_curve` [list][default:None]
+`c_line_style` | Line style for ROC curve [string][default:'-']
+`c_line_color` | Line color for ROC curve [string][default:'#f05f21']
+`c_line_width` | Line width for ROC curve [float][default:1]
+`diag_line` | Plot reference line [True or False][default: True]
+`diag_line_style` | Line style for  reference line [string][default:'--']
+`diag_line_width` | Line width for  reference line [float][default:1]
+`diag_line_color` | Line color for reference line [string][default:'b']
+`auc` | Area under ROC. It can be obtained from `sklearn.metrics.roc_auc_score` [float][default: None]
+`shade_auc`| Shade are for AUC [True or False][default: False]
+`shade_auc_color` | Shade color for AUC [string][default: '#f48d60']
+`axxlabel` | Label for X-axis [string][default: 'False Positive Rate (1 - Specificity)']
+`axylabel` | Label for Y-axis [string][default: 'True Positive Rate (Sensitivity)']
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`plotlegend` | plot legend   [True or False][default:True]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:'lower right']
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`legendcols` | Number of columns for legends [int][default: 1]
+`legendfontsize` | Font size for the legends [float][default:8]
+`legendlabelframe` | Box frame for the legend  [True or False][default: False]
+`legend_columnspacing` | Spacing between the legends  [float][default: None]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 4)]
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`r` | Figure resolution in dpi [int][default: 300]
-`show` | Show the figure on console instead of saving in current folder [True or False][default:False]
-`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
-`figname` | name of figure [string ][default:"multi_bar"]
-`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
--->
+`figname` | name of figure [string ][default:'roc']
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 
 
+Returns:
+
+ROC plot image in same directory (roc.png)
+<a href="https://reneshbedre.github.io/blog/logit.html" target="_blank">Working example</a>
 
 ## High-throughput sequence analysis
 

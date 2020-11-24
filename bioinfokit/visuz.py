@@ -1491,8 +1491,8 @@ class stat:
             shade_auc_color='#f48d60',
             axxlabel='False Positive Rate (1 - Specificity)', axylabel='True Positive Rate (Sensitivity)', ar=(0, 0),
             axtickfontsize=9, axtickfontname='Arial', axlabelfontsize=9, axlabelfontname='Arial',
-            plotlegend=True, legendpos='lower right', legendanchor=None, legendcols=3, legendfontsize=8,
-            legendlabelframe=False, legend_columnspacing=None, per_class=False, dim=(6, 4), show=False, figtype='png',
+            plotlegend=True, legendpos='lower right', legendanchor=None, legendcols=1, legendfontsize=8,
+            legendlabelframe=False, legend_columnspacing=None, per_class=False, dim=(6, 5), show=False, figtype='png',
             figname='roc', r=300, ylm=None):
         plt.subplots(figsize=dim)
         # plt.margins(x=0)

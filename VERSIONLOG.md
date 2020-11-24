@@ -1,3 +1,7 @@
+v1.0.4  has the following updates and changes (November 22, 2020)
+- `Breast Cancer Wisconsin (Diagnostic) Data Set added
+- `visuz.stat.roc` function added for visualizing the ROC
+
 v1.0.3  has the following updates and changes (November 06, 2020)
 - `bartlett` and `levene` function added to `analys.stat` class for checking the ANOVA assumptions
   for datasets in stacked format
