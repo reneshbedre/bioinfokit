@@ -2647,6 +2647,10 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/t_one_samp.csv")
         elif data=='t_pair':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/t_pair.csv")
+        elif data=='wdbc_train':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/logit/wdbc_train.csv")
+        elif data=='wdbc_test':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/logit/wdbc_test.csv")
         else:
             print("Error: Provide correct parameter for data\n")
 
