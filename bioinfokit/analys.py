@@ -1471,8 +1471,14 @@ class gff:
                     cds_ct += 1
                     cds_dict_st[transcript_id_cds].append(line[3])
                     cds_dict_end[transcript_id_cds].append(line[4])
-                    cds_dict_st_phase[(transcript_id_cds, line[3])] = line[7]
-                    cds_dict_end_phase[(transcript_id_cds, line[4])] = line[7]
+                    # if CDS phase contains dot values
+                    if line[7] == '.':
+                        print('Warning: No valid phase values for CDS feature. making phase value to zero')
+                        cds_dict_st_phase[(transcript_id_cds, line[3])] = 0
+                        cds_dict_end_phase[(transcript_id_cds, line[4])] = 0
+                    else:
+                        cds_dict_st_phase[(transcript_id_cds, line[3])] = line[7]
+                        cds_dict_end_phase[(transcript_id_cds, line[4])] = line[7]
 
         read_gff_file_cds.close()
 
