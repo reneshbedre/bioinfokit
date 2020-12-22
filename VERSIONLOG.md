@@ -1,3 +1,6 @@
+v1.0.5  has the following updates and changes (December 22, 2020)
+- `analys.gff.gff_to_gtf` function updated to handle dot value for phase in CDS features
+
 v1.0.4  has the following updates and changes (November 22, 2020)
 - `Breast Cancer Wisconsin (Diagnostic) Data Set added
 - `visuz.stat.roc` function added for visualizing the ROC
