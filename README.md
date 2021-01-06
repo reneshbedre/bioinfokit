@@ -535,301 +535,11 @@ VCF files for each chromosome
 <a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
 
 
-## Biostatistical analysis
-
-## Correlation matrix plot
-
-`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show, figtype, axtickfontsize, axtickfontname)`
-
-Parameters | Description
------------- | -------------
-`table` | Dataframe object with numerical variables (columns) to find correlation. Ideally, you should have three or more variables. Dataframe should not have identifier column.
-`corm` | Correlation method [pearson,kendall,spearman] [default:pearson]
-`cmap` | Color Palette for heatmap [string][default: 'seismic']. More colormaps are available at  
-         https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
-`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 5)]        
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`axtickfontsize` | Font size for axis ticks [float][default: 7]
-`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
-
-Returns:
-
-Correlation matrix plot image in same directory (corr_mat.png)
-
-## Bar-dot plot
-
-`latest update v0.8.5`
-
-`bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, 
-    valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, ylm, axtickfontsize, axtickfontname,
-    yerrlw, yerrcw)`
-
-Parameters | Description
------------- | -------------
-`df` |Pandas dataframe object
-`colorbar` | Color of bar graph [string or list][default:"#bbcfff"]
-`colordot` | Color of dots on bar [string or list][default:"#ee8972"]
-`bw` |Width of bar [float][default: 0.4]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-`r` | Figure resolution in dpi [int][default: 300]
-`ar` | Rotation of X-axis labels [float][default: 0]
-`hbsize` | Horizontal bar size for standard error bars [float][default: 4]
-`errorbar` |  Draw standard error bars [bool (True or False)][default: True]
-`dotsize`| The size of the dots in the plot [float][default: 6]
-`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
-`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
-`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
-`axtickfontsize` | Font size for axis ticks [float][default: 9]
-`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
-`yerrlw` | Error bar line width [float][default: None]
-`yerrcw` | Error bar cap width [float][default: None]
-
-
-Returns:
-
-Bar-dot plot image in same directory (bardot.png)
-
-<a href="https://reneshbedre.github.io/blog/bardot.html" target="_blank">Working Example</a>
-
-
-### One sample and two sample (independent and paired) t-tests   
-
-`bioinfokit.analys.stat.ttest(df, xfac, res, evar, alpha, test_type, mu)`
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe for appropriate t-test. <br> <b>One sample</b>: It should have atleast dependent (res) variable <br> <b>Two sample independent</b>: It should have independent (xfac) and dependent (res) variables <br> <b>Two sample paired</b>: It should have two dependent (res) variables
-`xfac` | Independent group column name with two levels [string][default: None]
-`res` | Dependent variable column name [string or list or tuple][default: None]
-`evar` | t-test with equal variance [bool (True or False)][default: True]
-`alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
-`test_type` | Type of t-test [int (1,2,3)][default: None]. <br> <strong><em>1</em></strong>: One sample t-test <br> <strong><em>2</em></strong>: Two sample independent t-test <br> <strong><em>3</em></strong>: Two sample paired t-test
-`mu` | Population or known mean for the one sample t-test [float][default: None]
-
-Returns:
-
-Summary output as class attribute (summary) 
-
-<a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Description and Working example</a>
-
-
-
-### Chi-square test
-
-`latest update v0.9.4`
-
-`bioinfokit.analys.stat.chisq(df, p)`
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe. It should be one or two-dimensional contingency table. 
-`p` | Theoretical expected probabilities for each group. It must be non-negative and sum to 1. If p is provide Goodness of Fit test will be performed [list or tuple][default: None] 
-
-
-Returns:
-
-Summary and expected counts as class attributes (summary and expected_df)
-
-<a href="https://reneshbedre.github.io/blog/chisq.html" target="_blank">Working example</a>
-
-
-### Linear regression analysis
-
-`bioinfokit.visuz.stat.lin_reg(df, x, y)`
-
-Parameters | Description
------------- | -------------
-`df` |Pandas dataframe object
-`x` | Name of column having independent X variables [list][default:None]
-`y` | Name of column having dependent Y variables [list][default:None]
-
-Returns:
-
-Regression analysis summary
-
-<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
-
-
-### Regression plot
-
-`bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
-    valphaline, valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, xlm, ylm, axtickfontsize,
-    axtickfontname)`
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe object
-`x` | Name of column having independent X variables [string][default:None]
-`y` | Name of column having dependent Y variables [string][default:None]
-`yhat` |Name of column having predicted response of Y variable (y_hat) from regression [string][default:None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
-`r` | Figure resolution in dpi [int][default: 300]
-`ar` | Rotation of X-axis labels [float][default: 0]
-`dotsize`| The size of the dots in the plot [float][default: 6]
-`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`valphaline` | Transparency of regression line on plot [float (between 0 and 1)][default: 1]
-`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
-`linewidth` | Width of regression line [float][default: 1]
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
-`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`xlm` | Range of ticks to plot on X-axis [float tuple (bottom, top, interval)][default: None]
-`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
-`axtickfontsize` | Font size for axis ticks [float][default: 9]
-`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
-
-Returns:
-
-Regression plot image in same directory (reg_plot.png)
-
-<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
-
-
-### Tukey HSD test 
-
-
-`latest update v1.0.3`
-
-`bioinfokit.analys.stat.tukey_hsd(df, res_var, xfac_var, anova_model, phalpha, ss_typ)`
-
-It performs multiple pairwise comparisons of treatment groups using Tukey's HSD (Honestly Significant Difference) test 
-to check if group means are significantly different from each other. It uses the Tukey-Kramer approach if the sample sizes
-are unequal among the groups.
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe with the variables mentioned in the `res_var`, `xfac_var` and `anova_model` options. It should not have missing data. The missing data will be omitted.
-`res_var` | Name of a column having response variable [string][default: None]
-`xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
-`anova_model` | ANOVA model (calculated using statsmodels `ols` function) [string][default: None]
-`phalpha` | Significance level [float][default: 0.05]
-`ss_typ` | Type of sum of square to perform ANOVA [int][default: 2]
-
-Returns:
-
-Attribute | Description
------------- | -------------
-`tukey_summary` | Pairwise comparisons for main and interaction effects by Tukey HSD test 
-
-
-<a href="https://reneshbedre.github.io/blog/anova.html" target="_blank">Description and Working example</a>
-
-### Bartlett's test
-
-`latest update v1.0.3`
-
-`bioinfokit.analys.stat.bartlett(df, xfac_var, res_var)`
-
-It performs Bartlett's test to check the homogeneity of variances among the treatment groups. It accepts the input 
-table in a stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.bartlett.html
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in a stacked format. It should not have missing data. The missing data will be omitted.
-`res_var` | Name of a column having response variable [string][default: `None`]
-`xfac_var` | Name of a column having treatment groups (independent variables) [string or list][default: `None`]
-
-Returns:
-
-Attribute | Description
------------- | -------------
-`bartlett_summary` | Pandas dataframe containing Bartlett's test statistics, degree of freedom, and <i>p</i> value
-
-
-<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
-
-
-### Levene's test
-
-`latest update v1.0.3`
-
-`bioinfokit.analys.stat.levene(df, xfac_var, res_var)`
-
-It performs Levene's test to check the homogeneity of variances among the treatment groups. It accepts the input 
-table in a stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.levene.html
-
-Parameters | Description
------------- | -------------
-`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in a stacked format. It should not have missing data. The missing data will be omitted.
-`res_var` | Name of a column having response variable [string][default: `None`]
-`xfac_var` | Name of a column having treatment groups (independent variables) [string or list][default: `None`]
-`center` | Choice for the Levene's test [string (`median`, `mean`, `trimmed`)] [default: `median`] <br> <strong><em>median</em></strong>: Brown-Forsythe Levene-type test <br> <strong><em>mean</em></strong>: original Levene's test <br> <strong><em>trimmed</em></strong>: Brown-Forsythe Levene-type test 
-
-Returns:
-
-Attribute | Description
------------- | -------------
-`levene_summary` | Pandas dataframe containing Levene's test statistics, degree of freedom, and <i>p</i> value
-
-
-<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
-
-### ROC plot
-
-Receiver operating characteristic (ROC) curve for visualizing classification performance
-
-`latest update v1.0.4`
-
-`bioinfokit.visuz.stat.roc(fpr, tpr, c_line_style, c_line_color, c_line_width, diag_line, diag_line_style, 
-    diag_line_width, diag_line_color, auc, shade_auc, shade_auc_color, axxlabel, axylabel, axtickfontsize, 
-    axtickfontname, axlabelfontsize, axlabelfontname, plotlegend, legendpos, legendanchor, legendcols, legendfontsize,
-    legendlabelframe, legend_columnspacing, dim, show, figtype, figname, r, ylm)`
-
-Parameters | Description
------------- | -------------
-`fpr` | Increasing false positive rates obtained from `sklearn.metrics.roc_curve` [list][default:None]
-`tpr` | Increasing true positive rates obtained from `sklearn.metrics.roc_curve` [list][default:None]
-`c_line_style` | Line style for ROC curve [string][default:'-']
-`c_line_color` | Line color for ROC curve [string][default:'#f05f21']
-`c_line_width` | Line width for ROC curve [float][default:1]
-`diag_line` | Plot reference line [True or False][default: True]
-`diag_line_style` | Line style for  reference line [string][default:'--']
-`diag_line_width` | Line width for  reference line [float][default:1]
-`diag_line_color` | Line color for reference line [string][default:'b']
-`auc` | Area under ROC. It can be obtained from `sklearn.metrics.roc_auc_score` [float][default: None]
-`shade_auc`| Shade are for AUC [True or False][default: False]
-`shade_auc_color` | Shade color for AUC [string][default: '#f48d60']
-`axxlabel` | Label for X-axis [string][default: 'False Positive Rate (1 - Specificity)']
-`axylabel` | Label for Y-axis [string][default: 'True Positive Rate (Sensitivity)']
-`axtickfontsize` | Font size for axis ticks [float][default: 9]
-`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
-`axlabelfontsize` | Font size for axis labels [float][default: 9]
-`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`plotlegend` | plot legend   [True or False][default:True]
-`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:'lower right']
-`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
-`legendcols` | Number of columns for legends [int][default: 1]
-`legendfontsize` | Font size for the legends [float][default:8]
-`legendlabelframe` | Box frame for the legend  [True or False][default: False]
-`legend_columnspacing` | Spacing between the legends  [float][default: None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 4)]
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
-`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`figname` | name of figure [string ][default:'roc']
-`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
-`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
-
-
-Returns:
-
-ROC plot image in same directory (roc.png)
-<a href="https://reneshbedre.github.io/blog/logit.html" target="_blank">Working example</a>
-
 ## High-throughput sequence analysis
 
 ### FASTQ batch downloads from SRA database
+
+latest update v0.9.7
 
 `bioinfokit.analys.fastq.sra_bd(file, t, other_opts)`
 
@@ -847,6 +557,8 @@ Returns:
 FASTQ files for each SRA accession in the current directory unless specified by `other_opts`
 
 <a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
+
+
 
 ### FASTQ quality format detection
 
@@ -878,6 +590,7 @@ Returns:
 Sequencing coverage of the given FASTQ file
 
 <a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Description and Working example</a>
+
 
 ### Reverse complement of DNA sequence
 
@@ -930,7 +643,6 @@ Returns:
 GTF format genome annotation file (file.gtf will be saved in same directory)
 
 <a href="https://reneshbedre.github.io/blog/gffgtf.html" target="_blank">Working Example</a>
-
 
 ### Bioinformatics file readers and processing (FASTA, FASTQ, and VCF)
 
@@ -1039,18 +751,317 @@ Allowed ID types for GenFam
 
 
 
+## Biostatistical analysis
 
-<b>Convert TAB to CSV file</b>
+### Correlation matrix plot
 
-`bioinfokit.analys.tcsv(file)`
+`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show, figtype, axtickfontsize, axtickfontname)`
 
 Parameters | Description
 ------------ | -------------
-`file` | TAB delimited text file
+`table` | Dataframe object with numerical variables (columns) to find correlation. Ideally, you should have three or more variables. Dataframe should not have identifier column.
+`corm` | Correlation method [pearson,kendall,spearman] [default:pearson]
+`cmap` | Color Palette for heatmap [string][default: 'seismic']. More colormaps are available at https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 5)]  
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`axtickfontsize` | Font size for axis ticks [float][default: 7]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 
 Returns:
 
-CSV delimited file (out.csv)
+Correlation matrix plot image in same directory (corr_mat.png)
+
+<a href="https://reneshbedre.github.io/blog/corr.html" target="_blank">Working example</a>
+
+
+### Bar-dot plot
+
+`latest update v0.8.5`
+
+`bioinfokit.visuz.stat.bardot(df, colorbar, colordot, bw, dim, r, ar, hbsize, errorbar, dotsize, markerdot, valphabar, 
+    valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, ylm, axtickfontsize, axtickfontname,
+    yerrlw, yerrcw)`
+
+Parameters | Description
+------------ | -------------
+`df` |Pandas dataframe object
+`colorbar` | Color of bar graph [string or list][default:"#bbcfff"]
+`colordot` | Color of dots on bar [string or list][default:"#ee8972"]
+`bw` |Width of bar [float][default: 0.4]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 0]
+`hbsize` | Horizontal bar size for standard error bars [float][default: 4]
+`errorbar` |  Draw standard error bars [bool (True or False)][default: True]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`valphabar` | Transparency of bars on plot [float (between 0 and 1)][default: 1]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`yerrlw` | Error bar line width [float][default: None]
+`yerrcw` | Error bar cap width [float][default: None]
+
+Returns:
+
+Bar-dot plot image in same directory (bardot.png)
+
+<a href="https://reneshbedre.github.io/blog/bardot.html" target="_blank">Working Example</a>
+
+
+### One sample and two sample (independent and paired) t-tests
+
+`latest update v0.9.6`
+
+`bioinfokit.analys.stat.ttest(df, xfac, res, evar, alpha, test_type, mu)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe for appropriate t-test. <br> <b>One sample</b>: It should have atleast dependent (res) variable <br> <b>Two sample independent</b>: It should have independent (xfac) and dependent (res) variables <br> <b>Two sample paired</b>: It should have two dependent (res) variables
+`xfac` | Independent group column name with two levels [string][default: None]
+`res` | Dependent variable column name [string or list or tuple][default: None]
+`evar` | t-test with equal variance [bool (True or False)][default: True]
+`alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
+`test_type` | Type of t-test [int (1,2,3)][default: None]. <br> <strong><em>1</em></strong>: One sample t-test <br> <strong><em>2</em></strong>: Two sample independent t-test <br> <strong><em>3</em></strong>: Two sample paired t-test
+`mu` | Population or known mean for the one sample t-test [float][default: None]
+
+Returns:
+
+Summary output as class attribute (summary) 
+
+<a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Description and Working example</a>
+
+
+### Chi-square test 
+
+`latest update v0.9.5`
+
+`bioinfokit.analys.stat.chisq(df, p)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe. It should be one or two-dimensional contingency table. 
+`p` | Theoretical expected probabilities for each group. It must be non-negative and sum to 1. If p is provide Goodness of Fit test will be performed [list or tuple][default: None] 
+
+
+Returns:
+
+Summary and expected counts as class attributes (summary and expected_df)
+
+<a href="https://reneshbedre.github.io/blog/chisq.html" target="_blank">Working example</a>
+
+<!--
+### One-way ANOVA
+
+`bioinfokit.stat.oanova(table, res, xfac, ph, phalpha)`
+
+Parameters | Description
+------------ | -------------
+`table` | Pandas dataframe in stacked table format
+`res` | Response variable (dependent variable) [string][default: None]
+`xfac` | Treatments or groups or factors (independent variable) [string][default: None]
+`ph` | perform pairwise comparisons with Tukey HSD test [bool (True or False)] [default: False]
+`phalpha` |significance level Tukey HSD test [float (0 to 1)][default: 0.05]
+
+
+Returns:
+
+ANOVA summary, multiple pairwise comparisons, and assumption tests statistics
+
+<a href="https://reneshbedre.github.io/blog/oanova.html" target="_blank">Working example</a>
+-->
+
+### Linear regression analysis
+
+`bioinfokit.visuz.stat.lin_reg(df, x, y)`
+
+Parameters | Description
+------------ | -------------
+`df` |Pandas dataframe object
+`x` | Name of column having independent X variables [list][default:None]
+`y` | Name of column having dependent Y variables [list][default:None]
+
+Returns:
+
+Regression analysis summary
+
+<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
+
+### Regression plot
+
+`bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
+    valphaline, valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, xlm, ylm, axtickfontsize,
+    axtickfontname)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe object
+`x` | Name of column having independent X variables [string][default:None]
+`y` | Name of column having dependent Y variables [string][default:None]
+`yhat` |Name of column having predicted response of Y variable (y_hat) from regression [string][default:None]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`r` | Figure resolution in dpi [int][default: 300]
+`ar` | Rotation of X-axis labels [float][default: 0]
+`dotsize`| The size of the dots in the plot [float][default: 6]
+`markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
+`valphaline` | Transparency of regression line on plot [float (between 0 and 1)][default: 1]
+`valphadot` | Transparency of dots on plot [float (between 0 and 1)][default: 1]
+`linewidth` | Width of regression line [float][default: 1]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
+`axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`xlm` | Range of ticks to plot on X-axis [float tuple (bottom, top, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+
+Returns:
+
+Regression plot image in same directory (reg_plot.png)
+
+<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
+
+
+### Tukey HSD test
+
+`latest update v1.0.3`
+
+`bioinfokit.analys.stat.tukey_hsd(df, res_var, xfac_var, anova_model, phalpha, ss_typ)`
+
+It performs multiple pairwise comparisons of treatment groups using Tukey's HSD (Honestly Significant Difference) test 
+to check if group means are significantly different from each other. It uses the Tukey-Kramer approach if the sample sizes
+are unequal among the groups.
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe with the variables mentioned in the `res_var`, `xfac_var` and `anova_model` options. It should not have missing data. The missing data will be omitted.
+`res_var` | Name of a column having response variable [string][default: None]
+`xfac_var` | Name of a column having factor or group for pairwise comparison [string][default: None]
+`anova_model` | ANOVA model (calculated using statsmodels `ols` function) [string][default: None]
+`phalpha` | Significance level [float][default: 0.05]
+`ss_typ` | Type of sum of square to perform ANOVA [int][default: 2]
+
+Returns:
+
+Attribute | Description
+------------ | -------------
+`tukey_summary` | Pairwise comparisons for main and interaction effects by Tukey HSD test 
+
+<a href="https://reneshbedre.github.io/blog/anova.html" target="_blank">Description and Working example</a>
+
+### Bartlett's test
+
+`latest update v1.0.3`
+
+`bioinfokit.analys.stat.bartlett(df, xfac_var, res_var)`
+
+It performs Bartlett's test to check the homogeneity of variances among the treatment groups. It accepts the input 
+table in a stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.bartlett.html
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in a stacked format. It should not have missing data. The missing data will be omitted.
+`res_var` | Name of a column having response variable [string][default: `None`]
+`xfac_var` | Name of a column having treatment groups (independent variables) [string or list][default: `None`]
+
+Returns:
+
+Attribute | Description
+------------ | -------------
+`bartlett_summary` | Pandas dataframe containing Bartlett's test statistics, degree of freedom, and <i>p</i> value
+
+
+<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
+
+
+### Levene's test
+
+`latest update v1.0.3`
+
+`bioinfokit.analys.stat.levene(df, xfac_var, res_var)`
+
+It performs Levene's test to check the homogeneity of variances among the treatment groups. It accepts the input 
+table in a stacked format. More details https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.levene.html
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe containing response (`res_var`) and independent variables (`xfac_var`) in a stacked format. It should not have missing data. The missing data will be omitted.
+`res_var` | Name of a column having response variable [string][default: `None`]
+`xfac_var` | Name of a column having treatment groups (independent variables) [string or list][default: `None`]
+`center` | Choice for the Levene's test [string (`median`, `mean`, `trimmed`)] [default: `median`] <br> <strong><em>median</em></strong>: Brown-Forsythe Levene-type test <br> <strong><em>mean</em></strong>: original Levene's test <br> <strong><em>trimmed</em></strong>: Brown-Forsythe Levene-type test 
+
+Returns:
+
+Attribute | Description
+------------ | -------------
+`levene_summary` | Pandas dataframe containing Levene's test statistics, degree of freedom, and <i>p</i> value
+
+
+<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
+
+### ROC plot
+
+Receiver operating characteristic (ROC) curve for visualizing classification performance
+
+`latest update v1.0.4`
+
+`bioinfokit.visuz.stat.roc(fpr, tpr, c_line_style, c_line_color, c_line_width, diag_line, diag_line_style, 
+    diag_line_width, diag_line_color, auc, shade_auc, shade_auc_color, axxlabel, axylabel, axtickfontsize, 
+    axtickfontname, axlabelfontsize, axlabelfontname, plotlegend, legendpos, legendanchor, legendcols, legendfontsize,
+    legendlabelframe, legend_columnspacing, dim, show, figtype, figname, r, ylm)`
+
+Parameters | Description
+------------ | -------------
+`fpr` | Increasing false positive rates obtained from `sklearn.metrics.roc_curve` [list][default:None]
+`tpr` | Increasing true positive rates obtained from `sklearn.metrics.roc_curve` [list][default:None]
+`c_line_style` | Line style for ROC curve [string][default:'-']
+`c_line_color` | Line color for ROC curve [string][default:'#f05f21']
+`c_line_width` | Line width for ROC curve [float][default:1]
+`diag_line` | Plot reference line [True or False][default: True]
+`diag_line_style` | Line style for  reference line [string][default:'--']
+`diag_line_width` | Line width for  reference line [float][default:1]
+`diag_line_color` | Line color for reference line [string][default:'b']
+`auc` | Area under ROC. It can be obtained from `sklearn.metrics.roc_auc_score` [float][default: None]
+`shade_auc`| Shade are for AUC [True or False][default: False]
+`shade_auc_color` | Shade color for AUC [string][default: '#f48d60']
+`axxlabel` | Label for X-axis [string][default: 'False Positive Rate (1 - Specificity)']
+`axylabel` | Label for Y-axis [string][default: 'True Positive Rate (Sensitivity)']
+`axtickfontsize` | Font size for axis ticks [float][default: 9]
+`axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`axlabelfontsize` | Font size for axis labels [float][default: 9]
+`axlabelfontname` | Font name for axis labels [string][default: 'Arial']
+`plotlegend` | plot legend   [True or False][default:True]
+`legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:'lower right']
+`legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
+`legendcols` | Number of columns for legends [int][default: 1]
+`legendfontsize` | Font size for the legends [float][default:8]
+`legendlabelframe` | Box frame for the legend  [True or False][default: False]
+`legend_columnspacing` | Spacing between the legends  [float][default: None]
+`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 4)]
+`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
+`figname` | name of figure [string ][default:'roc']
+`r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
+`ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
+
+
+Returns:
+
+ROC plot image in same directory (roc.png)
+<a href="https://reneshbedre.github.io/blog/logit.html#prediction-of-test-dataset-using-fitted-model" target="_blank">Working example</a>
+
 
 
 
@@ -1101,11 +1112,19 @@ Venn plot (venn3.png, venn2.png)
   261-272.  
 - David C. Howell. Multiple Comparisons With Unequal Sample Sizes. https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
 
-<!--
-bioinfokit cited by:
-- Jennifer Gribble, Andrea J. Pruijssers, Maria L. Agostini, Jordan Anderson-Daniels, James D. Chappell, Xiaotao Lu, Laura J. Stevens, Andrew L. Routh, Mark R. Denison
-  bioRxiv 2020.04.23.057786; doi: https://doi.org/10.1101/2020.04.23.057786
-- Greaney AM, Adams TS, Raredon MS, Gubbins E, Schupp JC, Engler AJ, Ghaedi M, Yuan Y, Kaminski N, Niklason LE. Platform 
-  Effects on Regeneration by Pulmonary Basal Cells as Evaluated by Single-Cell RNA Sequencing. Cell Reports. 2020 Mar 
+## bioinfokit cited by:
+- Karstensen KT, Schein A, Petri A, Bøgsted M, Dybkær K, Uchida S, Kauppinen S. Long Non-Coding RNAs in Diffuse Large B-Cell Lymphoma. Non-coding RNA. 2021 Mar;7(1):1.
+- de Rezende Rodovalho V, da Luz BS, Nicolas A, do Carmo FL, Jardin J, Briard-Bion V, Jan G, Le Loir Y, de Carvalho Azevedo VA, Guedon E. Environmental conditions modulate the protein content and immunomodulatory activity of extracellular vesicles produced by the probiotic Propionibacterium freudenreichii. Applied and Environmental Microbiology. 2020 Dec 11.
+- Jarvis L, Rainbow D, Coppard V, Howlett S, Davies J, Mullay H, Hester J, Ashmore T, Van Den Bosch A, Grist J, Coles A. Therapeutically expanded human regulatory T-cells are super-suppressive due to HIF1A induced expression of CD73.
+- Al-Bakhat L, Al-Serhani N. LncRNAs and Protein-coding Genes Expression Analysis for Myelodysplastic Syndromes Diagnoses. In2020 International Conference on Artificial Intelligence & Modern Assistive Technology (ICAIMAT) 2020 Nov 24 (pp. 1-6). IEEE.
+- Aishwarya S, Gunasekaran K, Margret AA. Computational gene expression profiling in the exploration of biomarkers, non-coding functional RNAs and drug perturbagens for COVID-19. Journal of Biomolecular Structure and Dynamics. 2020 Nov 17:1-6.
+- Liang L, Darbandi SF, Pochareddy S, Gulden FO, Gilson MC, Sheppard BK, Sahagun A, An JY, Werling DM, Rubenstein JL, Sestan N. Developmental dynamics of voltage-gated sodium channel isoform expression in the human and mouse neocortex. bioRxiv. 2020 Jan 1.
+- Irigoyen S, Ramasamy M, Pant S, Niraula P, Bedre R, Gurung M, Rossi D, Laughlin C, Gorman Z, Achor D, Levy A. Plant hairy roots enable high throughput identification of antimicrobials against Candidatus Liberibacter spp. Nature Communications. 2020 Nov 16;11(1):1-4.
+- Lu J, Wilfred P, Korbie D, Trau M. Regulation of Canonical Oncogenic Signaling Pathways in Cancer via DNA Methylation. Cancers. 2020 Nov;12(11):3199.
+- Gribble J, Pruijssers AJ, Agostini ML, Anderson-Daniels J, Chappell JD, Lu X, Stevens LJ, Routh AL, Denison MR. The coronavirus proofreading exoribonuclease mediates extensive viral recombination. BioRxiv. 2020 Jan 1. 
+- Aarts J, Bijma P, Xia S, Textor J, de Vries A. A GWAS about the wingsize of Nasonia Vitripennis.
+- Greaney AM, Adams TS, Raredon MS, Gubbins E, Schupp JC, Engler AJ, Ghaedi M, Yuan Y, Kaminski N, Niklason LE. Platform
+  Effects on Regeneration by Pulmonary Basal Cells as Evaluated by Single-Cell RNA Sequencing. Cell Reports. 2020 Mar
   24;30(12):4250-65.
--->  
+  
+Source: https://scholar.google.com/scholar?start=0&q=bioinfokit&hl=en&as_sdt=0,44
