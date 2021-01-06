@@ -1074,7 +1074,7 @@ Venn plot (venn3.png, venn2.png)
 
 
 ## How to cite bioinfokit?
-- Renesh Bedre. (2021, January 6). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version 1.0.5). Zenodo. http://doi.org/10.5281/zenodo.4422035
+- Renesh Bedre. (2020, March 5). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit. Zenodo. http://doi.org/10.5281/zenodo.3698145.
 - Additionally check <a href='https://zenodo.org/record/3841708#.XyCfi-dOmUk' target='_blank'>Zenodo</a> to cite specific version of bioinfokit
 
 
