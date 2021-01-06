@@ -1112,7 +1112,7 @@ Venn plot (venn3.png, venn2.png)
   261-272.  
 - David C. Howell. Multiple Comparisons With Unequal Sample Sizes. https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
 
-## bioinfokit cited by:
+## bioinfokit cited by 11 research articles:
 - Karstensen KT, Schein A, Petri A, Bøgsted M, Dybkær K, Uchida S, Kauppinen S. Long Non-Coding RNAs in Diffuse Large B-Cell Lymphoma. Non-coding RNA. 2021 Mar;7(1):1.
 - de Rezende Rodovalho V, da Luz BS, Nicolas A, do Carmo FL, Jardin J, Briard-Bion V, Jan G, Le Loir Y, de Carvalho Azevedo VA, Guedon E. Environmental conditions modulate the protein content and immunomodulatory activity of extracellular vesicles produced by the probiotic Propionibacterium freudenreichii. Applied and Environmental Microbiology. 2020 Dec 11.
 - Jarvis L, Rainbow D, Coppard V, Howlett S, Davies J, Mullay H, Hester J, Ashmore T, Van Den Bosch A, Grist J, Coles A. Therapeutically expanded human regulatory T-cells are super-suppressive due to HIF1A induced expression of CD73.
@@ -1128,3 +1128,6 @@ Venn plot (venn3.png, venn2.png)
   24;30(12):4250-65.
   
 Source: https://scholar.google.com/scholar?start=0&q=bioinfokit&hl=en&as_sdt=0,44
+
+
+Last update: January 06, 2021
