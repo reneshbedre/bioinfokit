@@ -1073,12 +1073,12 @@ Venn plot (venn3.png, venn2.png)
 <a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
 
-How to cite bioinfokit?
-- Renesh Bedre. (2020, July 29). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version v0.9). 
-  Zenodo. http://doi.org/10.5281/zenodo.3965241 
+## How to cite bioinfokit?
+- Renesh Bedre. (2021, January 6). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit (Version 1.0.5). Zenodo. http://doi.org/10.5281/zenodo.4422035
 - Additionally check <a href='https://zenodo.org/record/3841708#.XyCfi-dOmUk' target='_blank'>Zenodo</a> to cite specific version of bioinfokit
 
-References:
+
+## References:
 - Travis E. Oliphant. A guide to NumPy, USA: Trelgol Publishing, (2006).
 - John D. Hunter. Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering, 9, 90-95 (2007), 
   DOI:10.1109/MCSE.2007.55 (publisher link)
