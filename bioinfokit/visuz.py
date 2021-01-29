@@ -85,8 +85,8 @@ class gene_exp:
     def geneplot(d, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle):
         if genenames is not None and genenames == "deg":
             for i in d[geneid].unique():
-                if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr) or \
-                        (d.loc[d[geneid] == i, lfc].iloc[0] <= -lfc_thr and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr):
+                if (d.loc[d[geneid] == i, lfc].iloc[0] >= lfc_thr[0] and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr[0]) or \
+                        (d.loc[d[geneid] == i, lfc].iloc[0] <= -lfc_thr[1] and d.loc[d[geneid] == i, pv].iloc[0] < pv_thr[1]):
                     if gstyle==1:
                         plt.text(d.loc[d[geneid] == i, lfc].iloc[0], d.loc[d[geneid] == i, 'logpv_add_axy'].iloc[0], i,
                                       fontsize=gfont)
@@ -127,8 +127,8 @@ class gene_exp:
                         print("Error: invalid gstyle choice")
                         sys.exit(1)
 
-    def volcano(df="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "grey", "red"), valpha=1,
-                geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
+    def volcano(df="dataframe", lfc=None, pv=None, lfc_thr=(1, 1), pv_thr=(0.05, 0.05), color=("green", "grey", "red"),
+                valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                 axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
                 axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
@@ -144,8 +144,8 @@ class gene_exp:
         # it may update old instance of df
         df = df.drop(['color_add_axy', 'logpv_add_axy'], axis=1, errors='ignore')
         assert len(set(color)) == 3, 'unique color must be size of 3'
-        df.loc[(df[lfc] >= lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[0]  # upregulated
-        df.loc[(df[lfc] <= -lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[2]  # downregulated
+        df.loc[(df[lfc] >= lfc_thr[0]) & (df[pv] < pv_thr[0]), 'color_add_axy'] = color[0]  # upregulated
+        df.loc[(df[lfc] <= -lfc_thr[1]) & (df[pv] < pv_thr[1]), 'color_add_axy'] = color[2]  # downregulated
         df['color_add_axy'].fillna(color[1], inplace=True)  # intermediate
         df['logpv_add_axy'] = -(np.log10(df[pv]))
         # plot
@@ -164,9 +164,9 @@ class gene_exp:
             plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
                         s=dotsize, marker=markerdot)
         if sign_line:
-            plt.axhline(y=-np.log10(pv_thr), linestyle='--', color='#7d7d7d', linewidth=1)
-            plt.axvline(x=lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
-            plt.axvline(x=-lfc_thr, linestyle='--', color='#7d7d7d', linewidth=1)
+            plt.axhline(y=-np.log10(pv_thr[0]), linestyle='--', color='#7d7d7d', linewidth=1)
+            plt.axvline(x=lfc_thr[0], linestyle='--', color='#7d7d7d', linewidth=1)
+            plt.axvline(x=-lfc_thr[1], linestyle='--', color='#7d7d7d', linewidth=1)
         gene_exp.geneplot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
 
         if axxlabel:
@@ -177,7 +177,7 @@ class gene_exp:
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
         general.get_figure(show, r, figtype, figname)
 
-    def involcano(df="dataframe", lfc="logFC", pv="p_values", lfc_thr=1, pv_thr=0.05, color=("green", "grey", "red"),
+    def involcano(df="dataframe", lfc="logFC", pv="p_values", lfc_thr=(1, 1), pv_thr=(0.05, 0.05), color=("green", "grey", "red"),
                   valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
@@ -192,8 +192,8 @@ class gene_exp:
         # it may update old instance of df
         df = df.drop(['color_add_axy', 'logpv_add_axy'], axis=1, errors='ignore')
         assert len(set(color)) == 3, 'unique color must be size of 3'
-        df.loc[(df[lfc] >= lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[0]  # upregulated
-        df.loc[(df[lfc] <= -lfc_thr) & (df[pv] < pv_thr), 'color_add_axy'] = color[2]  # downregulated
+        df.loc[(df[lfc] >= lfc_thr[0]) & (df[pv] < pv_thr[0]), 'color_add_axy'] = color[0]  # upregulated
+        df.loc[(df[lfc] <= -lfc_thr[1]) & (df[pv] < pv_thr[1]), 'color_add_axy'] = color[2]  # downregulated
         df['color_add_axy'].fillna(color[1], inplace=True)  # intermediate
         df['logpv_add_axy'] = -(np.log10(df[pv]))
 

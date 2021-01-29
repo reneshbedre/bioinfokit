@@ -77,7 +77,7 @@ python setup.py install
 
 ### Volcano plot
 
-latest update v0.8.8
+latest update v1.0.6
 
 `bioinfokit.visuz.gene_exp.volcano(df, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, dim, r, ar, 
     dotsize, markerdot, sign_line, gstyle, show, figtype, axtickfontsize, axtickfontname, axlabelfontsize, 
@@ -88,8 +88,8 @@ Parameters | Description
 `df` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
 `lfc` | Name of a column having log or absolute fold change values [string][default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
-`lfc_thr` | Log or absolute fold change cutoff for up and downregulated genes [float][default:1.0]
-`pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [float][default:0.05]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [tuple or list][default:(1.0, 1.0)]
+`pv_thr` |  p value or adjusted p value cutoff for up and downregulated genes [tuple or list][default:(0.05, 0.05)]
 `color` | Tuple of three colors [tuple or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
@@ -126,7 +126,7 @@ Volcano plot image in same directory (volcano.png)
 
 ### Inverted Volcano plot
 
-latest update v0.8.8
+latest update v1.0.6
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
@@ -137,8 +137,8 @@ Parameters | Description
 `table` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values
 `lfc` | Name of a column having log fold change values [default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [default:p_values]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-`pv_thr` | P-values or adjusted P-values cutoff for up and downregulated genes [default:0.05]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [tuple or list] [default:(1.0, 1.0)]
+`pv_thr` | p value or adjusted p value cutoff for up and downregulated genes [tuple or list] [default:(0.05, 0.05)]
 `color` | Tuple of three colors [tuple or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]

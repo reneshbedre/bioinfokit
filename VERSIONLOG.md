@@ -1,3 +1,7 @@
+v1.0.6  has the following updates and changes (December 22, 2020)
+- Individual log fold change and p value cutoff added for volcano and inverted volcano plot 
+  (`bioinfokit.visuz.gene_exp.volcano` and `bioinfokit.visuz.gene_exp.involcano`)
+
 v1.0.5  has the following updates and changes (December 22, 2020)
 - `analys.gff.gff_to_gtf` function updated to handle dot value for phase in CDS features
 
