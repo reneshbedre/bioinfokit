@@ -2657,6 +2657,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/logit/wdbc_train.csv")
         elif data=='wdbc_test':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/logit/wdbc_test.csv")
+        elif data=='plant_richness':
+            self.data = pd.read_csv('https://reneshbedre.github.io/assets/posts/reg/plant_richness_data_mlr.txt', sep='\t')
         else:
             print("Error: Provide correct parameter for data\n")
 
