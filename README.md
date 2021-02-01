@@ -137,7 +137,7 @@ Parameters | Description
 `table` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values
 `lfc` | Name of a column having log fold change values [default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [default:p_values]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [tuple or list] [default:(1.0, 1.0)]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list] [default:(1.0, 1.0)]
 `pv_thr` | p value or adjusted p value cutoff for up and downregulated genes [tuple or list] [default:(0.05, 0.05)]
 `color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [tuple or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
