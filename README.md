@@ -88,14 +88,14 @@ Parameters | Description
 `df` |Pandas dataframe table having atleast gene IDs, log fold change, P-values or adjusted P-values columns
 `lfc` | Name of a column having log or absolute fold change values [string][default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [string][default:p_values]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [tuple or list][default:(1.0, 1.0)]
-`pv_thr` |  p value or adjusted p value cutoff for up and downregulated genes [tuple or list][default:(0.05, 0.05)]
-`color` | Tuple of three colors [tuple or list][default: color=("green", "grey", "red")]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default:(1.0, 1.0)]
+`pv_thr` |  p value or adjusted p value cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default:(0.05, 0.05)]
+`color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
-`genenames` | Tuple of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
+`genenames` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]. gfont not compatible with gstyle=2.
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (5, 5)]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
 `dotsize`| The size of the dots in the plot [float][default: 8]
@@ -138,16 +138,16 @@ Parameters | Description
 `lfc` | Name of a column having log fold change values [default:logFC]
 `pv` | Name of a column having P-values or adjusted P-values [default:p_values]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list] [default:(1.0, 1.0)]
-`pv_thr` | p value or adjusted p value cutoff for up and downregulated genes [tuple or list] [default:(0.05, 0.05)]
-`color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [tuple or list][default: color=("green", "grey", "red")]
+`pv_thr` | p value or adjusted p value cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list] [default:(0.05, 0.05)]
+`color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default: color=("green", "grey", "red")]
 `valpha` | Transparency of points on volcano plot [float (between 0 and 1)][default: 1.0]
 `geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
-`genenames` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, tuple, dict][default: None]
+`genenames` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, [Tuple](https://www.reneshbedre.com/blog/python-tuples.html), dict][default: None]
 `gfont` | Font size for genenames [float][default: 10.0]
 `gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (5, 5)]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
@@ -183,11 +183,11 @@ Parameters | Description
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
-`color` | Tuple of three colors [tuple or list][default: ("green", "grey", "red")]
+`color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default: ("green", "grey", "red")]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 5)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (5, 5)]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
@@ -227,13 +227,13 @@ Parameters | Description
 `file` | CSV delimited data file. It should not have NA or missing values
 `cmap` | Color Palette for heatmap [string][default: 'seismic']
 `scale` | Draw a color key with heatmap [boolean (True or False)][default: True]
-`dim` | heatmap figure size [tuple of two floats (width, height) in inches][default: (6, 8)]
+`dim` | heatmap figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 8)]
 `rowclus` | Draw hierarchical clustering for rows  [boolean (True or False)][default: True]
 `colclus` | Draw hierarchical clustering for columns [boolean (True or False)][default: True]
 `zscore` | Z-score standardization of row (0) or column (1). It works when clus is True. [None, 0, 1][default: None]
 `xlabel` | Plot X-label [boolean (True or False)][default: True]
 `ylabel` | Plot Y-label [boolean (True or False)][default: True]
-`tickfont` | Fontsize for X and Y-axis tick labels [tuple of two floats][default: (14, 14)]
+`tickfont` | Fontsize for X and Y-axis tick labels [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats][default: (14, 14)]
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
@@ -264,7 +264,7 @@ Parameters | Description
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `r` | Figure resolution in dpi [int][default: 300]
 `show` | Show the figure on console instead of saving in current folder [True or False][default:False]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 
 
 Returns:
@@ -295,7 +295,7 @@ Parameters | Description
 `r` | Figure resolution in dpi [int][default: 300]
 `show` | Show the figure on console instead of saving in current folder [True or False][default:False]
 `plotlabels` | Plot labels as defined by labels parameter [True or False][default:True]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 
 Returns:
 
@@ -336,7 +336,7 @@ Parameters | Description
 `colorlist` | list of the categories to assign the color [list][default:None]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 `datapoints`| plot data points on graph [bool (True or False)][default: True]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 
 Returns:
 
@@ -367,7 +367,7 @@ Parameters | Description
 `colordot` | Color of dots on plot [string or list ][default:"#4a4e4d"]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `figname` | name of figure [string ][default:"tsne_2d"]
 
 Returns:
@@ -456,10 +456,10 @@ Parameters | Description
 `gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markeridcol` | Name of a column having SNPs. This is necessary for plotting SNP names on the plot [string][default: None]
-`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, tuple, dict][default: True]
+`markernames` | The list of the SNPs to display on the plot. These SNP should be present in SNP column. Additionally, it also accepts the dict of SNPs and its associated gene name. If this option set to True, it will label all SNPs with P-value significant score defined by `gwasp` [string, list, [Tuple](https://www.reneshbedre.com/blog/python-tuples.html), dict][default: True]
 `gfont` | Font size for SNP names to display on the plot [float][default: 8]. gfont not compatible with gstyle=2.
 `valpha` | Transparency of points on plot [float (between 0 and 1)][default: 1.0]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `r` | Figure resolution in dpi [int][default: 300]
 `ar` | Rotation of X-axis labels [float][default: 90]
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
@@ -467,7 +467,7 @@ Parameters | Description
 `axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
-`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
 `gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
 `figname` | name of figure [string][default:"manhatten"]
 
@@ -763,7 +763,7 @@ Parameters | Description
 `corm` | Correlation method [pearson,kendall,spearman] [default:pearson]
 `cmap` | Color Palette for heatmap [string][default: 'seismic']. More colormaps are available at https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 5)]  
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 5)]  
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `axtickfontsize` | Font size for axis ticks [float][default: 7]
@@ -790,7 +790,7 @@ Parameters | Description
 `colorbar` | Color of bar graph [string or list][default:"#bbcfff"]
 `colordot` | Color of dots on bar [string or list][default:"#ee8972"]
 `bw` |Width of bar [float][default: 0.4]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `r` | Figure resolution in dpi [int][default: 300]
 `ar` | Rotation of X-axis labels [float][default: 0]
 `hbsize` | Horizontal bar size for standard error bars [float][default: 4]
@@ -805,7 +805,7 @@ Parameters | Description
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 `yerrlw` | Error bar line width [float][default: None]
@@ -828,7 +828,7 @@ Parameters | Description
 ------------ | -------------
 `df` | Pandas dataframe for appropriate t-test. <br> <b>One sample</b>: It should have atleast dependent (res) variable <br> <b>Two sample independent</b>: It should have independent (xfac) and dependent (res) variables <br> <b>Two sample paired</b>: It should have two dependent (res) variables
 `xfac` | Independent group column name with two levels [string][default: None]
-`res` | Dependent variable column name [string or list or tuple][default: None]
+`res` | Dependent variable column name [string or list or [Tuple](https://www.reneshbedre.com/blog/python-tuples.html)][default: None]
 `evar` | t-test with equal variance [bool (True or False)][default: True]
 `alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
 `test_type` | Type of t-test [int (1,2,3)][default: None]. <br> <strong><em>1</em></strong>: One sample t-test <br> <strong><em>2</em></strong>: Two sample independent t-test <br> <strong><em>3</em></strong>: Two sample paired t-test
@@ -850,7 +850,7 @@ Summary output as class attribute (summary)
 Parameters | Description
 ------------ | -------------
 `df` | Pandas dataframe. It should be one or two-dimensional contingency table. 
-`p` | Theoretical expected probabilities for each group. It must be non-negative and sum to 1. If p is provide Goodness of Fit test will be performed [list or tuple][default: None] 
+`p` | Theoretical expected probabilities for each group. It must be non-negative and sum to 1. If p is provide Goodness of Fit test will be performed [list or [Tuple](https://www.reneshbedre.com/blog/python-tuples.html)][default: None] 
 
 
 Returns:
@@ -908,7 +908,7 @@ Parameters | Description
 `x` | Name of column having independent X variables [string][default:None]
 `y` | Name of column having dependent Y variables [string][default:None]
 `yhat` |Name of column having predicted response of Y variable (y_hat) from regression [string][default:None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (6, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `r` | Figure resolution in dpi [int][default: 300]
 `ar` | Rotation of X-axis labels [float][default: 0]
 `dotsize`| The size of the dots in the plot [float][default: 6]
@@ -922,8 +922,8 @@ Parameters | Description
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `axlabelfontname` | Font name for axis labels [string][default: 'Arial']
-`xlm` | Range of ticks to plot on X-axis [float tuple (bottom, top, interval)][default: None]
-`ylm` | Range of ticks to plot on Y-axis [float tuple (bottom, top, interval)][default: None]
+`xlm` | Range of ticks to plot on X-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
+`ylm` | Range of ticks to plot on Y-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
 
@@ -1049,7 +1049,7 @@ Parameters | Description
 `legendfontsize` | Font size for the legends [float][default:8]
 `legendlabelframe` | Box frame for the legend  [True or False][default: False]
 `legend_columnspacing` | Spacing between the legends  [float][default: None]
-`dim` | Figure size [tuple of two floats (width, height) in inches][default: (5, 4)]
+`dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (5, 4)]
 `show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `figname` | name of figure [string ][default:'roc']
