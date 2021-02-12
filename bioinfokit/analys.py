@@ -765,6 +765,7 @@ class stat:
         self.anova_model_out = None
         self.levene_summary = None
         self.anova_std_residuals = None
+        self.reg_metric_df = None
 
     '''
     def anova(self, df='dataframe', xfac=None, res=None):
@@ -1435,6 +1436,23 @@ class stat:
                         process_unstack_dict[k[1]].extend(v)
 
         self.unstack_df = pd.DataFrame(process_unstack_dict)
+
+    def reg_metric(self, y=None, yhat=None, resid=None):
+        if not all(isinstance(i, np.ndarray) for i in [y, yhat, resid]):
+            raise ValueError('y, residuals, and yhat must by numpy array')
+        if y.shape[0] != yhat.shape[0] != resid.shape[0]:
+            raise ValueError('y, residuals, and yhat must have same shape')
+        rmse = np.sqrt((np.sum((yhat-y)**2) / y.shape[0]))
+        # Mean squared error (MSE)
+        mse = np.mean(resid**2)
+        # Mean absolute error (MAE)
+        mae = np.mean(np.abs(y - yhat))
+        # Mean absolute percentage error (MAPE)
+        mape = np.mean(np.abs((y - yhat) / y))
+        print(rmse, mae, mse, mape)
+        self.reg_metric_df = pd.DataFrame({'Metrics':
+                          ['Root Mean Square Error (RMSE)', 'Mean Squared Error (MSE)', 'Mean Absolute Error (MAE)',
+                           'Mean Absolute Percentage Error (MAPE)'], 'Value': [rmse, mse, mae, mape]}).round(4)
 
 
 class gff:
