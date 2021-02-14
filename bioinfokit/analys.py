@@ -1449,7 +1449,6 @@ class stat:
         mae = np.mean(np.abs(y - yhat))
         # Mean absolute percentage error (MAPE)
         mape = np.mean(np.abs((y - yhat) / y))
-        print(rmse, mae, mse, mape)
         self.reg_metric_df = pd.DataFrame({'Metrics':
                           ['Root Mean Square Error (RMSE)', 'Mean Squared Error (MSE)', 'Mean Absolute Error (MAE)',
                            'Mean Absolute Percentage Error (MAPE)'], 'Value': [rmse, mse, mae, mape]}).round(4)
@@ -2677,6 +2676,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/logit/wdbc_test.csv")
         elif data=='plant_richness':
             self.data = pd.read_csv('https://reneshbedre.github.io/assets/posts/reg/plant_richness_data_mlr.txt', sep='\t')
+        elif data=='plant_richness_lr':
+            self.data = pd.read_csv('https://reneshbedre.github.io/assets/posts/reg/plant_richness_data_lr.txt', sep='\t')
         else:
             print("Error: Provide correct parameter for data\n")
 

@@ -1013,14 +1013,15 @@ Attribute | Description
 
 ### ROC plot
 
-Receiver operating characteristic (ROC) curve for visualizing classification performance
-
 `latest update v1.0.4`
 
 `bioinfokit.visuz.stat.roc(fpr, tpr, c_line_style, c_line_color, c_line_width, diag_line, diag_line_style, 
     diag_line_width, diag_line_color, auc, shade_auc, shade_auc_color, axxlabel, axylabel, axtickfontsize, 
     axtickfontname, axlabelfontsize, axlabelfontname, plotlegend, legendpos, legendanchor, legendcols, legendfontsize,
     legendlabelframe, legend_columnspacing, dim, show, figtype, figname, r, ylm)`
+
+Receiver operating characteristic (ROC) curve for visualizing classification performance
+
 
 Parameters | Description
 ------------ | -------------
@@ -1063,6 +1064,26 @@ ROC plot image in same directory (roc.png)
 <a href="https://reneshbedre.github.io/blog/logit.html#prediction-of-test-dataset-using-fitted-model" target="_blank">Working example</a>
 
 
+### Regression metrics
+
+Calculate Root Mean Square Error (RMSE), Mean squared error (MSE), Mean absolute error (MAE), and Mean absolute percent 
+error (MAPE) from regression fit
+
+`latest update v1.0.8`
+
+`bioinfokit.analys.stat.reg_metric(y, yhat, resid)`
+
+Parameters | Description
+------------ | -------------
+`y` |  Original values for dependent variable [numpy array] [default: None]
+`yhat` | Predicted values from regression [numpy array] [default: None]
+`resid` | Regression residuals  [numpy array][default: None]
+
+Returns:
+
+Pandas dataframe with values for RMSE, MSE, MAE, and MAPE
+
+<a href="https://www.reneshbedre.com/blog/linear-regression.html" target="_blank">Working example</a>
 
 
 
