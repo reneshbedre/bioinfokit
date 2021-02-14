@@ -1,3 +1,8 @@
+v1.0.8  has the following updates and changes (February 14, 2020)
+- Function for regression metrics added (`bioinfokit.analys.stat.reg_metric`)
+- It calculates Root Mean Square Error (RMSE), Mean squared error (MSE), Mean absolute error (MAE), 
+  and Mean absolute percent error (MAPE) from regression fit
+
 v1.0.7  has the following updates and changes (January 30, 2021)
 - Plant species richness dataset added for regression analysis
 
