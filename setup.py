@@ -9,11 +9,12 @@ setup(name='bioinfokit',
       # metadata
       author='Renesh Bedre',
       author_email='reneshbe@gmail.com',
+      maintainer='Renesh Bedre',
       description='Bioinformatics data analysis and visualization toolkit',
       long_description=long_description,
       long_description_content_type="text/markdown",
       license='MIT',
-      url='http://reneshbedre.github.io/',
+      url='https://github.com/reneshbedre/bioinfokit',
       packages=['bioinfokit',],
       zip_safe=False,
       classifiers=[
