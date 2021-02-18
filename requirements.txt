@@ -4,7 +4,7 @@ matplotlib
 scipy
 scikit-learn
 seaborn
-matplotlib_venn
+matplotlib-venn
 tabulate
 statsmodels
 textwrap3
