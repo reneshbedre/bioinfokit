@@ -424,10 +424,10 @@ class marker:
         else:
             raise Exception("provide 'markeridcol' parameter")
 
-    def mhat(df="dataframe", chr=None, pv=None, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
+    def mhat(df="dataframe", chr=None, pv=None, log_scale=True, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
              gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False, figtype='png',
              axxlabel=None, axylabel=None, axlabelfontsize=9, axlabelfontname="Arial", axtickfontsize=9,
-             axtickfontname="Arial", ylm=None, gstyle=1, figname='manhatten'):
+             axtickfontname="Arial", ylm=None, gstyle=1, figname='manhattan'):
 
         _x, _y = 'Chromosomes', r'$ -log_{10}(P)$'
         rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
@@ -435,9 +435,12 @@ class marker:
                        '#ee6c81', '#65734b', '#14325c', '#704307', '#b5b3be', '#f67280', '#ffd082', '#ffd800',
                        '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7',
                        '#a997df', '#513b56', '#590925', '#007fff', '#bf1363', '#f39237', '#0a3200', '#8c271e')
-
-        # minus log10 of P-value
-        df['tpval'] = -np.log10(df[pv])
+        if log_scale:
+            # minus log10 of P-value
+            df['tpval'] = -np.log10(df[pv])
+        else:
+            # for Fst values
+            df['tpval'] = df[pv]
         # df = df.sort_values(chr)
         # if the column contains numeric strings
         df = df.loc[pd.to_numeric(df[chr], errors='coerce').sort_values().index]
@@ -481,7 +484,8 @@ class marker:
         ax.margins(x=0)
         ax.margins(y=0)
         ax.set_xticks(xticks)
-        ax.set_ylim([0, max(df['tpval'] + 1)])
+        if log_scale:
+            ax.set_ylim([0, max(df['tpval'] + 1)])
         if ylm:
             ylm = np.arange(ylm[0], ylm[1], ylm[2])
         else:

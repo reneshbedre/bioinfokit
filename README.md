@@ -439,20 +439,21 @@ TPM normalized Pandas dataframe as class attributes (tpm_norm)
 
 ## Variant analysis
 
-### Manhatten plot
+### Manhattan plot
 
-`latest update v0.9.2`
+`latest update v1.0.9`
 
-`bioinfokit.visuz.marker.mhat(df, chr, pv, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, markernames, 
-    gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname)`
+`bioinfokit.visuz.marker.mhat(df, chr, pv, log_scale, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, 
+    markernames, gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname)`
 
 Parameters | Description
 ------------ | -------------
 `df` |Pandas dataframe object with atleast SNP, chromosome, and P-values columns
 `chr` | Name of a column having chromosome numbers [string][default:None]
 `pv` | Name of a column having P-values. Must be numeric column [string][default:None]
+`log_scale` | Change the values provided in `pv` column to minus log10 scale. If set to `False`, the original values in `pv`  will be used. This is useful in case of Fst values.  [Boolean (True or False)][default:True]
 `color` | List the name of the colors to be plotted. It can accept two alternate colors or the number colors equal to chromosome number. If nothing (None) provided, it will randomly assign the color to each chromosome [list][default:None]
-`gwas_sign_line` |Plot statistical significant threshold line defined by option `gwasp` [bool (True or False)][default: False]
+`gwas_sign_line` |Plot statistical significant threshold line defined by option `gwasp` [Boolean (True or False)][default: False]
 `gwasp` |  Statistical significant threshold to identify significant SNPs [float][default: 5E-08]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markeridcol` | Name of a column having SNPs. This is necessary for plotting SNP names on the plot [string][default: None]
@@ -463,19 +464,19 @@ Parameters | Description
 `r` | Figure resolution in dpi [int][default: 300]
 `ar` | Rotation of X-axis labels [float][default: 90]
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
-`show`  | Show the figure on console instead of saving in current folder [True or False][default:False]
+`show`  | Show the figure on console instead of saving in current folder [Boolean (True or False)][default:False]
 `axxlabel` | Label for X-axis. If you provide this option, default label will be replaced [string][default: None]
 `axylabel` | Label for Y-axis. If you provide this option, default label will be replaced [string][default: None]
 `axlabelfontsize` | Font size for axis labels [float][default: 9]
 `ylm` | Range of ticks to plot on Y-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
 `gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
-`figname` | name of figure [string][default:"manhatten"]
+`figname` | name of figure [string][default:"manhattan"]
 
 Returns:
 
-Manhatten plot image in same directory (manhatten.png)
+Manhattan plot image in same directory (Manhattan.png)
 
-<a href="https://reneshbedre.github.io/blog/manhat.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/manhattan-plot.html" target="_blank">Working example</a>
 
 ### Variant annotation 
 

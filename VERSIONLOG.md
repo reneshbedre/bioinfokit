@@ -1,4 +1,10 @@
-v1.0.8  has the following updates and changes (February 14, 2020)
+v1.0.9 has the following updates and changes (March 07, 2021)
+- `analys.visuz.marker.mhat` function updated to handle the Fst values for Manhattan plot
+- Boolean `log-scale` parameter added for choice of minus log10 conversion of <i>p</i> values
+- New marker dataset with Fst values added. This dataset is provided by the Vincent Appiah, which is downloaded from 
+  the Pf3K Project (pilot data release 5). This dataset can be accessed using `analys.get_data('fst').data`.
+
+v1.0.8  has the following updates and changes (February 14, 2021)
 - Function for regression metrics added (`bioinfokit.analys.stat.reg_metric`)
 - It calculates Root Mean Square Error (RMSE), Mean squared error (MSE), Mean absolute error (MAE), 
   and Mean absolute percent error (MAPE) from regression fit
