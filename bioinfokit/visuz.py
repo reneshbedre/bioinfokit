@@ -1578,8 +1578,8 @@ class cluster:
     @staticmethod
     # adapted from https://stackoverflow.com/questions/39216897/plot-pca-loadings-and-loading-in-biplot-in-sklearn-like-rs-autoplot
     def biplot(cscore=None, loadings=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9, axlabelfontname="Arial",
-               figtype='png', r=300, show=False, markerdot="o", dotsize=6, valphadot=1, colordot='#4a4e4d', arrowcolor='#fe8a71',
-               valphaarrow=1, arrowlinestyle='-', arrowlinewidth=1.0, centerlines=True, colorlist=None, legendpos='best',
+               figtype='png', r=300, show=False, markerdot="o", dotsize=6, valphadot=1, colordot='#eba487', arrowcolor='#87ceeb',
+               valphaarrow=1, arrowlinestyle='-', arrowlinewidth=0.5, centerlines=True, colorlist=None, legendpos='best',
                datapoints=True, dim=(6, 4)):
         assert cscore is not None and loadings is not None and labels is not None and var1 is not None and var2 is not None, \
             "cscore or loadings or labels or var1 or var2 are missing"
@@ -1616,7 +1616,9 @@ class cluster:
             if centerlines:
                 plt.axhline(y=0, linestyle='--', color='#7d7d7d', linewidth=1)
                 plt.axvline(x=0, linestyle='--', color='#7d7d7d', linewidth=1)
-            for i in range(len(loadings)):
+            # loadings[0] is the number of the original variables
+            # this is important where variables more than number of observations
+            for i in range(len(loadings[0])):
                 plt.arrow(0, 0, loadings[0][i], loadings[1][i], color=arrowcolor, alpha=valphaarrow, ls=arrowlinestyle,
                           lw=arrowlinewidth)
                 plt.text(loadings[0][i], loadings[1][i], labels[i])
@@ -1655,7 +1657,7 @@ class cluster:
                 else:
                     ax.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, cscore[:, 2] * zscale, color=colordot,
                                s=dotsize, alpha=valphadot, marker=markerdot)
-            for i in range(len(loadings)):
+            for i in range(len(loadings[0])):
                 ax.quiver(0, 0, 0, loadings[0][i], loadings[1][i], loadings[2][i], color=arrowcolor, alpha=valphaarrow,
                           ls=arrowlinestyle, lw=arrowlinewidth)
                 ax.text(loadings[0][i], loadings[1][i], loadings[2][i],  labels[i])

@@ -1,3 +1,6 @@
+v2.0.0 has the following updates and changes (March 10, 2021)
+- `analys.visuz.cluster.biplot` function updated to create the biplot where variables are more than observations
+
 v1.0.9 has the following updates and changes (March 07, 2021)
 - `analys.visuz.marker.mhat` function updated to handle the Fst values for Manhattan plot
 - Boolean `log-scale` parameter added for choice of minus log10 conversion of <i>p</i> values
