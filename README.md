@@ -126,7 +126,7 @@ Volcano plot image in same directory (volcano.png)
 
 ### Inverted Volcano plot
 
-latest update v1.0.6
+latest update v2.0.1
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
@@ -172,7 +172,7 @@ Inverted volcano plot image in same directory (involcano.png)
 
 ### MA plot
 
-latest update v0.8.8
+latest update v2.0.1
 
 `bioinfokit.visuz.gene_exp.ma(df, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
@@ -219,7 +219,7 @@ MA plot image in same directory (ma.png)
 
 ### Heatmap
 
-`latest update v0.8.4`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), rowclus=True, colclus=True, zscore=None, 
     xlabel=True, ylabel=True, tickfont=(12, 12), show, r, figtype, figname, theme)`
@@ -251,7 +251,7 @@ heatmap plot (heatmap.png, heatmap_clus.png)
 ## Clustering analysis
 ### Scree plot
 
-`latest update v0.9.8`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.cluster.screeplot(obj, axlabelfontsize, axlabelfontname, axxlabel, axylabel,
     figtype, r, show, dim, theme)`
@@ -277,7 +277,7 @@ Scree plot image (screeplot.png will be saved in same directory)
 
 ###  Principal component analysis (PCA) loadings plots
 
-`latest update v0.9.8`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.cluster.pcaplot(x, y, z, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, plotlabels, dim, theme)`
@@ -308,7 +308,7 @@ PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be sav
 
 ### Principal component analysis (PCA)  biplots
 
-`latest update v0.9.8`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
@@ -350,7 +350,7 @@ PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in sam
 
 ### t-SNE plot
 
-`latest update v0.8.5`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.cluster.tsneplot(score, colorlist, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, dim, figname, legendpos,
@@ -446,7 +446,7 @@ TPM normalized Pandas dataframe as class attributes (tpm_norm)
 
 ### Manhattan plot
 
-`latest update v1.0.9`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.marker.mhat(df, chr, pv, log_scale, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, 
     markernames, gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname, theme)`
@@ -762,6 +762,8 @@ Allowed ID types for GenFam
 
 ### Correlation matrix plot
 
+latest update v2.0.1
+
 `bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show, figtype, axtickfontsize, axtickfontname, theme)`
 
 Parameters | Description
@@ -907,6 +909,8 @@ Regression analysis summary
 
 ### Regression plot
 
+latest update v2.0.1
+
 `bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
     valphaline, valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, xlm, ylm, axtickfontsize,
     axtickfontname, theme)`
@@ -1024,7 +1028,7 @@ Attribute | Description
 
 ### ROC plot
 
-`latest update v1.0.4`
+`latest update v2.0.1`
 
 `bioinfokit.visuz.stat.roc(fpr, tpr, c_line_style, c_line_color, c_line_width, diag_line, diag_line_style, 
     diag_line_width, diag_line_color, auc, shade_auc, shade_auc_color, axxlabel, axylabel, axtickfontsize, 
@@ -1162,4 +1166,4 @@ Venn plot (venn3.png, venn2.png)
 Source: https://scholar.google.com/scholar?start=0&q=bioinfokit&hl=en&as_sdt=0,44
 
 
-Last updated: January 06, 2021
+Last updated: March 07, 2021
