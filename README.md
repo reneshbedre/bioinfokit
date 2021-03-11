@@ -77,11 +77,11 @@ python setup.py install
 
 ### Volcano plot
 
-latest update v1.0.6
+latest update v2.0.1
 
 `bioinfokit.visuz.gene_exp.volcano(df, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, dim, r, ar, 
     dotsize, markerdot, sign_line, gstyle, show, figtype, axtickfontsize, axtickfontname, axlabelfontsize, 
-    axlabelfontname, axxlabel, axylabel, xlm, ylm, plotlegend, legendpos, figname, legendanchor, legendlabels)`
+    axlabelfontname, axxlabel, axylabel, xlm, ylm, plotlegend, legendpos, figname, legendanchor, legendlabels, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -117,7 +117,7 @@ Parameters | Description
 `figname` | name of figure [string ][default:"ma"]
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
-
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -130,7 +130,7 @@ latest update v1.0.6
 
 `bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
-    axtickfontname, plotlegend, legendpos, legendanchor, figname, legendlabels, ar)`
+    axtickfontname, plotlegend, legendpos, legendanchor, figname, legendlabels, ar, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -162,6 +162,8 @@ Parameters | Description
 `figname` | name of figure [string ][default:"involcano"]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
 `ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
+
 
 Returns:
 
@@ -174,7 +176,7 @@ latest update v0.8.8
 
 `bioinfokit.visuz.gene_exp.ma(df, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
-    figname, legendlabels, plotlegend, ar)`
+    figname, legendlabels, plotlegend, ar, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -206,7 +208,7 @@ Parameters | Description
 `figname` | name of figure [string ][default:"ma"]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
 `ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
-
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -220,7 +222,7 @@ MA plot image in same directory (ma.png)
 `latest update v0.8.4`
 
 `bioinfokit.visuz.gene_exp.hmap(table, cmap='seismic', scale=True, dim=(6, 8), rowclus=True, colclus=True, zscore=None, 
-    xlabel=True, ylabel=True, tickfont=(12, 12), show, r, figtype, figname)`
+    xlabel=True, ylabel=True, tickfont=(12, 12), show, r, figtype, figname, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -238,7 +240,7 @@ Parameters | Description
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `figname` | name of figure [string ][default:"heatmap"]
-
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -252,7 +254,7 @@ heatmap plot (heatmap.png, heatmap_clus.png)
 `latest update v0.9.8`
 
 `bioinfokit.visuz.cluster.screeplot(obj, axlabelfontsize, axlabelfontname, axxlabel, axylabel,
-    figtype, r, show, dim)`
+    figtype, r, show, dim, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -265,7 +267,7 @@ Parameters | Description
 `r` | Figure resolution in dpi [int][default: 300]
 `show` | Show the figure on console instead of saving in current folder [True or False][default:False]
 `dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
-
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -278,7 +280,7 @@ Scree plot image (screeplot.png will be saved in same directory)
 `latest update v0.9.8`
 
 `bioinfokit.visuz.cluster.pcaplot(x, y, z, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
-    figtype, r, show, plotlabels, dim)`
+    figtype, r, show, plotlabels, dim, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -296,6 +298,7 @@ Parameters | Description
 `show` | Show the figure on console instead of saving in current folder [True or False][default:False]
 `plotlabels` | Plot labels as defined by labels parameter [True or False][default:True]
 `dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -309,7 +312,7 @@ PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be sav
 
 `bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
-    centerlines, colorlist, legendpos, datapoints, dim)`
+    centerlines, colorlist, legendpos, datapoints, dim, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -337,6 +340,7 @@ Parameters | Description
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
 `datapoints`| plot data points on graph [bool (True or False)][default: True]
 `dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -350,7 +354,7 @@ PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in sam
 
 `bioinfokit.visuz.cluster.tsneplot(score, colorlist, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, dim, figname, legendpos,
-    legendanchor)`
+    legendanchor, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -369,6 +373,7 @@ Parameters | Description
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `figname` | name of figure [string ][default:"tsne_2d"]
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -444,7 +449,7 @@ TPM normalized Pandas dataframe as class attributes (tpm_norm)
 `latest update v1.0.9`
 
 `bioinfokit.visuz.marker.mhat(df, chr, pv, log_scale, color, dim, r, ar, gwas_sign_line, gwasp, dotsize, markeridcol, 
-    markernames, gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname)`
+    markernames, gfont, valpha, show, figtype, axxlabel, axylabel, axlabelfontsize, ylm, gstyle, figname, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -471,6 +476,7 @@ Parameters | Description
 `ylm` | Range of ticks to plot on Y-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
 `gstyle` | Style of the text for markernames. 1 for default text and 2 for box text [int][default: 1]
 `figname` | name of figure [string][default:"manhattan"]
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 
@@ -756,7 +762,7 @@ Allowed ID types for GenFam
 
 ### Correlation matrix plot
 
-`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show, figtype, axtickfontsize, axtickfontname)`
+`bioinfokit.visuz.stat.corr_mat(table, corm, cmap, r, dim, show, figtype, axtickfontsize, axtickfontname, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -769,6 +775,8 @@ Parameters | Description
 `figtype` | Format of figure to save. Supported format are eps, pdf, pgf, png, ps, raw, rgba, svg, svgz [string][default:'png']
 `axtickfontsize` | Font size for axis ticks [float][default: 7]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
+
 
 Returns:
 
@@ -901,7 +909,7 @@ Regression analysis summary
 
 `bioinfokit.visuz.stat.regplot(df, x, y, yhat, dim, colordot, colorline, r, ar, dotsize, markerdot, linewidth, 
     valphaline, valphadot, show, figtype, axxlabel, axylabel, axlabelfontsize, axlabelfontname, xlm, ylm, axtickfontsize,
-    axtickfontname)`
+    axtickfontname, theme)`
 
 Parameters | Description
 ------------ | -------------
@@ -927,6 +935,8 @@ Parameters | Description
 `ylm` | Range of ticks to plot on Y-axis [float [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) (bottom, top, interval)][default: None]
 `axtickfontsize` | Font size for axis ticks [float][default: 9]
 `axtickfontname` | Font name for axis ticks [string][default: 'Arial']
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
+
 
 Returns:
 
@@ -1019,7 +1029,7 @@ Attribute | Description
 `bioinfokit.visuz.stat.roc(fpr, tpr, c_line_style, c_line_color, c_line_width, diag_line, diag_line_style, 
     diag_line_width, diag_line_color, auc, shade_auc, shade_auc_color, axxlabel, axylabel, axtickfontsize, 
     axtickfontname, axlabelfontsize, axlabelfontname, plotlegend, legendpos, legendanchor, legendcols, legendfontsize,
-    legendlabelframe, legend_columnspacing, dim, show, figtype, figname, r, ylm)`
+    legendlabelframe, legend_columnspacing, dim, show, figtype, figname, r, ylm, theme)`
 
 Receiver operating characteristic (ROC) curve for visualizing classification performance
 
@@ -1057,7 +1067,7 @@ Parameters | Description
 `figname` | name of figure [string ][default:'roc']
 `r` | Figure resolution in dpi [int][default: 300]. Not compatible with `show`= True
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
-
+`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
 
 Returns:
 

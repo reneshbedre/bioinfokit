@@ -1,3 +1,6 @@
+v2.0.1 has the following updates and changes (March 11, 2021)
+- Dark theme added for image backgrounds
+
 v2.0.0 has the following updates and changes (March 10, 2021)
 - `analys.visuz.cluster.biplot` function updated to create the biplot where variables are more than observations
 

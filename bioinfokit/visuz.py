@@ -36,27 +36,7 @@ def screeplot(obj="pcascree"):
 
 
 def pcaplot(x="x", y="y", z="z", labels="d_cols", var1="var1", var2="var2", var3="var3"):
-    for i, varnames in enumerate(labels):
-        plt.scatter(x[i], y[i])
-        plt.text(x[i], y[i], varnames, fontsize=10)
-    plt.xlabel("PC1 ({}%)".format(var1), fontsize=12, fontname="sans-serif")
-    plt.ylabel("PC2 ({}%)".format(var2), fontsize=12, fontname="sans-serif")
-    plt.tight_layout()
-    plt.savefig('pcaplot_2d.png', format='png', bbox_inches='tight', dpi=300)
-    plt.close()
-
-    # for 3d plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    for i, varnames in enumerate(labels):
-        ax.scatter(x[i], y[i], z[i])
-        ax.text(x[i], y[i], z[i], varnames, fontsize=10)
-    ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=12, fontname="sans-serif")
-    ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=12, fontname="sans-serif")
-    ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=12, fontname="sans-serif")
-    plt.tight_layout()
-    plt.savefig('pcaplot_3d.png', format='png', bbox_inches='tight',  dpi=300)
-    plt.close()
+    general.depr_mes("bioinfokit.visuz.cluster.pcaplot")
 
 
 def hmap(table="dataset_file", cmap="seismic", scale=True, dim=(4,6), clus=True, zscore=None, xlabel=True, ylabel=True,
@@ -133,7 +113,7 @@ class gene_exp:
                 axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
                 axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
                 figname='volcano', legendanchor=None,
-                legendlabels=['significant up', 'not significant', 'significant down']):
+                legendlabels=['significant up', 'not significant', 'significant down'], theme=None):
         _x = r'$ log_{2}(Fold Change)$'
         _y = r'$ -log_{10}(P-value)$'
         color = color
@@ -154,6 +134,8 @@ class gene_exp:
         assert len(set(color_result_num)) == 3, \
             'either significant or non-significant genes are missing; try to change lfc_thr or pv_thr to include ' \
             'both significant and non-significant genes'
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         if plotlegend:
             s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
@@ -175,14 +157,15 @@ class gene_exp:
             _y = axylabel
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     def involcano(df="dataframe", lfc="logFC", pv="p_values", lfc_thr=(1, 1), pv_thr=(0.05, 0.05), color=("green", "grey", "red"),
                   valpha=1, geneid=None, genenames=None, gfont=8, dim=(5, 5), r=300, ar=90, dotsize=8, markerdot="o",
                 sign_line=False, gstyle=1, show=False, figtype='png', axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
                 axylabel=None, xlm=None, ylm=None, plotlegend=False, legendpos='best',
-                figname='involcano', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down']):
+                figname='involcano', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down'],
+                  theme=None):
         _x = r'$ log_{2}(Fold Change)$'
         _y = r'$ -log_{10}(P-value)$'
         color = color
@@ -202,6 +185,8 @@ class gene_exp:
         color_result_num = [assign_values[i] for i in df['color_add_axy']]
         assert len(set(color_result_num)) == 3, 'either significant or non-significant genes are missing; try to change lfc_thr or ' \
                                            'pv_thr to include  both significant and non-significant genes'
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         if plotlegend:
             s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
@@ -226,14 +211,14 @@ class gene_exp:
             print('Error: ylm not compatible with involcano')
             sys.exit(1)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     def ma(df="dataframe", lfc="logFC", ct_count="value1", st_count="value2", lfc_thr=1, valpha=1, dotsize=8,
            markerdot="o", dim=(6, 5), r=300, show=False, color=("green", "grey", "red"), ar=90, figtype='png', axtickfontsize=9,
            axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
            axylabel=None, xlm=None, ylm=None, fclines=False, fclinescolor='#2660a4', legendpos='best',
            figname='ma', legendanchor=None, legendlabels=['significant up', 'not significant', 'significant down'],
-           plotlegend=False):
+           plotlegend=False, theme=None):
         _x, _y = 'A', 'M'
         assert general.check_for_nonnumeric(df[lfc]) == 0, 'dataframe contains non-numeric values in lfc column'
         assert general.check_for_nonnumeric(df[ct_count]) == 0, \
@@ -254,6 +239,8 @@ class gene_exp:
         assert len(
             set(color_result_num)) == 3, 'either significant or non-significant genes are missing; try to change lfc_thr' \
                                          ' to include both significant and non-significant genes'
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         # plt.scatter(df['A'], df[lfc], c=df['color'], alpha=valpha, s=dotsize, marker=markerdot)
         if plotlegend:
@@ -277,38 +264,39 @@ class gene_exp:
             _y = axylabel
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     def hmap(df="dataframe", cmap="seismic", scale=True, dim=(4, 6), rowclus=True, colclus=True, zscore=None, xlabel=True,
-             ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png', figname='heatmap'):
+             ylabel=True, tickfont=(10, 10), r=300, show=False, figtype='png', figname='heatmap', theme=None):
         # df = df.set_index(d.columns[0])
         # plot heatmap without cluster
         # more cmap: https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
-        # dim = dim
+        if theme == 'dark':
+            general.dark_bg()
         fig, hm = plt.subplots(figsize=dim)
         if rowclus and colclus:
             hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
                                 figsize=dim)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, figname)
+            general.get_figure(show, r, figtype, figname, theme)
         elif rowclus and colclus is False:
             hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
                                 figsize=dim, row_cluster=True, col_cluster=False)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, figname)
+            general.get_figure(show, r, figtype, figname, theme)
         elif colclus and rowclus is False:
             hm = sns.clustermap(df, cmap=cmap, cbar=scale, z_score=zscore, xticklabels=xlabel, yticklabels=ylabel,
                                 figsize=dim, row_cluster=False, col_cluster=True)
             hm.ax_heatmap.set_xticklabels(hm.ax_heatmap.get_xmajorticklabels(), fontsize=tickfont[0])
             hm.ax_heatmap.set_yticklabels(hm.ax_heatmap.get_ymajorticklabels(), fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, figname)
+            general.get_figure(show, r, figtype, figname, theme)
         else:
             hm = sns.heatmap(df, cmap=cmap, cbar=scale, xticklabels=xlabel, yticklabels=ylabel)
             plt.xticks(fontsize=tickfont[0])
             plt.yticks(fontsize=tickfont[1])
-            general.get_figure(show, r, figtype, figname)
+            general.get_figure(show, r, figtype, figname, theme)
 
 
 class general:
@@ -321,11 +309,13 @@ class general:
                    '#ad62aa', '#21bf73', '#a0855b', '#5edfff', '#08ffc8', '#ca3e47', '#c9753d', '#6c5ce7')
 
     @staticmethod
-    def get_figure(show, r, figtype, fig_name):
+    def get_figure(show, r, figtype, fig_name, theme):
         if show:
             plt.show()
         else:
             plt.savefig(fig_name+'.'+figtype, format=figtype, bbox_inches='tight', dpi=r)
+        if theme == 'dark':
+            plt.style.use('default')
         plt.clf()
         plt.close()
 
@@ -379,6 +369,9 @@ class general:
         get_path = 'https://drive.google.com/uc?export=download&id=' + url.split('/')[-2]
         return pd.read_csv(get_path, comment='#')
 
+    @staticmethod
+    def dark_bg():
+        plt.style.use('dark_background')
 
 class marker:
 
@@ -427,7 +420,7 @@ class marker:
     def mhat(df="dataframe", chr=None, pv=None, log_scale=True, color=None, dim=(6,4), r=300, ar=90, gwas_sign_line=False,
              gwasp=5E-08, dotsize=8, markeridcol=None, markernames=None, gfont=8, valpha=1, show=False, figtype='png',
              axxlabel=None, axylabel=None, axlabelfontsize=9, axlabelfontname="Arial", axtickfontsize=9,
-             axtickfontname="Arial", ylm=None, gstyle=1, figname='manhattan'):
+             axtickfontname="Arial", ylm=None, gstyle=1, figname='manhattan', theme=None):
 
         _x, _y = 'Chromosomes', r'$ -log_{10}(P)$'
         rand_colors = ('#a7414a', '#282726', '#6a8a82', '#a37c27', '#563838', '#0584f2', '#f28a30', '#f05837',
@@ -466,6 +459,8 @@ class marker:
 
         xlabels = []
         xticks = []
+        if theme == 'dark':
+            general.dark_bg()
         fig, ax = plt.subplots(figsize=dim)
         i = 0
         for label, df1 in df.groupby(chr):
@@ -499,7 +494,7 @@ class marker:
             _y = axylabel
         ax.set_xlabel(_x, fontsize=axlabelfontsize, fontname=axlabelfontname)
         ax.set_ylabel(_y, fontsize=axlabelfontsize, fontname=axlabelfontname)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
 
 class stat:
@@ -549,7 +544,9 @@ class stat:
     def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='#4a4e4d', colorline='#fe8a71', r=300,
                 ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o", show=False, axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", ylm=None, xlm=None, axxlabel=None,
-                axylabel=None, figtype='png'):
+                axylabel=None, figtype='png', theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         fig, ax = plt.subplots(figsize=dim)
         plt.scatter(df[x].to_numpy(), df[y].to_numpy(), color=colordot, s=dotsize, alpha=valphadot, marker=markerdot,
                     label='Observed data')
@@ -562,18 +559,20 @@ class stat:
         general.axis_labels(x, y, axlabelfontsize, axlabelfontname)
         general.axis_ticks(xlm, ylm, axtickfontsize, axtickfontname, ar)
         plt.legend(fontsize=9)
-        general.get_figure(show, r, figtype, 'reg_plot')
+        general.get_figure(show, r, figtype, 'reg_plot', theme)
 
     def reg_resid_plot(df="dataframe", yhat=None, resid=None, stdresid=None, dim=(6, 4), colordot='#4a4e4d',
                        colorline='#2ab7ca', r=300, ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1,
-                       markerdot="o", show=False, figtype='png'):
+                       markerdot="o", show=False, figtype='png', theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         fig, ax = plt.subplots(figsize=dim)
         if resid is not None:
             plt.scatter(df[yhat], df[resid], color=colordot, s=dotsize, alpha=valphadot, marker=markerdot)
             plt.axhline(y=0, color=colorline, linestyle='--', linewidth=linewidth, alpha=valphaline)
             plt.xlabel("Fitted")
             plt.ylabel("Residuals")
-            general.get_figure(show, r, figtype, 'resid_plot')
+            general.get_figure(show, r, figtype, 'resid_plot', theme)
         else:
             print ("Error: Provide residual data")
         if stdresid is not None:
@@ -581,12 +580,14 @@ class stat:
             plt.axhline(y=0, color=colorline, linestyle='--', linewidth=linewidth, alpha=valphaline)
             plt.xlabel("Fitted")
             plt.ylabel("Standardized Residuals")
-            general.get_figure(show, r, figtype, 'std_resid_plot')
+            general.get_figure(show, r, figtype, 'std_resid_plot', theme)
         else:
             print ("Error: Provide standardized residual data")
 
     def corr_mat(df="dataframe", corm="pearson", cmap="seismic", r=300, show=False, dim=(6, 5), axtickfontname="Arial",
-                 axtickfontsize=7, ar=90, figtype='png'):
+                 axtickfontsize=7, ar=90, figtype='png', theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         d_corr = df.corr(method=corm)
         plt.subplots(figsize=dim)
         plt.matshow(d_corr, vmin=-1, vmax=1, cmap=cmap)
@@ -595,7 +596,7 @@ class stat:
         ticks = list(range(0, len(list(df))))
         plt.xticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname, rotation=ar)
         plt.yticks(ticks, cols, fontsize=axtickfontsize, fontname=axtickfontname)
-        general.get_figure(show, r, figtype, 'corr_mat')
+        general.get_figure(show, r, figtype, 'corr_mat', theme)
 
     # for data with pre-calculated mean and SE
     def multi_bar(df="dataframe", dim=(5, 4), colbar=None, colerrorbar=None, bw=0.4, colorbar=None, xbarcol=None, r=300,
@@ -1497,7 +1498,9 @@ class stat:
             axtickfontsize=9, axtickfontname='Arial', axlabelfontsize=9, axlabelfontname='Arial',
             plotlegend=True, legendpos='lower right', legendanchor=None, legendcols=1, legendfontsize=8,
             legendlabelframe=False, legend_columnspacing=None, per_class=False, dim=(6, 5), show=False, figtype='png',
-            figname='roc', r=300, ylm=None):
+            figname='roc', r=300, ylm=None, theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         # plt.margins(x=0)
         if auc:
@@ -1526,7 +1529,7 @@ class stat:
             plt.legend(loc=legendpos, bbox_to_anchor=legendanchor, ncol=legendcols, fontsize=legendfontsize,
                        frameon=legendlabelframe, columnspacing=legend_columnspacing)
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
 
 class cluster:
@@ -1535,7 +1538,9 @@ class cluster:
 
     @staticmethod
     def screeplot(obj="pcascree", axlabelfontsize=9, axlabelfontname="Arial", axxlabel=None,
-                axylabel=None, figtype='png', r=300, show=False, dim=(6, 4)):
+                axylabel=None, figtype='png', r=300, show=False, dim=(6, 4), theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         y = [x * 100 for x in obj[1]]
         plt.subplots(figsize=dim)
         plt.bar(obj[0], y)
@@ -1547,11 +1552,13 @@ class cluster:
             ylab = axylabel
         plt.xticks(fontsize=7, rotation=70)
         general.axis_labels(xlab, ylab, axlabelfontsize, axlabelfontname)
-        general.get_figure(show, r, figtype, 'screeplot')
+        general.get_figure(show, r, figtype, 'screeplot', theme)
 
     @staticmethod
     def pcaplot(x=None, y=None, z=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9,
-                axlabelfontname="Arial", figtype='png', r=300, show=False, plotlabels=True, dim=(6, 4)):
+                axlabelfontname="Arial", figtype='png', r=300, show=False, plotlabels=True, dim=(6, 4), theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         if x is not None and y is not None and z is None:
             assert var1 is not None and var2 is not None and labels is not None, "var1 or var2 variable or labels are missing"
             plt.subplots(figsize=dim)
@@ -1560,7 +1567,7 @@ class cluster:
                 if plotlabels:
                     plt.text(x[i], y[i], varnames, fontsize=10)
             general.axis_labels("PC1 ({}%)".format(var1), "PC2 ({}%)".format(var2), axlabelfontsize, axlabelfontname)
-            general.get_figure(show, r, figtype, 'pcaplot_2d')
+            general.get_figure(show, r, figtype, 'pcaplot_2d', theme)
         elif x is not None and y is not None and z is not None:
             assert var1 and var2 and var3 and labels is not None, "var1 or var2 or var3 or labels are missing"
             # for 3d plot
@@ -1573,14 +1580,16 @@ class cluster:
             ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=axlabelfontsize, fontname=axlabelfontname)
             ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=axlabelfontsize, fontname=axlabelfontname)
             ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=axlabelfontsize, fontname=axlabelfontname)
-            general.get_figure(show, r, figtype, 'pcaplot_3d')
+            general.get_figure(show, r, figtype, 'pcaplot_3d', theme)
 
     @staticmethod
     # adapted from https://stackoverflow.com/questions/39216897/plot-pca-loadings-and-loading-in-biplot-in-sklearn-like-rs-autoplot
     def biplot(cscore=None, loadings=None, labels=None, var1=None, var2=None, var3=None, axlabelfontsize=9, axlabelfontname="Arial",
                figtype='png', r=300, show=False, markerdot="o", dotsize=6, valphadot=1, colordot='#eba487', arrowcolor='#87ceeb',
                valphaarrow=1, arrowlinestyle='-', arrowlinewidth=0.5, centerlines=True, colorlist=None, legendpos='best',
-               datapoints=True, dim=(6, 4)):
+               datapoints=True, dim=(6, 4), theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         assert cscore is not None and loadings is not None and labels is not None and var1 is not None and var2 is not None, \
             "cscore or loadings or labels or var1 or var2 are missing"
         if var1 is not None and var2 is not None and var3 is None:
@@ -1632,7 +1641,7 @@ class cluster:
             plt.xlim(xlimit_min-0.2, xlimit_max+0.2)
             plt.ylim(ylimit_min-0.2, ylimit_max + 0.2)
             general.axis_labels("PC1 ({}%)".format(var1), "PC2 ({}%)".format(var2), axlabelfontsize, axlabelfontname)
-            general.get_figure(show, r, figtype, 'biplot_2d')
+            general.get_figure(show, r, figtype, 'biplot_2d', theme)
         # 3D
         if var1 is not None and var2 is not None and var3 is not None:
             xscale = 1.0 / (cscore[:, 0].max() - cscore[:, 0].min())
@@ -1677,12 +1686,14 @@ class cluster:
             ax.set_xlabel("PC1 ({}%)".format(var1), fontsize=axlabelfontsize, fontname=axlabelfontname)
             ax.set_ylabel("PC2 ({}%)".format(var2), fontsize=axlabelfontsize, fontname=axlabelfontname)
             ax.set_zlabel("PC3 ({}%)".format(var3), fontsize=axlabelfontsize, fontname=axlabelfontname)
-            general.get_figure(show, r, figtype, 'biplot_3d')
+            general.get_figure(show, r, figtype, 'biplot_3d', theme)
 
     def tsneplot(score=None, axlabelfontsize=9, axlabelfontname="Arial", figtype='png', r=300, show=False,
              markerdot="o", dotsize=6, valphadot=1, colordot='#4a4e4d', colorlist=None, legendpos='best',
-             figname='tsne_2d', dim=(6, 4), legendanchor=None):
+             figname='tsne_2d', dim=(6, 4), legendanchor=None, theme=None):
         assert score is not None, "score are missing"
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         if colorlist is not None:
             unique_class = set(colorlist)
@@ -1705,6 +1716,6 @@ class cluster:
                        s=dotsize, alpha=valphadot, marker=markerdot)
         plt.xlabel("t-SNE-1", fontsize=axlabelfontsize, fontname=axlabelfontname)
         plt.ylabel("t-SNE-2", fontsize=axlabelfontsize, fontname=axlabelfontname)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
 
