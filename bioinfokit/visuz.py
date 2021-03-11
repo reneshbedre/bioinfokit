@@ -513,6 +513,8 @@ class stat:
         color_list_dot = colordot
         if len(color_list_dot) == 1:
             color_list_dot = colordot*len(df.columns.to_numpy())
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         if errorbar:
             plt.bar(x=xbar, height=df.describe().loc['mean'], yerr=df.sem(), width=bw, color=color_list_bar, capsize=hbsize,
@@ -539,7 +541,7 @@ class stat:
             plt.scatter(x=np.linspace(xbar[cols]-bw/2, xbar[cols]+bw/2, int(df.describe().loc['count'][cols])),
                        y=df[df.columns[cols]].dropna(), s=dotsize, color=color_list_dot[cols], zorder=1, alpha=valphadot,
                        marker=markerdot)
-        general.get_figure(show, r, figtype, 'bardot')
+        general.get_figure(show, r, figtype, 'bardot', theme)
 
     def regplot(df="dataframe", x=None, y=None, yhat=None, dim=(6, 4), colordot='#4a4e4d', colorline='#fe8a71', r=300,
                 ar=0, dotsize=6, valphaline=1, valphadot=1, linewidth=1, markerdot="o", show=False, axtickfontsize=9,
@@ -607,9 +609,11 @@ class stat:
                                   'dist_y_neg': 4.2}, add_sign_symbol=False, sign_symbol_opts={'symbol': '*',
                                                                                               'fontsize': 8 },
                   dotplot=False, sub_cat=None,
-                  sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 8}, sub_cat_label_dist=None):
+                  sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 8}, sub_cat_label_dist=None, theme=None):
         xbar = np.arange(df.shape[0])
         xbar_temp = xbar
+        if theme == 'dark':
+            general.dark_bg()
         fig, ax = plt.subplots(figsize=dim)
         assert len(colbar) >= 2, "number of bar should be atleast 2"
         assert len(colbar) == len(colorbar), "number of color should be equivalent to number of column bars"
@@ -748,7 +752,7 @@ class stat:
                     else:
                         raise KeyError("Sub category keys must be tuple of size 2")
 
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     # with replicates values stacked replicates
     # need to work on this later
@@ -763,9 +767,11 @@ class stat:
                   sign_line_pairs=None, group_let_df=None, legendanchor=None, legendcols=1, legendfontsize=8,
                   axylabel=None, axxlabel=None, symb_dist=None, axlabelfontsize=(9, 9), axlabelar=(0, 90), sub_cat=None,
                   sub_cat_opts={'y_neg_dist': 3.5, 'fontsize': 9, 'fontname':'Arial'}, sub_cat_label_dist=None,
-                      legendlabelframe=False, div_fact=20, legend_columnspacing=None, add_text=None):
+                      legendlabelframe=False, div_fact=20, legend_columnspacing=None, add_text=None, theme=None):
         if samp_col_name is None or colorbar is None:
             raise ValueError('Invalid value for samp_col_name or colorbar options')
+        if theme == 'dark':
+            general.dark_bg()
         fig, ax = plt.subplots(figsize=dim)
         sample_list = df[samp_col_name].unique()
         # assert len(sample_list) >= 2, "number of bar should be atleast 2"
@@ -1164,7 +1170,7 @@ class stat:
                     else:
                         raise KeyError("Sub category keys must be tuple of size 2")
 
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     # for data with replicates
     # deprecate dist_y_pos and dist_y_neg (repalce with  size_factor_to_start_line)
@@ -1181,7 +1187,7 @@ class stat:
                   col_order=False, dotplot=False, dotsize=6, colordot=['#101820ff'], valphadot=1, markerdot='o',
                   sign_line_pairs_dist=None, sign_line_pv_symb_dist=None, div_fact=20, add_text=None,
                   figname='singlebar', connectionstyle='bar, armA=50, armB=50, angle=180, fraction=0',
-                  std_errs_vis='both', yerrzorder=8):
+                  std_errs_vis='both', yerrzorder=8, theme=None):
         plt.rcParams['mathtext.fontset'] = 'custom'
         plt.rcParams['mathtext.default'] = 'regular'
         plt.rcParams['mathtext.it'] = 'Arial:italic'
@@ -1222,6 +1228,8 @@ class stat:
 
         xbar = np.arange(len(sample_list))
         color_list_bar = colorbar
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         if errorbar:
             plt.bar(x=xbar, height=bar_h, yerr=std_errs_vis, width=bw, color=color_list_bar,
@@ -1401,17 +1409,19 @@ class stat:
         if isinstance(add_text, list):
             plt.text(add_text[0], add_text[1], add_text[2], fontsize=9, fontfamily='Arial')
 
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     @staticmethod
     def normal_bar(df='dataframe', x_col_name=None, y_col_name=None, dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", r=300,
                    ar=(0, 0), valphabar=1, show=False, ylm=None, axtickfontsize=9, axtickfontname='Arial',
                    ax_x_ticklabel=None, axlabelfontsize=9, axlabelfontname='Arial', axxlabel=None, axylabel=None,
-                   figtype='png', figname='normal_bar'):
+                   figtype='png', figname='normal_bar', theme=None):
         # set axis labels to None
         _x = None
         _y = None
         xbar = np.arange(len(df[x_col_name]))
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots(figsize=dim)
         plt.bar(x=xbar, height=df[y_col_name], width=bw, color=colorbar, alpha=valphabar)
         if ax_x_ticklabel:
@@ -1424,7 +1434,7 @@ class stat:
         if axylabel:
             _y = axylabel
         general.axis_labels(_x, _y, axlabelfontsize, axlabelfontname)
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     def boxplot_single_factor(df='dataframe', column_names=None, grid=False, ar=(0, 0), axtickfontsize=9,
                               axtickfontname='Arial', dim=(6, 4), show=False, figtype='png', figname='boxplot', r=300,
@@ -1432,7 +1442,9 @@ class stat:
                               med_line_width=1, med_line_color='g', whisk_line_color='b', cap_color='b',
                               add_sign_symbol=False, symb_dist=None, sign_symbol_opts={'symbol': '*', 'fontsize': 8 },
                               pv=None, notch=False, outliers=True, fill_box_color=True, dotplot=False, dotsize=6,
-                              colordot=['#101820ff'], valphadot=1, markerdot='o'):
+                              colordot=['#101820ff'], valphadot=1, markerdot='o', theme=None):
+        if theme == 'dark':
+            general.dark_bg()
         plt.subplots()
         if column_names:
             xbar = column_names
@@ -1488,7 +1500,7 @@ class stat:
                                          fontsize=sign_symbol_opts['fontsize'],
                                          ha="center")
 
-        general.get_figure(show, r, figtype, figname)
+        general.get_figure(show, r, figtype, figname, theme)
 
     @staticmethod
     def roc(fpr=None, tpr=None, c_line_style='-', c_line_color='#f05f21', c_line_width=1, diag_line=True,
