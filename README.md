@@ -114,7 +114,7 @@ Parameters | Description
 `ylm` | Range of ticks to plot on Y-axis [float (bottom, top, interval)][default: None]
 `plotlegend` | plot legend on volcano plot  [True or False][default:False]
 `legendpos` | position of the legend on plot. For more options see loc parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [string ][default:"best"]
-`figname` | name of figure [string ][default:"ma"]
+`figname` | name of figure [string ][default:"volcano"]
 `legendanchor` | position of the legend outside of the plot. For more options see bbox_to_anchor parameter at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html  [list][default:None]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
 `theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
