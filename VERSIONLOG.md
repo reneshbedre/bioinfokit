@@ -1,3 +1,7 @@
+v2.0.2 has the following updates and changes (March 13, 2021)
+- PCA biplot updated for the y scale
+- blood pressure dataset added
+
 v2.0.1 has the following updates and changes (March 11, 2021)
 - Dark theme added for image backgrounds
 

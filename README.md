@@ -308,7 +308,7 @@ PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be sav
 
 ### Principal component analysis (PCA)  biplots
 
-`latest update v2.0.1`
+`latest update v2.0.2`
 
 `bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,

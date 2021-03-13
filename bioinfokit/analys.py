@@ -2682,6 +2682,8 @@ class get_data:
                                     sep='\t')
         elif data=='fst':
             self.data = pd.read_csv('https://reneshbedre.github.io/assets/posts/mhat/fst.csv')
+        elif data=='bp':
+            self.data = pd.read_csv('https://reneshbedre.github.io/assets/posts/reg/bp.csv')
         else:
             print("Error: Provide correct parameter for data\n")
 

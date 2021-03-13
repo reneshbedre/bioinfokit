@@ -1628,7 +1628,7 @@ class cluster:
                         # s = plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, color=color_result, s=dotsize,
                         #                alpha=valphadot, marker=markerdot)
                         # plt.legend(handles=s.legend_elements()[0], labels=list(unique_class))
-                        s = plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, c=color_result, s=dotsize,
+                        s = plt.scatter(cscore[:, 0] * xscale, cscore[:, 1] * yscale, c=color_result_num, s=dotsize,
                                     alpha=valphadot, marker=markerdot)
                         plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
                 else:
@@ -1649,9 +1649,9 @@ class cluster:
             xlimit_max = np.max([np.max(cscore[:, 0]*xscale), np.max(loadings[0])])
             xlimit_min = np.min([np.min(cscore[:, 0]*xscale), np.min(loadings[0])])
             ylimit_max = np.max([np.max(cscore[:, 1]*yscale), np.max(loadings[1])])
-            ylimit_min = np.min([np.min(cscore[:, 1]*xscale), np.min(loadings[1])])
+            ylimit_min = np.min([np.min(cscore[:, 1]*yscale), np.min(loadings[1])])
             plt.xlim(xlimit_min-0.2, xlimit_max+0.2)
-            plt.ylim(ylimit_min-0.2, ylimit_max + 0.2)
+            plt.ylim(ylimit_min-0.2, ylimit_max+0.2)
             general.axis_labels("PC1 ({}%)".format(var1), "PC2 ({}%)".format(var2), axlabelfontsize, axlabelfontname)
             general.get_figure(show, r, figtype, 'biplot_2d', theme)
         # 3D
@@ -1672,7 +1672,7 @@ class cluster:
                                        cmap=colour_map, s=dotsize, alpha=valphadot, marker=markerdot)
                         plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
                     elif colordot and not isinstance(colordot, (tuple, list)):
-                        s = plt.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, cscore[:, 2]*zscale, c=color_result_num,
+                        s = ax.scatter(cscore[:, 0]*xscale, cscore[:, 1]*yscale, cscore[:, 2]*zscale, c=color_result_num,
                                         s=dotsize, alpha=valphadot, marker=markerdot)
                         plt.legend(handles=s.legend_elements()[0], labels=list(unique_class), loc=legendpos)
                 else:
@@ -1684,9 +1684,10 @@ class cluster:
                 ax.text(loadings[0][i], loadings[1][i], loadings[2][i],  labels[i])
 
             xlimit_max = np.max([np.max(cscore[:, 0] * xscale), np.max(loadings[0])])
+
             xlimit_min = np.min([np.min(cscore[:, 0] * xscale), np.min(loadings[0])])
             ylimit_max = np.max([np.max(cscore[:, 1] * yscale), np.max(loadings[1])])
-            ylimit_min = np.min([np.min(cscore[:, 1] * xscale), np.min(loadings[1])])
+            ylimit_min = np.min([np.min(cscore[:, 1] * yscale), np.min(loadings[1])])
             zlimit_max = np.max([np.max(cscore[:, 2] * zscale), np.max(loadings[2])])
             zlimit_min = np.min([np.min(cscore[:, 2] * zscale), np.min(loadings[2])])
             # ax.set_xlim(min(loadings[0])-0.1, max(loadings[0])+0.1)
