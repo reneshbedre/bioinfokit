@@ -1,16 +1,21 @@
+"""
+visuz module implements visualization functions related to Bioinformatics, Statistics and Machine learning:
+Gene expression data visualization
+Molecular marker data visualization
+Statistical and  Machine learning visualization
+"""
+
+__all__ = ['gene_exp', 'general', 'marker', 'marker', 'stat', 'cluster']
+
 import pandas as pd
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-import matplotlib.cm as cmc
 import seaborn as sns
 from matplotlib_venn import venn3, venn2
 from random import sample
 from functools import reduce
 import sys
 from matplotlib.colors import ListedColormap
-from adjustText import adjust_text
-from matplotlib import rc
 
 
 def volcano(d="dataframe", lfc=None, pv=None, lfc_thr=1, pv_thr=0.05, color=("green", "red"), valpha=1,

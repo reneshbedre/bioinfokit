@@ -1,3 +1,13 @@
+"""
+analys module implements analysis functions related to Bioinformatics, Statistics, and Machine learning:
+Bioinformatics file handling and parsing
+Molecular marker analysis
+Bioinformatics file format conversions
+Biostatistical analysis
+Functional enrichment analysis (GenFam)
+Importing defined datasets
+"""
+
 import pandas as pd
 import re
 import os
@@ -22,6 +32,8 @@ from subprocess import check_output, STDOUT, CalledProcessError
 from statsmodels.stats.libqsturng import psturng, qsturng
 import collections
 
+__all__ = ['fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
+           'genfam', 'anot', 'get_data']
 
 def seqcov(file="fastq_file", gs="genome_size"):
     general.depr_mes("bioinfokit.analys.fastq.seqcov")
