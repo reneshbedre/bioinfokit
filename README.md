@@ -172,11 +172,11 @@ Inverted volcano plot image in same directory (involcano.png)
 
 ### MA plot
 
-latest update v2.0.1
+latest update v2.0.3
 
-`bioinfokit.visuz.gene_exp.ma(df, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
+`bioinfokit.visuz.GeneExpression.ma(df, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
-    figname, legendlabels, plotlegend, ar, theme)`
+    figname, legendlabels, plotlegend, ar, theme, geneid, genenames, gfont, gstyle, title)`
 
 Parameters | Description
 ------------ | -------------
@@ -184,7 +184,7 @@ Parameters | Description
 `lfc` | Name of a column having log fold change values [default:logFC]
 `ct_count` | Name of a column having count values for control sample [default:value1]
 `st_count` | Name of a column having count values for treatment sample [default:value2]
-`lfc_thr` | Log fold change cutoff for up and downregulated genes [default:1]
+`lfc_thr` | Log fold change cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default:(1.0, 1.0)]
 `color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default: ("green", "grey", "red")]
 `dotsize`| The size of the dots in the plot [float][default: 8]
 `markerdot` | Shape of the dot marker. See more options at  https://matplotlib.org/3.1.1/api/markers_api.html [string][default: "o"]
@@ -208,7 +208,12 @@ Parameters | Description
 `figname` | name of figure [string ][default:"ma"]
 `legendlabels` | legend label names. If you provide custom label names keep the same order of label names as default [list][default:['significant up', 'not significant', 'significant down']]
 `ar` | Rotation of X and Y-axis ticks labels [float][default: 90]
-`theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
+`theme` | Change background theme. If theme set to `dark_background`, the dark background will be produced instead of default white. See more themes [here](https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html)   [string][default:'None']
+`geneid` | Name of a column having gene Ids. This is necessary for plotting gene label on the points [string][default: None]
+`genenames` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of gene Ids to label the points. The gene Ids must be present in the geneid column. If this option set to "deg" it will label all genes defined by lfc_thr and pv_thr [string, [Tuple](https://www.reneshbedre.com/blog/python-tuples.html), dict][default: None]
+`gfont` | Font size for genenames [float][default: 10.0]
+`gstyle` | Style of the text for genenames. 1 for default text and 2 for box text [int][default: 1]
+`title` | Add main title to the plot [string][default: None]
 
 Returns:
 

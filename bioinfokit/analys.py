@@ -35,16 +35,6 @@ import collections
 __all__ = ['fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
            'genfam', 'anot', 'get_data']
 
-def seqcov(file="fastq_file", gs="genome_size"):
-    general.depr_mes("bioinfokit.analys.fastq.seqcov")
-
-
-def mergevcf(file="vcf_file_com_sep"):
-    general.depr_mes("bioinfokit.analys.marker.mergevcf")
-
-
-def pca(table="p_df"):
-    print("This function is deprecated")
 
 # remove seqs which match to ids in id file
 def extract_seq_nomatch(file="fasta_file", id="id_file"):
@@ -68,41 +58,12 @@ def extract_seq_nomatch(file="fasta_file", id="id_file"):
     id_file.close()
 
 
-def fqreadcounter(file="fastq_file"):
-    general.depr_mes("bioinfokit.analys.fastq.fqreadcounter")
-
-
-def fasta_reader(file="fasta_file"):
-    general.depr_mes("bioinfokit.analys.fasta.fasta_reader")
-
-
-def rev_com(seq=None, file=None):
-    general.depr_mes("bioinfokit.analys.fasta.rev_com")
-
-
-# extract subseq from genome sequence
-def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
-    general.depr_mes("bioinfokit.analys.fasta.ext_subseq")
-
-
-def fastq_format_check(file="fastq_file"):
-    general.depr_mes("bioinfokit.analys.fastq.fastq_format_check")
-
-
 def tcsv(file="tab_file"):
     tab_file = csv.reader(open(file, 'r'), dialect=csv.excel_tab)
     csv_file = csv.writer(open('out.csv', 'w', newline=''), dialect=csv.excel)
 
     for record in tab_file:
         csv_file.writerow(record)
-
-
-def ttsam(df='dataframe', xfac=None, res=None, evar=True):
-    general.depr_mes("bioinfokit.visuz.stat.ttsam")
-
-
-def chisq(table="table"):
-    general.depr_mes("bioinfokit.visuz.stat.chisq")
 
 
 class fasta:
@@ -599,63 +560,6 @@ class marker:
                 var_region, transcript_name_return, transcript_id_return, transcript_strand_return = var_region_check(exon_cord, chr,
                     'exon', anot_attr, transcript_name_dict, var_region, transcript_name, transcript_id, transcript_strand)
 
-            '''
-            if var_region is None:
-                for transcript, cord in cds_cord.items():
-                    for i in range(len(cord)):
-                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
-                            var_region = 'CDS'
-                            transcript_id = transcript[1]
-                            if anot_attr:
-                                transcript_name = transcript_name_dict[transcript_id]
-                            break
-                    if var_region:
-                        break
-            
-            if var_region is None:
-                for transcript, cord in ftr_cord.items():
-                    for i in range(len(cord)):
-                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
-                            var_region = 'five_prime_UTR'
-                            break
-                    if var_region:
-                        break
-                        
-            if var_region is None:
-                for transcript, cord in ttr_cord.items():
-                    for i in range(len(cord)):
-                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
-                            var_region = 'three_prime_UTR'
-                            break
-                    if var_region:
-                        break
-                        
-            if var_region is None:
-                for transcript, cord in sc_cord.items():
-                    for i in range(len(cord)):
-                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
-                            var_region = 'start_codon'
-                            break
-                    if var_region:
-                        break
-            if var_region is None:
-                for transcript, cord in st_cord.items():
-                    for i in range(len(cord)):
-                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
-                            var_region = 'stop_codon'
-                            break
-                    if var_region:
-                        break            
-            # keep exons at end as it also contains UTR part
-            if var_region is None:
-                for transcript, cord in exon_cord.items():
-                    for i in range(len(cord)):
-                        if transcript[0] == chr and int(cord[i][0]) <= int(var_pos) <= int(cord[i][1]):
-                            var_region = 'exon'
-                            break
-                    if var_region:
-                        break            
-            '''
             if var_region is None:
                 for transcript, cord in intragenic_cord.items():
                     transcript_strand_return = transcript_strand_dict[transcript[1]]
@@ -778,41 +682,7 @@ class stat:
         self.levene_summary = None
         self.anova_std_residuals = None
         self.reg_metric_df = None
-
-    '''
-    def anova(self, df='dataframe', xfac=None, res=None):
-        # drop NaN
-        df = df.dropna()
-        df = df[[xfac[0], res]]
-        assert xfac and res is not None, "xfac or res variable is missing"
-        grand_mean = df[res].mean()
-        total_obs = df.count()[0]
-
-        if len(xfac) == 1:
-            levels = df[xfac[0]].unique()
-            assert len(levels) > 2, 'levels must be more than 2; use two-sample t-test for two levels'
-            levels.sort()
-            ss_trt_between = np.sum(df.groupby(xfac).count() * (df.groupby(xfac).mean()-grand_mean)**2)[0]
-            ss_err_within = 0
-            for name, group in df.groupby(xfac):
-                ss_err_within = ss_err_within + np.sum((group[res]-group[res].mean()) ** 2)
-            ss_total = ss_trt_between + ss_err_within
-            df_trt_between = len(levels)-1
-            df_err_within = total_obs-len(levels)
-            df_total = df_trt_between + df_err_within
-            ms_trt_between = ss_trt_between / df_trt_between
-            ms_err_within = ss_err_within / df_err_within
-            f_value = ms_trt_between / ms_err_within
-            p_value = '%.4E' % Decimal(stats.f.sf(f_value, df_trt_between, df_err_within))
-            anova_table = []
-            anova_table.append(
-                ["Model", df_trt_between, ss_trt_between, round(ms_trt_between, 4), round(f_value, 4), p_value])
-            anova_table.append(["Error", df_err_within, ss_err_within, round(ms_err_within, 4), "", ""])
-            anova_table.append(["Total", df_total, ss_total, "", "", ""])
-            print("\nANOVA Summary:\n")
-            print(tabulate(anova_table, headers=["Source", "Df", "Sum Squares", "Mean Squares", "F", "Pr(>F)"]),
-                  "\n")
-    '''
+        self.bin_dict = None
 
     @staticmethod
     def _data_summary(df='dataframe', xfac_var=None, res_var=None):
@@ -928,120 +798,6 @@ class stat:
             else:
                 group_pval[(mult_group[p[0]], mult_group[p[1]])] = psturng(np.abs(q_val), sample_size_r, df_res)
                 tukey_phoc['p-value'].append(psturng(np.abs(q_val), sample_size_r, df_res))
-
-        '''
-                    if psturng(np.abs(q_val), len(levels), df_res) < 0.05:
-                        if levels[i] not in group_letter and levels[j+1] not in group_letter:
-                            assigned = 1
-                            group_letter[levels[i]] = let_num
-                            let_num_list.append(let_num)
-                            group_letter[levels[j + 1]] = let_num_list[-1] + 1
-                            let_num_list.append(let_num_list[-1] + 1)
-                            print(let_num_list, 'a')
-                        elif levels[j+1] not in group_letter:
-                            assigned = 1
-                            group_letter[levels[j + 1]] = let_num_list[-1] + 1
-                            let_num_list.append(let_num_list[-1] + 1)
-                            print(levels[i], levels[j + 1], let_num_list, 'b')
-                        elif levels[j+1] in group_letter:
-                            if assigned == 1:
-                                group_letter[levels[j + 1]] = let_num_list[-1] + 1
-                                let_num_list.append(let_num_list[-1] + 1)
-                                assigned = 0
-                                print(levels[i], levels[j + 1], let_num_list, 'd')
-
-                    else:
-                        if levels[i] not in group_letter and levels[j+1] not in group_letter:
-                            assigned = 1
-                            group_letter[levels[i]] = let_num
-                            let_num_list.append(let_num)
-                            group_letter[levels[j + 1]] = let_num
-                            let_num_list.append(let_num)
-                            sharing_letter[levels[i]] = 0
-                            sharing_letter[levels[j+1]] = 0
-                            print(levels[i], levels[j+1], let_num_list, 'e')
-                        elif levels[j + 1] in group_letter:
-                            assigned = 1
-                            print(levels[i], levels[j+1], sharing_letter, 'g')
-                            if levels[j + 1] in sharing_letter:
-                                group_letter[levels[i]] = [group_letter[levels[i]], group_letter[levels[j+1]]]
-                                let_num_list.append(group_letter[levels[i]])
-                                print(let_num_list, 'f')
-                            else:
-                                group_letter[levels[j + 1]] = group_letter[levels[i]]
-                                let_num_list.append(group_letter[levels[i]])
-                                print(let_num_list, 'c')
-                        elif levels[j + 1] not in group_letter:
-                            assigned = 1
-                            group_letter[levels[j + 1]] = group_letter[levels[i]]
-                            let_num_list.append(group_letter[levels[i]])
-                            print(levels[i], levels[j+1], let_num_list, 'h')
-        '''
-
-        '''
-        # print(group_letter)
-        # group_letter_chars = {m: chr(n) for m, n in group_letter.items()}
-        let_list = []
-        for k, v in group_pval.items():
-            # print(k)
-            if v <= phalpha:
-                if k[0] in group_let and k[1] not in group_let:
-                    group_let[k[1]] = [let_num]
-                    let_list.append(let_num)
-                    print(group_let, let_list, 'a')
-                    let_num += 1
-                elif k[0] in group_let and k[1] in group_let:
-                    if any(ele in group_let[k[0]] for ele in group_let[k[1]]):
-                    # if group_let[k[0]] == group_let[k[1]]:
-                        group_let[k[1]] = [let_num]
-                        # share_let[(k[0], k[1])] = let_num
-                        let_num += 1
-                        for k1, v1 in share_let.items():
-                            if k[0] in k1:
-                                if group_pval[(k1[0], k[1])] <= phalpha:
-                                    pass
-                                elif group_pval[(k1[0], k[1])] > phalpha:
-                                    group_let[k1[0]].extend(group_let[k[1]])
-                        print(group_let, 'i')
-                    else:
-                        print(group_let, 'j')
-                        pass
-                elif k[0] not in group_let and k[1] not in group_let:
-                    group_let[k[0]] = [let_num]
-                    let_list.append(let_num)
-                    let_num += 1
-                    group_let[k[1]] = [let_num]
-                    let_list.append(let_num)
-                    let_num += 1
-                    print(group_let, let_list, 'e')
-            elif v > phalpha:
-                if k[0] not in group_let and k[1] not in group_let:
-                    group_let[k[0]] = [let_num]
-                    group_let[k[1]] = [let_num]
-                    # share_let[let_num] = [k[0], k[1]]
-                    share_let[(k[0], k[1])] = let_num
-                    let_num += 1
-                    print(group_let, 'b')
-                elif k[0] in group_let and k[1] not in group_let:
-                    group_let[k[1]] = group_let[k[0]]
-                    share_let[(k[0], k[1])] = [group_let[k[0]]]
-                    print(group_let, 'd')
-                elif k[0] in group_let and k[1] in group_let:
-                    if any(ele in group_let[k[0]] for ele in group_let[k[1]]):
-                        pass
-                    elif any(k[0] in ele for ele in share_let):
-                        for k1, v1 in share_let.items():
-                            # print(k[0], k1)
-                            if k[0] in k1:
-                                # if group_let[k[1]] not in
-                                group_let[k[1]].extend(group_let[k[0]])
-                                # group_let[k[1]] = group_let[k[0]]
-                                print(group_let, 'cd')
-                    else:
-                        group_let[k[1]] = group_let[k[0]]
-                        share_let[(k[0], k[1])] = group_let[k[0]]
-                        print(group_let, 'c')
-        '''
 
         # group_letter_chars = {m: ''.join(list(map(chr, n))) for m, n in group_let.items()}
 
@@ -1187,23 +943,6 @@ class stat:
             print(tabulate(vif_table, headers=["Variable", "VIF"]),
                   "\n")
 
-        '''
-        vif = []
-        for i in range(len(x)):
-            temp = x[:]
-            print(i, x, temp)
-            vif_y = x[i]
-            del temp[i]
-            vif_x = temp
-            y_mat = df[vif_y]
-            x_mat = df[vif_x]
-            print(y_mat, '\n', x_mat, '\n')
-            vif_reg_out = LinearRegression().fit(x_mat, y_mat)
-            vif.append(1 / (1-vif_reg_out.score(x_mat, y_mat)))
-
-        print(vif)
-        '''
-
     def ttest(self, df='dataframe', xfac=None, res=None, evar=True, alpha=0.05, test_type=None, mu=None):
         # drop NaN
         df = df.dropna()
@@ -1307,12 +1046,7 @@ class stat:
                                                      varci_low[1], varci_up[1]]],
                                     headers=["Level", "Number", "Mean", "Std Dev", "Std Error",
                                              "Lower "+str(ci)+"%", "Upper "+str(ci)+"%"]) + '\n'
-            '''
-            fig = plt.figure()
-            df.boxplot(column=res, by=xfac, grid=False)
-            plt.ylabel(res)
-            plt.savefig('ttsam_boxplot.png', format='png', bbox_inches='tight', dpi=300)
-            '''
+
         elif test_type == 3:
             if not isinstance(res, (tuple, list)) and len(res) != 2:
                 raise Exception("res should be either list of tuple of length 2")
@@ -1451,7 +1185,7 @@ class stat:
 
     def reg_metric(self, y=None, yhat=None, resid=None):
         if not all(isinstance(i, np.ndarray) for i in [y, yhat, resid]):
-            raise ValueError('y, residuals, and yhat must by numpy array')
+            raise ValueError('y, residuals, and yhat must be numpy array')
         if y.shape[0] != yhat.shape[0] != resid.shape[0]:
             raise ValueError('y, residuals, and yhat must have same shape')
         rmse = np.sqrt((np.sum((yhat-y)**2) / y.shape[0]))
@@ -1464,6 +1198,28 @@ class stat:
         self.reg_metric_df = pd.DataFrame({'Metrics':
                           ['Root Mean Square Error (RMSE)', 'Mean Squared Error (MSE)', 'Mean Absolute Error (MAE)',
                            'Mean Absolute Percentage Error (MAPE)'], 'Value': [rmse, mse, mae, mape]}).round(4)
+
+    def bin_grouping(self, bin=None, bin_size=None):
+        if not isinstance(bin, (list, np.ndarray)):
+            raise ValueError('bin array must be list or numpy array')
+        bin_sorted = np.sort(bin)
+        incr_bin_size = bin_size
+        self.bin_dict = dict()
+        for i in bin_sorted:
+            if i <= bin_size:
+                if bin_size not in self.bin_dict:
+                    self.bin_dict[bin_size] = 1
+                else:
+                    self.bin_dict[bin_size] += 1
+            elif i > bin_size:
+                bin_size += incr_bin_size
+                if i <= bin_size:
+                    if bin_size not in self.bin_dict:
+                        self.bin_dict[bin_size] = 1
+                    else:
+                        self.bin_dict[bin_size] += 1
+                else:
+                    bin_size += incr_bin_size
 
 
 class gff:

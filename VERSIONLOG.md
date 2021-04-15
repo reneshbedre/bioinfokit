@@ -1,3 +1,9 @@
+v2.0.3 has the following updates and changes (April 14, 2021)
+- New class `GeneExpression` and `General` added
+- MA plot updated for adding the label names to genes and plot title  
+- New theme option added to set new background styles to plots (now work only for MA plot)
+- `gene_exp` class will be deprecated in future releases
+
 v2.0.2 has the following updates and changes (March 13, 2021)
 - PCA biplot updated for the y scale
 - blood pressure dataset added
