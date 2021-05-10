@@ -43,8 +43,7 @@ def tcsv(file="tab_file"):
     for record in tab_file:
         csv_file.writerow(record)
 
-
-class fasta:
+class Fasta:
     def __init__(self):
         pass
 
@@ -138,6 +137,26 @@ class fasta:
         out_file.close()
         if not isinstance(id, pd.Series):
             id_file.close()
+
+    @staticmethod
+    def split_fasta(file="fasta_file", n=2):
+        count_seqs_fasta = 0
+        fasta_iter = Fasta.fasta_reader(file)
+        for record in fasta_iter:
+            count_seqs_fasta += 1
+        num_split = int(int(count_seqs_fasta)/int(n))
+        fasta_iter = Fasta.fasta_reader(file)
+        for i in range(num_split):
+            out_file = open('output_'+str(i)+'.fasta', 'w')
+            for record in fasta_iter:
+            if count <= num_split:
+                count += 1
+                header, seq = record
+
+
+
+
+
 
 
 class fastq:
