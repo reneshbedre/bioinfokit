@@ -842,6 +842,20 @@ class marker:
         general.get_figure(show, r, figtype, figname, theme)
 
 
+class Statis:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def count_plot(df='dataframe', factor=None, dim=(6, 4)):
+        # set axis labels to None
+        _x = None
+        _y = None
+        get_factors = df['disease'].value_counts().index
+        xbar = np.arange(len(get_factors))
+        get_factors_counts = df['disease'].value_counts()
+
+
 class stat:
     def __init__(self):
         pass
