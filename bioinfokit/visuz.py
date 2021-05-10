@@ -1346,13 +1346,16 @@ class stat:
                     if isinstance(group_let_df, pd.DataFrame):
                         if y_pos > 0:
                             plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
                         if y_pos_2 > 0:
                             plt.annotate(group_let_df.loc[colbar[1], xbarcol[i]], xy=(x_pos_2, y_pos_2),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
                         if y_pos_3 > 0:
                             plt.annotate(group_let_df.loc[colbar[2], xbarcol[i]], xy=(x_pos_3, y_pos_3),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
 
                     if pv:
                         # only if y axis is positive
@@ -1362,13 +1365,16 @@ class stat:
                             pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
                             if pv_symb_1:
                                 plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
-                                             ha="center")
+                                             ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                             if pv_symb_2:
                                 plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
-                                             ha="center")
+                                             ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                             if pv_symb_3:
                                 plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
-                                             ha="center")
+                                             ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
             elif len(colbar) == 4:
                 for i in xbar:
                     x_pos = xbar[i]
@@ -1400,31 +1406,43 @@ class stat:
                         # only if y axis is positive
                         if y_pos > 0:
                             plt.annotate(group_let_df.loc[colbar[0], xbarcol[i]], xy=(x_pos, y_pos),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
                         if y_pos_2 > 0:
                             plt.annotate(group_let_df.loc[colbar[1], xbarcol[i]], xy=(x_pos_2, y_pos_2),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
                         if y_pos_3 > 0:
                             plt.annotate(group_let_df.loc[colbar[2], xbarcol[i]], xy=(x_pos_3, y_pos_3),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
                         if y_pos_4 > 0:
                             plt.annotate(group_let_df.loc[colbar[3], xbarcol[i]], xy=(x_pos_4, y_pos_4),
-                                         fontsize=sign_symbol_opts['fontsize'], ha="center")
+                                         fontsize=sign_symbol_opts['fontsize'], ha="center",
+                                         fontfamily=sign_symbol_opts['fontname'], rotation=sign_symbol_opts['rotation'])
 
                     # need to work on this for 4 bars
                     if pv:
                         pv_symb_1 = general.pvalue_symbol(pv[i][0], sign_symbol_opts['symbol'])
                         pv_symb_2 = general.pvalue_symbol(pv[i][1], sign_symbol_opts['symbol'])
                         pv_symb_3 = general.pvalue_symbol(pv[i][2], sign_symbol_opts['symbol'])
+                        pv_symb_4 = general.pvalue_symbol(pv[i][3], sign_symbol_opts['symbol'])
                         if pv_symb_1:
                             plt.annotate(pv_symb_1, xy=(x_pos, y_pos), fontsize=sign_symbol_opts['fontsize'],
-                                         ha="center")
+                                         ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                         if pv_symb_2:
                             plt.annotate(pv_symb_2, xy=(x_pos_2, y_pos_2), fontsize=sign_symbol_opts['fontsize'],
-                                         ha="center")
+                                         ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
                         if pv_symb_3:
                             plt.annotate(pv_symb_3, xy=(x_pos_3, y_pos_3), fontsize=sign_symbol_opts['fontsize'],
-                                         ha="center")
+                                         ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
+                        if pv_symb_4:
+                            plt.annotate(pv_symb_4, xy=(x_pos_4, y_pos_4), fontsize=sign_symbol_opts['fontsize'],
+                                         ha="center", fontfamily=sign_symbol_opts['fontname'],
+                                             rotation=sign_symbol_opts['rotation'])
             elif len(colbar) == 5:
                 for i in xbar:
                     x_pos = xbar[i]
