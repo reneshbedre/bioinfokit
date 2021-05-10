@@ -1,3 +1,7 @@
+v2.0.4 has the following updates and changes (May 10, 2021)
+- New class `Fasta` replcaed with old `fasta`
+- `Fasta.split_fasta` function added in `analys` module
+
 v2.0.3 has the following updates and changes (April 14, 2021)
 - New class `GeneExpression` and `General` added
 - MA plot updated for adding the label names to genes and plot title  

@@ -491,7 +491,7 @@ Manhattan plot image in same directory (Manhattan.png)
 
 ### Variant annotation 
 
-`latest update v0.9.3`
+latest update v0.9.3
 
 Assign genetic features and function to the variants in VCF file
 
@@ -512,7 +512,7 @@ Tab-delimited text file with annotation (annotated text file will be saved in sa
 
 ###  Concatenate VCF files
 
-`latest update v0.9.4`
+latest update v0.9.4
 
 Concatenate multiple VCF files into single VCF file (for example, VCF files for each chromosome)
 
@@ -606,9 +606,9 @@ Sequencing coverage of the given FASTQ file
 
 ### Reverse complement of DNA sequence
 
-`latest update v0.9.8`
+latest update v2.0.4
 
-`bioinfokit.analys.fasta.rev_com(sequence)`
+`bioinfokit.analys.Fasta.rev_com(sequence)`
 
 Parameters | Description
 ------------ | -------------
@@ -658,9 +658,11 @@ GTF format genome annotation file (file.gtf will be saved in same directory)
 
 ### Bioinformatics file readers and processing (FASTA, FASTQ, and VCF)
 
+latest update v2.0.4
+
 Function | Parameters | Description
 ------------|---------- | -------------
-`bioinfokit.analys.fasta.fasta_reader(file)` | `FASTA file` | FASTA file reader
+`bioinfokit.analys.Fasta.fasta_reader(file)` | `FASTA file` | FASTA file reader
 `bioinfokit.analys.fastq.fastq_reader(file)` | `FASTQ file` | FASTQ file reader
 `bioinfokit.analys.marker.vcfreader(file)` | `VCF file` | VCF file reader
 
@@ -672,9 +674,9 @@ File generator object (can be iterated only once) that can be parsed for the rec
 
 ### Extract subsequence from FASTA files
 
-latest update v0.9.8
+latest update v2.0.4
 
-`bioinfokit.analys.fasta.ext_subseq(file, id, st, end, strand)`
+`bioinfokit.analys.Fasta.ext_subseq(file, id, st, end, strand)`
 
 Extract the subsequence of specified region from FASTA file. If the target subsequence region is on minus strand. the
 reverse complementary of subsequence will be printed.
@@ -697,9 +699,9 @@ Subsequence to stdout
 
 ### Extract sequences from FASTA file
 
-latest update v1.0.2
+latest update v2.0.4
 
-`bioinfokit.analys.fasta.extract_seq(file, id)`
+`bioinfokit.analys.Fasta.extract_seq(file, id)`
 
 Extract the sequences from FASTA file based on the list of sequence IDs provided from other file
 
@@ -712,6 +714,24 @@ Returns:
 
 Sequences extracted from FASTA file based on the given IDs provided in id file. Output FASTA file will be saved as 
 output.fasta in current working directory.
+
+### Split FASTA file into multiple FASTA files
+
+latest update v2.0.4
+
+`bioinfokit.analys.Fasta.split_fasta(file, n, bases_per_line)`
+
+Split one big FASTA file into multiple smaller FASTA files
+
+Parameters | Description
+------------ | -------------
+`file` | FASTA file [file] 
+`n` | Number of FASTA files to split the big FASTA file [int][default: 2]
+`bases_per_line` | Number of bases per line for ouput FASTA files [int][default: 60]
+
+Returns:
+
+Number of smaller FASTA files with prefix output (output_0.fasta, output_1.fasta and so on)
 
 
 ## Functional enrichment analysis
@@ -1153,6 +1173,7 @@ Venn plot (venn3.png, venn2.png)
   261-272.  
 - David C. Howell. Multiple Comparisons With Unequal Sample Sizes. https://www.uvm.edu/~statdhtx/StatPages/MultipleComparisons/unequal_ns_and_mult_comp.html
 
+<!--
 ## bioinfokit cited by 11 research articles:
 - Karstensen KT, Schein A, Petri A, Bøgsted M, Dybkær K, Uchida S, Kauppinen S. Long Non-Coding RNAs in Diffuse Large B-Cell Lymphoma. Non-coding RNA. 2021 Mar;7(1):1.
 - de Rezende Rodovalho V, da Luz BS, Nicolas A, do Carmo FL, Jardin J, Briard-Bion V, Jan G, Le Loir Y, de Carvalho Azevedo VA, Guedon E. Environmental conditions modulate the protein content and immunomodulatory activity of extracellular vesicles produced by the probiotic Propionibacterium freudenreichii. Applied and Environmental Microbiology. 2020 Dec 11.
@@ -1169,6 +1190,6 @@ Venn plot (venn3.png, venn2.png)
   24;30(12):4250-65.
   
 Source: https://scholar.google.com/scholar?start=0&q=bioinfokit&hl=en&as_sdt=0,44
+-->
 
-
-Last updated: March 07, 2021
+Last updated: May 10, 2021

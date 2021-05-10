@@ -32,7 +32,7 @@ from subprocess import check_output, STDOUT, CalledProcessError
 from statsmodels.stats.libqsturng import psturng, qsturng
 import collections
 
-__all__ = ['fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
+__all__ = ['Fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
            'genfam', 'anot', 'get_data']
 
 
@@ -42,6 +42,7 @@ def tcsv(file="tab_file"):
 
     for record in tab_file:
         csv_file.writerow(record)
+
 
 class Fasta:
     def __init__(self):
@@ -76,7 +77,7 @@ class Fasta:
 
     @staticmethod
     def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
-        fasta_iter = fasta.fasta_reader(file)
+        fasta_iter = Fasta.fasta_reader(file)
         for record in fasta_iter:
             fasta_header, seq = record
             if id == fasta_header.strip() and strand == "plus":
@@ -85,7 +86,7 @@ class Fasta:
                 print(sub_seq)
             elif id == fasta_header.strip() and strand == "minus":
                 sub_seq = seq[int(st - 1):int(end)]
-                sub_seq_rc = fasta.rev_com(seq=sub_seq)
+                sub_seq_rc = Fasta.rev_com(seq=sub_seq)
                 print(sub_seq_rc)
 
     @staticmethod
@@ -104,7 +105,7 @@ class Fasta:
         value = [1] * list_len
         # id_list converted to dict for faster search
         dict_list = dict(zip(id_list, value))
-        fasta_iter = fasta.fasta_reader(file)
+        fasta_iter = Fasta.fasta_reader(file)
         for record in fasta_iter:
             fasta_header, seq = record
             if fasta_header.strip() in dict_list.keys():
@@ -129,7 +130,7 @@ class Fasta:
         value = [1] * list_len
         # id_list converted to dict for faster search
         dict_list = dict(zip(id_list, value))
-        fasta_iter = fasta.fasta_reader(file)
+        fasta_iter = Fasta.fasta_reader(file)
         for record in fasta_iter:
             fasta_header, seq = record
             if fasta_header.strip() not in dict_list.keys():
@@ -139,24 +140,23 @@ class Fasta:
             id_file.close()
 
     @staticmethod
-    def split_fasta(file="fasta_file", n=2):
-        count_seqs_fasta = 0
+    def split_fasta(file="fasta_file", n=2, bases_per_line=60):
+        seq_ids = []
         fasta_iter = Fasta.fasta_reader(file)
         for record in fasta_iter:
-            count_seqs_fasta += 1
-        num_split = int(int(count_seqs_fasta)/int(n))
-        fasta_iter = Fasta.fasta_reader(file)
-        for i in range(num_split):
-            out_file = open('output_'+str(i)+'.fasta', 'w')
+            header, seq = record
+            seq_ids.append(header)
+        split_ids_list = np.array_split(seq_ids, n)
+        for ind, i in enumerate(split_ids_list):
+            out_file = open('output_'+str(ind)+'.fasta', 'w')
+            value = [1] * len(i)
+            dict_list = dict(zip(i, value))
+            fasta_iter = Fasta.fasta_reader(file)
             for record in fasta_iter:
-            if count <= num_split:
-                count += 1
-                header, seq = record
-
-
-
-
-
+                fasta_header, seq = record
+                if fasta_header.strip() in dict_list.keys():
+                    out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, bases_per_line)) + "\n")
+            out_file.close()
 
 
 class fastq:
@@ -1665,7 +1665,7 @@ class norm:
 
 class assembly:
     def sizdist(self, file='fasta', n=50):
-        fasta_iter = fasta.fasta_reader(file)
+        fasta_iter = Fasta.fasta_reader(file)
         seq_len = []
         total_len_sum = 0
         for record in fasta_iter:
