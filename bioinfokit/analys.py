@@ -36,28 +36,6 @@ __all__ = ['fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff'
            'genfam', 'anot', 'get_data']
 
 
-# remove seqs which match to ids in id file
-def extract_seq_nomatch(file="fasta_file", id="id_file"):
-    # extract seq from fasta file based on id match
-    id_list = []
-    id_file = open(id, "rU")
-    out_file = open("output.fasta", 'w')
-    for line in id_file:
-        id_name = line.rstrip('\n')
-        id_list.append(id_name)
-    list_len = len(id_list)
-    value = [1] * list_len
-    # id_list converted to dict for faster search
-    dict_list = dict(zip(id_list, value))
-    fasta_iter = fasta_reader(file)
-    for record in fasta_iter:
-        fasta_header, seq = record
-        if fasta_header.strip() not in dict_list.keys():
-            out_file.write(">"+fasta_header+"\n"+seq+"\n")
-    out_file.close()
-    id_file.close()
-
-
 def tcsv(file="tab_file"):
     tab_file = csv.reader(open(file, 'r'), dialect=csv.excel_tab)
     csv_file = csv.writer(open('out.csv', 'w', newline=''), dialect=csv.excel)
@@ -71,6 +49,7 @@ class fasta:
         pass
 
     # adapted from https://www.biostars.org/p/710/
+    @staticmethod
     def fasta_reader(file="fasta_file"):
         read_file = open(file, "rU")
         fasta_iter = (rec[1] for rec in groupby(read_file, lambda line: line[0] == ">"))
@@ -80,6 +59,7 @@ class fasta:
             seq = "".join(s.strip() for s in fasta_iter.__next__())
             yield fasta_header, seq
 
+    @staticmethod
     def rev_com(seq=None, file=None):
         if seq is not None:
             rev_seq = seq[::-1]
@@ -95,6 +75,7 @@ class fasta:
                 out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
             out_file.close()
 
+    @staticmethod
     def ext_subseq(file="fasta_file", id="chr", st="start", end="end", strand="plus"):
         fasta_iter = fasta.fasta_reader(file)
         for record in fasta_iter:
@@ -129,6 +110,31 @@ class fasta:
             fasta_header, seq = record
             if fasta_header.strip() in dict_list.keys():
                 out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, 60)) + "\n")
+        out_file.close()
+        if not isinstance(id, pd.Series):
+            id_file.close()
+
+    @staticmethod
+    def extract_seq_nomatch(file="fasta_file", id="id_file"):
+        # remove seqs which match to ids in id file
+        if isinstance(id, pd.Series):
+            id_list = list(id)
+        else:
+            id_list = []
+            id_file = open(id, "rU")
+            for line in id_file:
+                id_name = line.rstrip('\n')
+                id_list.append(id_name)
+        out_file = open("output.fasta", 'w')
+        list_len = len(id_list)
+        value = [1] * list_len
+        # id_list converted to dict for faster search
+        dict_list = dict(zip(id_list, value))
+        fasta_iter = fasta.fasta_reader(file)
+        for record in fasta_iter:
+            fasta_header, seq = record
+            if fasta_header.strip() not in dict_list.keys():
+                out_file.write(">" + fasta_header + "\n" + seq + "\n")
         out_file.close()
         if not isinstance(id, pd.Series):
             id_file.close()
