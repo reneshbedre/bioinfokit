@@ -31,6 +31,7 @@ from shutil import which
 from subprocess import check_output, STDOUT, CalledProcessError
 from statsmodels.stats.libqsturng import psturng, qsturng
 import collections
+import glob
 
 __all__ = ['Fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
            'genfam', 'anot', 'get_data']
@@ -689,6 +690,22 @@ class format:
         else:
             print("\nError: Wrong quality format\n")
             sys.exit(1)
+
+class HtsAna:
+    def __init__(self):
+        pass
+
+    def merge_featureCount():
+        count_files = glob.glob('*.txt')
+        iter = 0
+        for f in count_files:
+            df = pd.read_csv(f, sep='\t')
+            if iter == 0:
+                df_count_mat = df.iloc[:, [0, 6]]
+                iter += 1
+            elif iter > 0:
+                df_temp = df.iloc[:, [0, 6]]
+                df_count_mat = pd.merge(df_count_mat, df_temp, how='left', on='Geneid')
 
 
 class stat:
