@@ -695,8 +695,9 @@ class HtsAna:
     def __init__(self):
         pass
 
-    def merge_featureCount():
-        count_files = glob.glob('*.txt')
+    @staticmethod
+    def merge_featureCount(pattern='*.txt', gene_column_name='Geneid'):
+        count_files = glob.glob(pattern)
         iter = 0
         for f in count_files:
             df = pd.read_csv(f, sep='\t')
@@ -706,6 +707,7 @@ class HtsAna:
             elif iter > 0:
                 df_temp = df.iloc[:, [0, 6]]
                 df_count_mat = pd.merge(df_count_mat, df_temp, how='left', on='Geneid')
+        df_count_mat.to_csv('gene_matrix_count.csv', index=False)
 
 
 class stat:
