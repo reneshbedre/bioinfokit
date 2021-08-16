@@ -706,7 +706,7 @@ class HtsAna:
                 iter += 1
             elif iter > 0:
                 df_temp = df.iloc[:, [0, 6]]
-                df_count_mat = pd.merge(df_count_mat, df_temp, how='left', on='Geneid')
+                df_count_mat = pd.merge(df_count_mat, df_temp, how='left', on=gene_column_name)
         df_count_mat.to_csv('gene_matrix_count.csv', index=False)
 
 
