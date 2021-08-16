@@ -700,7 +700,7 @@ class HtsAna:
         count_files = glob.glob(pattern)
         iter = 0
         for f in count_files:
-            df = pd.read_csv(f, sep='\t')
+            df = pd.read_csv(f, sep='\t', comment='#')
             if iter == 0:
                 df_count_mat = df.iloc[:, [0, 6]]
                 iter += 1
