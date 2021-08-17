@@ -1,5 +1,6 @@
 """
 analys module implements analysis functions related to Bioinformatics, Statistics, and Machine learning:
+High-throughput Bioinformatics data analysis
 Bioinformatics file handling and parsing
 Molecular marker analysis
 Bioinformatics file format conversions
@@ -33,7 +34,7 @@ from statsmodels.stats.libqsturng import psturng, qsturng
 import collections
 import glob
 
-__all__ = ['Fasta', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
+__all__ = ['Fasta', 'HtsAna', 'fastq', 'analys_general', 'marker', 'format', 'stat', 'gff', 'norm', 'assembly', 'lncrna',
            'genfam', 'anot', 'get_data']
 
 
