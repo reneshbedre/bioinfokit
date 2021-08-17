@@ -733,6 +733,22 @@ Returns:
 
 Number of smaller FASTA files with prefix output (output_0.fasta, output_1.fasta and so on)
 
+### Merge counts files from featureCounts
+
+latest update v2.0.5
+
+`bioinfokit.analys.HtsAna.merge_featureCount(pattern, gene_column_name)`
+
+Merge counts files generated from featureCounts when it run individually on large samples. The count files must be in
+same folder and should end with .txt file extension.
+
+Parameters | Description
+------------ | -------------
+`pattern` | file name pattern for each count file [default: '*.txt'] 
+`gene_column_name` | gene id column name for feature and meta-features [default: 'Geneid']
+
+Returns:
+Merge count file (gene_matrix_count.csv) in same folder
 
 ## Functional enrichment analysis
 

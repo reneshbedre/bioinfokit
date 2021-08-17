@@ -691,6 +691,7 @@ class format:
             print("\nError: Wrong quality format\n")
             sys.exit(1)
 
+
 class HtsAna:
     def __init__(self):
         pass

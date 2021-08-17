@@ -1,3 +1,7 @@
+v2.0.5 has the following updates and changes (August 16, 2021)
+- New function `HtsAna.merge_featureCount` added in `analys` module for merging the counts for all samples
+  obtained from featureCounts 
+
 v2.0.4 has the following updates and changes (May 10, 2021)
 - New class `Fasta` replcaed with old `fasta`
 - `Fasta.split_fasta` function added in `analys` module
