@@ -1208,4 +1208,4 @@ Venn plot (venn3.png, venn2.png)
 Source: https://scholar.google.com/scholar?start=0&q=bioinfokit&hl=en&as_sdt=0,44
 -->
 
-Last updated: May 10, 2021
+Last updated: August 16, 2021

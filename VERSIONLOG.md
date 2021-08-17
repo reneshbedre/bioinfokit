@@ -3,7 +3,7 @@ v2.0.5 has the following updates and changes (August 16, 2021)
   obtained from featureCounts 
 
 v2.0.4 has the following updates and changes (May 10, 2021)
-- New class `Fasta` replcaed with old `fasta`
+- New class `Fasta` replaced with old `fasta`
 - `Fasta.split_fasta` function added in `analys` module
 
 v2.0.3 has the following updates and changes (April 14, 2021)
