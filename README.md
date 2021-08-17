@@ -748,6 +748,7 @@ Parameters | Description
 `gene_column_name` | gene id column name for feature and meta-features [default: 'Geneid']
 
 Returns:
+
 Merge count file (gene_matrix_count.csv) in same folder
 
 ## Functional enrichment analysis
