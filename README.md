@@ -604,6 +604,27 @@ Sequencing coverage of the given FASTQ file
 <a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Description and Working example</a>
 
 
+### Split the sequence into smaller subsequences
+
+latest update v2.0.6
+
+`bioinfokit.analys.Fasta.split_seq(seq, seq_size, seq_overlap, any_cond, outfmt)`
+
+Parameters | Description
+------------ | -------------
+`seq` | Input sequence [string]
+`seq_size` | subsequence size [int][default: 3]
+`seq_overlap` | Split the sequence in overlap mode [bool][default: True]
+`any_cond` | Split sequence based on a condition. Note yet defined. 
+`outfmt` | Output format for the subsequences. If parameter set to 'fasta', the file will be saved in same folder with name `output_chunks.fasta` ['list' or 'fasta'][default: 'list']
+
+Returns:
+
+Subsequences in list or fasta file (output_chunks.fasta) format
+
+<a href="https://reneshbedre.com/blog/split-seq.html" target="_blank">Description and Working example</a>
+
+
 ### Reverse complement of DNA sequence
 
 latest update v2.0.4

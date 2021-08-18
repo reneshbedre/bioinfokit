@@ -160,6 +160,43 @@ class Fasta:
                     out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, bases_per_line)) + "\n")
             out_file.close()
 
+    @staticmethod
+    def split_seq(seq=None, seq_size=3, seq_overlap=True, any_cond=False, outfmt='list'):
+        """
+        Split a nucleotide sequence into smaller chunks
+        Parameters
+        seq: Nucleotide sequence to split
+        seq_size: Sequence chunk size
+        seq_overlap: Split sequence in overlap mode
+        any_cond: any conditions for splitting; not yet defined
+        outfmt: Split sequence ouput format (list or fasta) [default: fasta]
+        """
+        if outfmt not in ['list', 'fasta']:
+            raise ValueError('Invalid value for outfmt')
+        if seq is None:
+            raise ValueError('Provide the input sequence')
+        chunk_counter = 1
+        temp_chunks = []
+        if seq_overlap:
+            seq_chunks = [seq[i:i+seq_size] for i in range(0, len(seq), seq_size-(seq_size-1))]
+            if any_cond:
+                for s in seq_chunks:
+                    if s[-1] != 'G':
+                        temp_chunks.append(s[:-1])
+        else:
+            seq_chunks = [seq[i:i+seq_size] for i in range(0, len(seq), seq_size)]
+        if any_cond:
+            seq_chunks = temp_chunks
+            seq_size = seq_size-1
+        if outfmt == 'fasta':
+            out_fasta_file = open('output_chunks.fasta', 'w')
+            for s in seq_chunks:
+                if len(s) == seq_size:
+                    out_fasta_file.write(">" + str(chunk_counter) + "\n" + '\n'.join(wrap(s, 60)) + "\n")
+                    chunk_counter += 1
+        elif outfmt == 'list':
+            print([s for s in seq_chunks if len(s)==seq_size])
+
 
 class fastq:
     def __init__(self):
@@ -2188,13 +2225,6 @@ class genfam:
             return df, plant_name
         else:
             return df, bg_gene_count, bg_trn_count, bg_phytid_count, plant_name
-
-        # bg_gene_count, bg_trn_count, bg_phytid_count = genfam.get_bg_counts(df)
-        # plant_name = 'Amaranthus hypochondriacus v2.1 (Amaranth)'
-        # bg_gene_count = df['loc_len'].sum()
-        # bg_trn_count = df['trn_len'].sum()
-        # bg_phytid_count = df['phyt_id_len'].sum()
-        # return bg_gene_count, bg_trn_count, bg_phytid_count
 
     @staticmethod
     def get_rec_dicts(df=None, glist=None, sname=None, loclen=None, gop=None, gof=None, goc=None):
