@@ -159,6 +159,40 @@ class Fasta:
                     out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, bases_per_line)) + "\n")
             out_file.close()
 
+    @staticmethod
+    def split_seq(seq="sequence", seq_size=10, seq_overlap=True, any_cond=False):
+        """
+        Split a nucleotide sequence into smaller chunks
+        Parameters
+        seq: Nucleotide sequence to split
+        seq_size: Sequence chunk size
+        seq_overlap: Split sequence in overlap mode
+        """
+        if seq_overlap:
+            seq_chunks = [seq[i:i+seq_size] for i in range(0, len(seq), seq_size-1)]
+            if any_cond:
+
+        else:
+            seq_chunks = [seq[i:i+seq_size] for i in range(0, len(seq), seq_size)]
+
+
+        seq_ids = []
+        fasta_iter = Fasta.fasta_reader(file)
+        for record in fasta_iter:
+            header, seq = record
+            seq_ids.append(header)
+        split_ids_list = np.array_split(seq_ids, n)
+        for ind, i in enumerate(split_ids_list):
+            out_file = open('output_' + str(ind) + '.fasta', 'w')
+            value = [1] * len(i)
+            dict_list = dict(zip(i, value))
+            fasta_iter = Fasta.fasta_reader(file)
+            for record in fasta_iter:
+                fasta_header, seq = record
+                if fasta_header.strip() in dict_list.keys():
+                    out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, bases_per_line)) + "\n")
+            out_file.close()
+
 
 class fastq:
     def __init__(self):
