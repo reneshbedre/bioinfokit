@@ -739,7 +739,7 @@ latest update v2.0.5
 
 `bioinfokit.analys.HtsAna.merge_featureCount(pattern, gene_column_name)`
 
-Merge counts files generated from featureCounts when it run individually on large samples. The count files must be in
+Merge counts files generated from featureCounts when it runs individually on large samples. The count files must be in
 same folder and should end with .txt file extension.
 
 Parameters | Description
