@@ -1,3 +1,6 @@
+v2.0.6 has the following updates and changes (August 18, 2021)
+- New function `Fasta.split_seq` added in `analys` module for splitting the sequence into smaller subsequences 
+- 
 v2.0.5 has the following updates and changes (August 16, 2021)
 - New function `HtsAna.merge_featureCount` added in `analys` module for merging the counts for all samples
   obtained from featureCounts 
