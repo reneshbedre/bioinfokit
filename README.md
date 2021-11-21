@@ -77,9 +77,9 @@ python setup.py install
 
 ### Volcano plot
 
-latest update v2.0.1
+latest update v2.0.7
 
-`bioinfokit.visuz.gene_exp.volcano(df, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, dim, r, ar, 
+`bioinfokit.visuz.GeneExpression.volcano(df, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, dim, r, ar, 
     dotsize, markerdot, sign_line, gstyle, show, figtype, axtickfontsize, axtickfontname, axlabelfontsize, 
     axlabelfontname, axxlabel, axylabel, xlm, ylm, plotlegend, legendpos, figname, legendanchor, legendlabels, theme)`
 
@@ -126,9 +126,9 @@ Volcano plot image in same directory (volcano.png)
 
 ### Inverted Volcano plot
 
-latest update v2.0.1
+latest update v2.0.7
 
-`bioinfokit.visuz.gene_exp.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
+`bioinfokit.visuz.GeneExpression.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 
     axtickfontname, plotlegend, legendpos, legendanchor, figname, legendlabels, ar, theme)`
 
@@ -172,18 +172,20 @@ Inverted volcano plot image in same directory (involcano.png)
 
 ### MA plot
 
-latest update v2.0.3
+latest update v2.0.7
 
-`bioinfokit.visuz.GeneExpression.ma(df, lfc, ct_count, st_count, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
+`bioinfokit.visuz.GeneExpression.ma(df, lfc, ct_count, st_count, pv, basemean, lfc_thr, color, dim, dotsize, show, r, valpha, figtype, axxlabel,
     axylabel, axlabelfontsize, axtickfontsize, axtickfontname, xlm, ylm, fclines, fclinescolor, legendpos, legendanchor,
     figname, legendlabels, plotlegend, ar, theme, geneid, genenames, gfont, gstyle, title)`
 
 Parameters | Description
 ------------ | -------------
-`df` |Pandas dataframe  table having atleast gene IDs, log fold change, and normalized counts (control and treatment) columns
-`lfc` | Name of a column having log fold change values [default:logFC]
-`ct_count` | Name of a column having count values for control sample [default:value1]
-`st_count` | Name of a column having count values for treatment sample [default:value2]
+`df` | Pandas dataframe  table having atleast gene IDs, log fold change, and normalized counts (control and treatment) columns
+`lfc` | Name of a column having log fold change values [default:"logFC"]
+`ct_count` | Name of a column having count values for control sample.Ignored if basemean provided [default:"value1"]
+`st_count` | Name of a column having count values for treatment sample. Ignored if basemean provided [default:"value2"]
+`pv` | Name of a column having _p_ values or adjusted _p_ values 
+`basemean` | Basemean (mean of normalized counts) from DESeq2 results 
 `lfc_thr` | Log fold change cutoff for up and downregulated genes [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default:(1.0, 1.0)]
 `color` | [Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of three colors [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) or list][default: ("green", "grey", "red")]
 `dotsize`| The size of the dots in the plot [float][default: 8]
@@ -1230,4 +1232,4 @@ Venn plot (venn3.png, venn2.png)
 Source: https://scholar.google.com/scholar?start=0&q=bioinfokit&hl=en&as_sdt=0,44
 -->
 
-Last updated: August 16, 2021
+Last updated: November 20, 2021
