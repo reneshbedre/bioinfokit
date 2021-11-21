@@ -1,4 +1,4 @@
-v2.0.7 has the following updates and changes (November 20, 2021)
+v2.0.7 and v2.0.8 has the following updates and changes (November 20, 2021)
 - `volcano` and `involcano` functions added to `GeneExpression` class
 - `ma` function for MA plot updated and added basemean and _p_ value parameters. basemean parameter
 is useful for visualizing the results from _DESeq2_.

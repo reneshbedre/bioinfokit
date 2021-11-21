@@ -77,7 +77,7 @@ python setup.py install
 
 ### Volcano plot
 
-latest update v2.0.7
+latest update v2.0.8
 
 `bioinfokit.visuz.GeneExpression.volcano(df, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, dim, r, ar, 
     dotsize, markerdot, sign_line, gstyle, show, figtype, axtickfontsize, axtickfontname, axlabelfontsize, 
@@ -126,7 +126,7 @@ Volcano plot image in same directory (volcano.png)
 
 ### Inverted Volcano plot
 
-latest update v2.0.7
+latest update v2.0.8
 
 `bioinfokit.visuz.GeneExpression.involcano(table, lfc, pv, lfc_thr, pv_thr, color, valpha, geneid, genenames, gfont, gstyle,
     dotsize, markerdot, r, dim, show, figtype, axxlabel, axylabel, axlabelfontsize, axtickfontsize, 

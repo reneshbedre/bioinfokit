@@ -173,7 +173,7 @@ class GeneExpression:
             plt.axhline(y=-np.log10(pv_thr[0]), linestyle='--', color='#7d7d7d', linewidth=1)
             plt.axvline(x=lfc_thr[0], linestyle='--', color='#7d7d7d', linewidth=1)
             plt.axvline(x=-lfc_thr[1], linestyle='--', color='#7d7d7d', linewidth=1)
-        GeneExpression.geneplot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+        GeneExpression.gene_plot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
 
         if axxlabel:
             _x = axxlabel
@@ -221,7 +221,7 @@ class GeneExpression:
         else:
             plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
                         s=dotsize, marker=markerdot)
-        GeneExpression.geneplot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
+        GeneExpression.gene_plot(df, geneid, lfc, lfc_thr, pv_thr, genenames, gfont, pv, gstyle)
         plt.gca().invert_yaxis()
         if axxlabel:
             _x = axxlabel
