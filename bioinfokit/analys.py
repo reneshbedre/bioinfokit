@@ -1029,11 +1029,11 @@ class stat:
     def ttest(self, df='dataframe', xfac=None, res=None, evar=True, alpha=0.05, test_type=None, mu=None):
         # drop NaN
         if res != None & xfac != None:
-            df = df.dropna(axis=1, subset = [xfac, res])
+            df = df.dropna(axis=0, subset = [xfac, res])
         elif res != None:
-            df = df.dropna(axis=1, subset = [res])
+            df = df.dropna(axis=0, subset = [res])
         elif xfac != None:
-            df = df.dropna(axis=1, subset = [xfac])
+            df = df.dropna(axis=0, subset = [xfac])
         if df.shape[0] < 2:
             raise Exception("Very few observations to run t-test")
         if alpha < 0 or alpha > 1:
