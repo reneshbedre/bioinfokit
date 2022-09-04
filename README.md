@@ -790,6 +790,8 @@ Returns:
 
 BED file for each chromosome (files will be saved in same directory)
 
+[Working example](https://www.reneshbedre.com/blog/bedtools-genomics.html#38-split-bed-file-by-chromosome)
+
 ## Functional enrichment analysis
 
 ### Gene family enrichment analysis (GenFam) 
