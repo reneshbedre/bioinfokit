@@ -1,3 +1,6 @@
+v2.0.9 has the following updates and changes (September 4, 2022)
+- `split_bed` added to `HtsAna` class. The `split_bed` split the BED file by chromosome
+
 v2.0.7 and v2.0.8 has the following updates and changes (November 20, 2021)
 - `volcano` and `involcano` functions added to `GeneExpression` class
 - `ma` function for MA plot updated and added basemean and _p_ value parameters. basemean parameter

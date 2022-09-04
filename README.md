@@ -774,6 +774,22 @@ Returns:
 
 Merge count file (gene_matrix_count.csv) in same folder
 
+### Split BED file by chromosome
+
+latest update v2.0.9
+
+`bioinfokit.analys.HtsAna.split_bed(bed)`
+
+Split the BED file by chromosome names
+
+Parameters | Description
+------------ | -------------
+`bed` | Input BED file [default: None] 
+
+Returns:
+
+BED file for each chromosome (files will be saved in same directory)
+
 ## Functional enrichment analysis
 
 ### Gene family enrichment analysis (GenFam) 

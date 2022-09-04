@@ -748,6 +748,30 @@ class HtsAna:
                 df_count_mat = pd.merge(df_count_mat, df_temp, how='left', on=gene_column_name)
         df_count_mat.to_csv('gene_matrix_count.csv', index=False)
 
+    @staticmethod
+    def split_bed(bed=None):
+        if bed is None:
+            print("Error: No BED file provided")
+            sys.exit(1)
+        bed_file = open(bed, 'r')
+        chr_dict = dict()
+        for line in bed_file:
+            if line.startswith('track'):
+                continue
+            rec = line.strip().split('\t')
+            chr_dict[rec[0]] = 1
+        bed_file.close()
+
+        for k, v in chr_dict.items():
+            chr_file = open(str(k)+'.bed', 'w')
+            bed_file = open(bed, 'r')
+            for line in bed_file:
+                rec = line.strip().split('\t')
+                if rec[0] == k:
+                    chr_file.write('\t'.join(rec)+'\n')
+            bed_file.close()
+            chr_file.close()
+
 
 class stat:
     def __init__(self):
