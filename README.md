@@ -72,6 +72,9 @@ python setup.py install
 '0.4'
 ```
 
+## How to cite bioinfokit?
+- Renesh Bedre. (2020, March 5). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit. Zenodo. http://doi.org/10.5281/zenodo.3698145.
+- Additionally check <a href='https://zenodo.org/record/3841708#.XyCfi-dOmUk' target='_blank'>Zenodo</a> to cite specific version of bioinfokit
 
 ## Gene expression analysis
 
@@ -1203,9 +1206,6 @@ Venn plot (venn3.png, venn2.png)
 <a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
 
 
-## How to cite bioinfokit?
-- Renesh Bedre. (2020, March 5). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit. Zenodo. http://doi.org/10.5281/zenodo.3698145.
-- Additionally check <a href='https://zenodo.org/record/3841708#.XyCfi-dOmUk' target='_blank'>Zenodo</a> to cite specific version of bioinfokit
 
 
 ## References:
