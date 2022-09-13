@@ -4,7 +4,7 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/bioinfokit?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/bioinfokit)
 [![Build Status](https://travis-ci.org/reneshbedre/bioinfokit.svg?branch=master)](https://travis-ci.org/reneshbedre/bioinfokit)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/bioinfokit/badges/version.svg)](https://anaconda.org/bioconda/bioinfokit)
-[![Buy me a coffee](https://static.pepy.tech/personalized-badge/bioinfokit?period=month&units=international_system&left_color=black&right_color=brightgreen&left_text=Buy me a coffee)](https://www.buymeacoffee.com/renesh)
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-red)](https://www.buymeacoffee.com/renesh)
 
 The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
 visualize, and interpret the biological data generated from genome-scale omics experiments.
