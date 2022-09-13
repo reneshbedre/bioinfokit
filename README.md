@@ -939,7 +939,7 @@ Parameters | Description
 `x_std` | Population standard deviation for x group [float][default: None]
 `y_std` | Population standard deviation for y group [float][default: None]
 `alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
-`test_type` | Type of t-test [int (1,2)][default: None]. <br> <strong><em>1</em></strong>: One sample Z-test <br> <strong><em>2</em></strong>: Two sample Z-test 
+`test_type` | Type of Z-test [int (1,2)][default: None]. <br> <strong><em>1</em></strong>: One sample Z-test <br> <strong><em>2</em></strong>: Two sample Z-test 
 
 Returns:
 
