@@ -4,7 +4,7 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/bioinfokit?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/bioinfokit)
 [![Build Status](https://travis-ci.org/reneshbedre/bioinfokit.svg?branch=master)](https://travis-ci.org/reneshbedre/bioinfokit)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/bioinfokit/badges/version.svg)](https://anaconda.org/bioconda/bioinfokit)
-
+[![Buy me a coffee](https://static.pepy.tech/personalized-badge/bioinfokit?period=month&units=international_system&left_color=black&right_color=brightgreen&left_text=Downloads)](https://www.buymeacoffee.com/renesh)
 
 The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
 visualize, and interpret the biological data generated from genome-scale omics experiments.
@@ -76,6 +76,14 @@ python setup.py install
 - Renesh Bedre. (2020, March 5). reneshbedre/bioinfokit: Bioinformatics data analysis and visualization toolkit. Zenodo. http://doi.org/10.5281/zenodo.3698145.
 - Additionally check <a href='https://zenodo.org/record/3841708#.XyCfi-dOmUk' target='_blank'>Zenodo</a> to cite specific version of bioinfokit
 
+## Support
+
+If you enjoy bioinfokit, consider supporting me,
+
+<a href="https://www.buymeacoffee.com/renesh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
+
+
 ## Gene expression analysis
 
 ### Volcano plot
@@ -125,7 +133,7 @@ Parameters | Description
 Returns:
 
 Volcano plot image in same directory (volcano.png)
-<a href="https://reneshbedre.github.io/blog/volcano.html" target="_blank">Working example</a>
+<a href="https://reneshbedre.com/blog/volcano.html" target="_blank">Working example</a>
 
 ### Inverted Volcano plot
 
@@ -224,7 +232,7 @@ Returns:
 
 MA plot image in same directory (ma.png)
 
-<a href="https://reneshbedre.github.io/blog/ma.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/ma.html" target="_blank">Working example</a>
 
 
 ### Heatmap
@@ -256,7 +264,7 @@ Returns:
 
 heatmap plot (heatmap.png, heatmap_clus.png)
 
-<a href="https://reneshbedre.github.io/blog/hmap.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/heatmap-python.html" target="_blank">Working example</a>
 
 ## Clustering analysis
 ### Scree plot
@@ -283,7 +291,7 @@ Returns:
 
 Scree plot image (screeplot.png will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/principal-component-analysis.html" target="_blank">Working Example</a>
 
 ###  Principal component analysis (PCA) loadings plots
 
@@ -314,7 +322,7 @@ Returns:
 
 PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/principal-component-analysis.html" target="_blank">Working Example</a>
 
 ### Principal component analysis (PCA)  biplots
 
@@ -356,7 +364,7 @@ Returns:
 
 PCA biplot 2D and 3D image (biplot_2d.png and biplot_3d.png will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/pca_3d.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/principal-component-analysis.html" target="_blank">Working Example</a>
 
 ### t-SNE plot
 
@@ -389,7 +397,7 @@ Returns:
 
 t-SNE 2D image (tsne_2d.png will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/tsne.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/tsne.html" target="_blank">Working Example</a>
 
 ## Normalization
 
@@ -409,7 +417,7 @@ Returns:
 
 RPM or CPM normalized Pandas dataframe as class attributes (cpm_norm)
 
-<a href="https://reneshbedre.github.io/blog/expression_units.html#rpm-or-cpm-reads-per-million-mapped-reads-or-counts-per-million-mapped-reads-" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/expression_units.html#rpm-or-cpm-reads-per-million-mapped-reads-or-counts-per-million-mapped-reads-" target="_blank">Working Example</a>
 
 
 ### RPKM or FPKM normalization
@@ -430,7 +438,7 @@ Returns:
 
 RPKM or FPKM normalized Pandas dataframe as class attributes (rpkm_norm)
 
-<a href="https://reneshbedre.github.io/blog/expression_units.html#rpkm-reads-per-kilo-base-per-million-mapped-reads" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/expression_units.html#rpkm-reads-per-kilo-base-per-million-mapped-reads" target="_blank">Working Example</a>
 
 ### TPM normalization
 
@@ -449,7 +457,7 @@ Returns:
 
 TPM normalized Pandas dataframe as class attributes (tpm_norm)
 
-<a href="https://reneshbedre.github.io/blog/expression_units.html#tpm-transcript-per-million" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/expression_units.html#tpm-transcript-per-million" target="_blank">Working Example</a>
 
 
 ## Variant analysis
@@ -513,7 +521,7 @@ Returns:
 
 Tab-delimited text file with annotation (annotated text file will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/vcfanot.html" target="_blank">Working Example</a>
+<a href="https://reneshbedre.com/blog/vcfanot.html" target="_blank">Working Example</a>
 
 ###  Concatenate VCF files
 
@@ -531,7 +539,7 @@ Returns:
 
 Concatenated VCF file (concat_vcf.vcf)
 
-<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/mergevcf.html" target="_blank">Working example</a>
 
 ### Split VCF file
 
@@ -549,7 +557,7 @@ Returns:
 
 VCF files for each chromosome
 
-<a href="https://reneshbedre.github.io/blog/mergevcf.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/mergevcf.html" target="_blank">Working example</a>
 
 
 ## High-throughput sequence analysis
@@ -573,7 +581,7 @@ Returns:
 
 FASTQ files for each SRA accession in the current directory unless specified by `other_opts`
 
-<a href="https://reneshbedre.github.io/blog/fqutil.html" target="_blank">Description and working example</a>
+<a href="https://www.reneshbedre.com/blog/ncbi_sra_toolkit.html" target="_blank">Description and working example</a>
 
 
 
@@ -589,7 +597,7 @@ Returns:
 
 Quality format encoding name for FASTQ file (Supports only Sanger, Illumina 1.8+ and Illumina  1.3/1.4)
 
-<a href="https://reneshbedre.github.io/blog/fqqualfmt.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/fqqualfmt.html" target="_blank">Working Example</a>
 
 ### Sequencing coverage
 
@@ -606,7 +614,7 @@ Returns:
 
 Sequencing coverage of the given FASTQ file
 
-<a href="https://reneshbedre.github.io/blog/seqcov.html" target="_blank">Description and Working example</a>
+<a href="https://www.reneshbedre.com/blog/sequencing-coverage.html" target="_blank">Description and Working example</a>
 
 
 ### Split the sequence into smaller subsequences
@@ -645,7 +653,7 @@ Returns:
 
 Reverse complement of original DNA sequence
 
-<a href="https://reneshbedre.github.io/blog/revcom.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/reverse-complementary.html" target="_blank">Working example</a>
 
 ### File format conversions
 
@@ -663,7 +671,7 @@ Returns:
 
 Output will be saved in same directory
 
-<a href="https://reneshbedre.github.io/blog/format.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/format.html" target="_blank">Working example</a>
 
 ### GFF3 to GTF file format conversion
 
@@ -680,7 +688,7 @@ Returns:
 
 GTF format genome annotation file (file.gtf will be saved in same directory)
 
-<a href="https://reneshbedre.github.io/blog/gffgtf.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/gffgtf.html" target="_blank">Working Example</a>
 
 ### Bioinformatics file readers and processing (FASTA, FASTQ, and VCF)
 
@@ -696,7 +704,7 @@ Returns:
 
 File generator object (can be iterated only once) that can be parsed for the record
 
-<a href="https://reneshbedre.github.io/blog/filereaders.html" target="_blank">Description and working example</a>
+<a href="https://www.reneshbedre.com/blog/filereaders.html" target="_blank">Description and working example</a>
 
 ### Extract subsequence from FASTA files
 
@@ -870,7 +878,7 @@ Returns:
 
 Correlation matrix plot image in same directory (corr_mat.png)
 
-<a href="https://reneshbedre.github.io/blog/corr.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/correlation-analysis.html" target="_blank">Working example</a>
 
 
 ### Bar-dot plot
@@ -915,9 +923,33 @@ Bar-dot plot image in same directory (bardot.png)
 <a href="https://reneshbedre.github.io/blog/bardot.html" target="_blank">Working Example</a>
 
 
+### One sample and two sample Z-tests
+
+`latest update v2.1.0`
+
+`bioinfokit.analys.stat.ztest(df, x, y, mu, x_std, y_std, alpha, test_type)`
+
+Parameters | Description
+------------ | -------------
+`df` | Pandas dataframe for appropriate Z-test. <br> <b>One sample</b>: It should have atleast one variable <br> <b>Two sample independent</b>: It should have atleast two variables 
+`x` | column name for x group [string][default: None]
+`y` | column name for x group [string][default: None]
+`mu` | Population or known mean for the one sample Z-test [float][default: None]
+`x_std` | Population standard deviation for x group [float][default: None]
+`y_std` | Population standard deviation for y group [float][default: None]
+`alpha` | Significance level for confidence interval (CI). If alpha=0.05, then 95% CI will be calculated  [float][default: 0.05]
+`test_type` | Type of t-test [int (1,2)][default: None]. <br> <strong><em>1</em></strong>: One sample Z-test <br> <strong><em>2</em></strong>: Two sample Z-test 
+
+Returns:
+
+Summary output as class attribute (summary and result) 
+
+<a href="https://reneshbedre.com/blog/ttest.html" target="_blank">Description and Working example</a>
+
+
 ### One sample and two sample (independent and paired) t-tests
 
-`latest update v0.9.6`
+`latest update v2.1.0`
 
 `bioinfokit.analys.stat.ttest(df, xfac, res, evar, alpha, test_type, mu)`
 
@@ -933,9 +965,10 @@ Parameters | Description
 
 Returns:
 
-Summary output as class attribute (summary) 
+Summary output as class attribute (summary and result) 
 
-<a href="https://reneshbedre.github.io/blog/ttest.html" target="_blank">Description and Working example</a>
+<a href="https://reneshbedre.com/blog/ttest.html" target="_blank">Description and Working example</a>
+
 
 
 ### Chi-square test 
@@ -954,7 +987,7 @@ Returns:
 
 Summary and expected counts as class attributes (summary and expected_df)
 
-<a href="https://reneshbedre.github.io/blog/chisq.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/chi-square-test.html" target="_blank">Working example</a>
 
 <!--
 ### One-way ANOVA
@@ -991,7 +1024,7 @@ Returns:
 
 Regression analysis summary
 
-<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/linear-regression.html" target="_blank">Working Example</a>
 
 ### Regression plot
 
@@ -1032,7 +1065,7 @@ Returns:
 
 Regression plot image in same directory (reg_plot.png)
 
-<a href="https://reneshbedre.github.io/blog/linearreg.html" target="_blank">Working Example</a>
+<a href="https://www.reneshbedre.com/blog/linear-regression.html" target="_blank">Working Example</a>
 
 
 ### Tukey HSD test
@@ -1060,7 +1093,7 @@ Attribute | Description
 ------------ | -------------
 `tukey_summary` | Pairwise comparisons for main and interaction effects by Tukey HSD test 
 
-<a href="https://reneshbedre.github.io/blog/anova.html" target="_blank">Description and Working example</a>
+<a href="https://www.reneshbedre.com/blog/anova.html" target="_blank">Description and Working example</a>
 
 ### Bartlett's test
 
@@ -1084,7 +1117,7 @@ Attribute | Description
 `bartlett_summary` | Pandas dataframe containing Bartlett's test statistics, degree of freedom, and <i>p</i> value
 
 
-<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
+<a href="https://www.reneshbedre.com/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
 
 
 ### Levene's test
@@ -1110,7 +1143,7 @@ Attribute | Description
 `levene_summary` | Pandas dataframe containing Levene's test statistics, degree of freedom, and <i>p</i> value
 
 
-<a href="https://reneshbedre.github.io/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
+<a href="https://www.reneshbedre.com/blog/anova.html#test-anova-assumptions" target="_blank">Description and Working example</a>
 
 ### ROC plot
 
@@ -1162,7 +1195,7 @@ Parameters | Description
 Returns:
 
 ROC plot image in same directory (roc.png)
-<a href="https://reneshbedre.github.io/blog/logit.html#prediction-of-test-dataset-using-fitted-model" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/logistic-regression.html#prediction-of-test-dataset-using-fitted-model" target="_blank">Working example</a>
 
 
 ### Regression metrics
@@ -1203,7 +1236,7 @@ Returns:
 
 Venn plot (venn3.png, venn2.png)
 
-<a href="https://reneshbedre.github.io/blog/venn.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/venn.html" target="_blank">Working example</a>
 
 
 

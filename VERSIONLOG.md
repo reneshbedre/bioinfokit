@@ -1,3 +1,8 @@
+v2.1.0 has the following updates and changes (September 11, 2022)
+- `analys.stat.ztest()` function added for analyzing one and two sample Z-test
+- Updated `analys.stat.ttest()` function for handling NaN values 
+- `result()` attribute added for `ztest()` and `ttest()` for accessing stat and p values
+
 v2.0.9 has the following updates and changes (September 4, 2022)
 - `split_bed` added to `HtsAna` class. The `split_bed` split the BED file by chromosome
 

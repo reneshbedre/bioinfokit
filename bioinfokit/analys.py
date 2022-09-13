@@ -1052,12 +1052,6 @@ class stat:
 
     def ttest(self, df='dataframe', xfac=None, res=None, evar=True, alpha=0.05, test_type=None, mu=None):
         # drop NaN
-        if res is not None and xfac is not None:
-            df = df.dropna(axis=0, subset = [xfac, res])
-        elif res is not None:
-            df = df.dropna(axis=0, subset = [res])
-        elif xfac is not None:
-            df = df.dropna(axis=0, subset = [xfac])
         if df.shape[0] < 2:
             raise Exception("Very few observations to run t-test")
         if alpha < 0 or alpha > 1:
@@ -1067,41 +1061,40 @@ class stat:
                 raise ValueError("res or mu parameter value is missing")
             if res not in df.columns:
                 raise ValueError("res column is not in dataframe")
-            a_val = df[res].to_numpy()
+            a_val = df[res].dropna().to_numpy()
             res_out = stats.ttest_1samp(a=a_val, popmean=mu, nan_policy='omit')
-            sem = df[res].sem()
+            sem = df[res].dropna().sem()
             if sem == 0:
                 print("\nWarning: the data is constant\n")
             ci = (1 - alpha) * 100
             tcritvar = stats.t.ppf((1 + (1 - alpha)) / 2, len(a_val)-1)
             # print results
             self.summary = "\nOne Sample t-test \n" + "\n" + \
-                           tabulate([["Sample size", len(a_val)], ["Mean", df[res].mean()], ["t", res_out[0]],
+                           tabulate([["Sample size", len(a_val)], ["Mean", df[res].dropna().mean()], ["t", res_out[0]],
                                      ["Df", len(a_val)-1], ["p value (one-tail)", res_out[1]/2],
                                      ["p value (two-tail)", res_out[1]],
-                                     ["Lower " + str(ci) + "%", df[res].mean() - (tcritvar * sem)],
-                                     ["Upper " + str(ci) + "%", df[res].mean() + (tcritvar * sem)]])
+                                     ["Lower " + str(ci) + "%", df[res].dropna().mean() - (tcritvar * sem)],
+                                     ["Upper " + str(ci) + "%", df[res].dropna().mean() + (tcritvar * sem)]])
             # access mean, t value, p value (one-tail), p value (two-tail)
-            self.result = [df[res].mean(), res_out[0], res_out[1]/2, res_out[1]]
+            self.result = [df[res].dropna().mean(), res_out[0], res_out[1]/2, res_out[1]]
         elif test_type == 2:
             if xfac and res is None:
                 raise Exception("xfac or res variable is missing")
             if res not in df.columns or xfac not in df.columns:
                 raise ValueError("res or xfac column is not in dataframe")
-            levels = df[xfac].unique()
+            levels = df[xfac].dropna().unique()
             levels.sort()
             if len(levels) != 2:
                 raise Exception("there must be only two levels")
-            a_val = df.loc[df[xfac] == levels[0], res].to_numpy()
-            b_val = df.loc[df[xfac] == levels[1], res].to_numpy()
+            a_val = df.loc[df[xfac] == levels[0], res].dropna().to_numpy()
+            b_val = df.loc[df[xfac] == levels[1], res].dropna().to_numpy()
             a_count, b_count = len(a_val), len(b_val)
             count = [a_count, b_count]
-            mean = [df.loc[df[xfac] == levels[0], res].mean(), df.loc[df[xfac] == levels[1], res].mean()]
-            sem = [df.loc[df[xfac] == levels[0], res].sem(), df.loc[df[xfac] == levels[1], res].sem()]
-            sd = [df.loc[df[xfac] == levels[0], res].std(), df.loc[df[xfac] == levels[1], res].std()]
+            mean = [df.loc[df[xfac] == levels[0], res].dropna().mean(), df.loc[df[xfac] == levels[1], res].dropna().mean()]
+            sem = [df.loc[df[xfac] == levels[0], res].dropna().sem(), df.loc[df[xfac] == levels[1], res].dropna().sem()]
+            sd = [df.loc[df[xfac] == levels[0], res].dropna().std(), df.loc[df[xfac] == levels[1], res].dropna().std()]
             ci = (1-alpha)*100
             # degree of freedom
-            # a_count, b_count = np.split(count, 2)
             dfa = a_count - 1
             dfb = b_count - 1
             # sample variance
@@ -1188,12 +1181,8 @@ class stat:
 
     def ztest(self, df='dataframe', x=None, y=None, mu=None, x_std=None, y_std=None, alpha=0.05, test_type=None):
         # drop NaN
-        if x is not None and y is not None:
-            df = df.dropna(axis=0, subset = [x, y])
-        elif x is not None:
-            df = df.dropna(axis=0, subset = [x])
         if df.shape[0] < 2:
-            raise Exception("Very few observations to run t-test")
+            raise Exception("Very few observations to run Z-test")
         if alpha < 0 or alpha > 1:
             raise Exception("alpha value must be in between 0 and 1")
         if test_type == 1:
@@ -1201,36 +1190,37 @@ class stat:
                 raise ValueError("x or mu or x_std parameter values are missing")
             if x not in df.columns:
                 raise ValueError("x column is not in dataframe")
-            x_mean = np.mean(df[x].to_numpy())
-            z_val = (x_mean - mu) / (x_std / np.sqrt(df.shape[0]))
+
+            x_mean = np.mean(df[x].dropna().to_numpy())
+            z_val = (x_mean - mu) / (x_std / np.sqrt(df.dropna().shape[0]))
             p_val = stats.norm.sf(abs(z_val)) * 2
             ci = (1 - alpha) * 100
-            zcrit = stats.norm.ppf(1-alpha)
+            zcrit = stats.norm.ppf(1- (alpha / 2))
             # print results
             self.summary = "\nOne Sample Z-test \n" + "\n" + \
-                           tabulate([["Sample size", df.shape[0]], ["Mean", x_mean], ["Z value", z_val],
+                           tabulate([["Sample size", df.dropna().shape[0]], ["Mean", x_mean], ["Z value", z_val],
                                      ["p value (one-tail)", p_val / 2],
                                      ["p value (two-tail)", p_val],
-                                     ["Lower " + str(ci) + "%", x_mean - (zcrit * ((x_std / np.sqrt(df.shape[0]))) )],
-                                     ["Upper " + str(ci) + "%", x_mean + (zcrit * ((x_std / np.sqrt(df.shape[0]))) )]])
+                                     ["Lower " + str(ci) + "%", x_mean - (zcrit * ((x_std / np.sqrt(df.dropna().shape[0]))) )],
+                                     ["Upper " + str(ci) + "%", x_mean + (zcrit * ((x_std / np.sqrt(df.dropna().shape[0]))) )]])
             # access mean, Z value, p value (one-tail), p value (two-tail)
             self.result = [x_mean, z_val, p_val / 2, p_val]
-        if test_type == 2:
+        elif test_type == 2:
             if x is None or x_std is None or y is None or y_std is None:
                 raise ValueError("x or y or x_std or y_std parameter values are missing")
             if x not in df.columns or y not in df.columns:
                 raise ValueError("x or y column is not in dataframe")
-            x_mean = np.mean(df[x].to_numpy())
-            y_mean = np.mean(df[y].to_numpy())
-            se = np.sqrt( ( x_std**2 / len(df[x]) ) + ( y_std**2 / len(df[y]) ))
+            x_mean = np.mean(df[x].dropna().to_numpy())
+            y_mean = np.mean(df[y].dropna().to_numpy())
+            se = np.sqrt( ( x_std**2 / len(df[x].dropna()) ) + ( y_std**2 / len(df[y].dropna()) ))
             z_val = (x_mean - y_mean) / se
             p_val = stats.norm.sf(abs(z_val)) * 2
             ci = (1 - alpha) * 100
-            zcrit = stats.norm.ppf(1-alpha)
+            zcrit = stats.norm.ppf(1-(alpha / 2))
             # print results
             self.summary = "\nTwo Sample Z-test \n" + "\n" + \
-                           tabulate([["Sample size for x", len(df[x])], ["Sample size for y", len(df[y])],
-                                     ["Mean", x_mean], ["Z value", z_val],
+                           tabulate([["Sample size for x", len(df[x].dropna())], ["Sample size for y", len(df[y].dropna())],
+                                     ["Mean of x", x_mean], ["Mean of y", y_mean], ["Z value", z_val],
                                      ["p value (one-tail)", p_val / 2],
                                      ["p value (two-tail)", p_val],
                                      ["Lower " + str(ci) + "%", (x_mean - y_mean) - (zcrit * se)],
