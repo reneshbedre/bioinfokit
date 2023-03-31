@@ -155,16 +155,16 @@ class GeneExpression:
         # plot
         assign_values = {col: i for i, col in enumerate(color)}
         color_result_num = [assign_values[i] for i in df['color_add_axy']]
-        assert len(set(color_result_num)) == 3, \
-            'either significant or non-significant genes are missing; try to change lfc_thr or pv_thr to include ' \
-            'both significant and non-significant genes'
+        if len(set(color_result_num)) != 3:
+            warnings.warn('either significant or non-significant genes are missing; try to change lfc_thr or pv_thr to '
+                          'include both significant and non-significant genes')
         if theme == 'dark':
             general.dark_bg()
         plt.subplots(figsize=dim)
         if plotlegend:
             s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
                             s=dotsize, marker=markerdot)
-            assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+            #  assert len(legendlabels) == 3, 'legendlabels must be size of 3'
             plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos, bbox_to_anchor=legendanchor)
         else:
             plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
@@ -207,15 +207,16 @@ class GeneExpression:
         # plot
         assign_values = {col: i for i, col in enumerate(color)}
         color_result_num = [assign_values[i] for i in df['color_add_axy']]
-        assert len(set(color_result_num)) == 3, 'either significant or non-significant genes are missing; try to change lfc_thr or ' \
-                                           'pv_thr to include  both significant and non-significant genes'
+        if len(set(color_result_num)) != 3:
+            warnings.warn('either significant or non-significant genes are missing; try to change lfc_thr or pv_thr to '
+                          'include both significant and non-significant genes')
         if theme == 'dark':
             general.dark_bg()
         plt.subplots(figsize=dim)
         if plotlegend:
             s = plt.scatter(df[lfc], df['logpv_add_axy'], c=color_result_num, cmap=ListedColormap(color), alpha=valpha,
                     s=dotsize, marker=markerdot)
-            assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+            #  assert len(legendlabels) == 3, 'legendlabels must be size of 3'
             plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
                        bbox_to_anchor=legendanchor)
         else:
@@ -270,16 +271,16 @@ class GeneExpression:
         # plot
         assign_values = {col: i for i, col in enumerate(color)}
         color_result_num = [assign_values[i] for i in df['color_add_axy']]
-        assert len(
-            set(color_result_num)) == 3, 'either significant or non-significant genes are missing; try to change lfc_thr' \
-                                         ' to include both significant and non-significant genes'
+        if len(set(color_result_num)) != 3:
+            warnings.warn('either significant or non-significant genes are missing; try to change lfc_thr or pv_thr to '
+                          'include both significant and non-significant genes')
         if theme:
             General.style_bg(theme)
         plt.subplots(figsize=dim)
         if plotlegend:
             s = plt.scatter(df['A_add_axy'], df[lfc], c=color_result_num, cmap=ListedColormap(color),
                         alpha=valpha, s=dotsize, marker=markerdot)
-            assert len(legendlabels) == 3, 'legendlabels must be size of 3'
+            #  assert len(legendlabels) == 3, 'legendlabels must be size of 3'
             plt.legend(handles=s.legend_elements()[0], labels=legendlabels, loc=legendpos,
                            bbox_to_anchor=legendanchor)
         else:
