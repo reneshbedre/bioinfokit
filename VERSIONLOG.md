@@ -1,3 +1,7 @@
+v2.1.1 has the following updates and changes (September 11, 2022)
+- `analys.Fasta.rev_com()` function updated for taking the input sequences from FASTA file and added support lowercase
+  DNA bases
+
 v2.1.0 has the following updates and changes (September 11, 2022)
 - `analys.stat.ztest()` function added for analyzing one and two sample Z-test
 - Updated `analys.stat.ttest()` function for handling NaN values 

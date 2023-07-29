@@ -65,15 +65,15 @@ class Fasta:
     def rev_com(seq=None, file=None):
         if seq is not None:
             rev_seq = seq[::-1]
-            rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
+            rev_seq = rev_seq.translate(str.maketrans("ATGCUNatgcu", "TACGANtacga"))
             return rev_seq
         elif file is not None:
             out_file = open("output_revcom.fasta", 'w')
-            fasta_iter = fasta_reader(file)
+            fasta_iter = Fasta.fasta_reader(file)
             for record in fasta_iter:
                 fasta_header, seq = record
                 rev_seq = seq[::-1]
-                rev_seq = rev_seq.translate(str.maketrans("ATGCUN", "TACGAN"))
+                rev_seq = rev_seq.translate(str.maketrans("ATGCUNatgcu", "TACGANtacga"))
                 out_file.write(">" + fasta_header + "\n" + rev_seq + "\n")
             out_file.close()
 
@@ -2596,6 +2596,8 @@ class get_data:
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ztest/z_two_samp.csv")
         elif data=='t_pair':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ttest/t_pair.csv")
+        elif data == 'z_pair':
+            self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/ztest/paired_z.csv")
         elif data=='wdbc_train':
             self.data = pd.read_csv("https://reneshbedre.github.io/assets/posts/logit/wdbc_train.csv")
         elif data=='wdbc_test':
