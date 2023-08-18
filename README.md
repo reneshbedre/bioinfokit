@@ -641,7 +641,7 @@ Subsequences in list or fasta file (output_chunks.fasta) format
 
 ### Reverse complement of DNA sequence
 
-latest update v2.0.4
+latest update v2.1.1
 
 `bioinfokit.analys.Fasta.rev_com(sequence)`
 
@@ -654,7 +654,7 @@ Returns:
 
 Reverse complement of original DNA sequence
 
-<a href="https://www.reneshbedre.com/blog/reverse-complementary.html" target="_blank">Working example</a>
+<a href="https://www.reneshbedre.com/blog/reverse-complement-dna-python.html" target="_blank">Working example</a>
 
 ### File format conversions
 
@@ -767,6 +767,22 @@ Parameters | Description
 Returns:
 
 Number of smaller FASTA files with prefix output (output_0.fasta, output_1.fasta and so on)
+
+### Convert multi-line FASTA into single-line FASTA
+
+latest update v2.1.2
+
+`bioinfokit.analys.Fasta.multi_to_single_line(file)`
+
+Convert multi-line FASTA (where sequences are on multi lines) into single-line FASTA (where sequences are in single line)
+
+Parameters | Description
+------------ | -------------
+`file` | FASTA file [file] 
+
+Returns:
+
+Single line FASTA (output.fasta). Output FASTA file will be saved as output.fasta in current working directory.
 
 ### Merge counts files from featureCounts
 

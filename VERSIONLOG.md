@@ -1,3 +1,6 @@
+v2.1.2 has the following updates and changes (August 18, 2023)
+- `analys.Fasta.multi_to_single_line()` function added for converting multi line FASTA into single line FASTA
+
 v2.1.1 has the following updates and changes (September 11, 2022)
 - `analys.Fasta.rev_com()` function updated for taking the input sequences from FASTA file and added support lowercase
   DNA bases

@@ -161,6 +161,16 @@ class Fasta:
             out_file.close()
 
     @staticmethod
+    # convert multi line to single line FASTA
+    def multi_to_single_line(file="fasta_file"):
+        fasta_iter = Fasta.fasta_reader(file)
+        out_file = open("output.fasta", 'w')
+        for record in fasta_iter:
+            header, seq = record
+            out_file.write(">" + header + "\n" + seq + "\n")
+        out_file.close()
+
+    @staticmethod
     def split_seq(seq=None, seq_size=3, seq_overlap=True, any_cond=False, outfmt='list'):
         """
         Split a nucleotide sequence into smaller chunks
