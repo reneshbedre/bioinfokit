@@ -92,29 +92,38 @@ class Fasta:
                 print(sub_seq_rc)
 
     @staticmethod
-    def extract_seq(file='fasta_file', id='id_file_or_pd_dataframe'):
+    def extract_seq(file="fasta_file", id="id_file_or_pd_dataframe"):
         # extract seq from fasta file based on id match
-        if isinstance(id, pd.Series):
-            id_list = list(id)
+        id_dict = dict()
+        df = pd.read_csv(id, sep = "\t", header = None)
+        if df.shape[1] == 1:
+            df.columns = ["id"]
+            id_dict = dict(zip(df["id"], [1] * len(df)))
+        elif df.shape[1] == 3:
+            df.columns = ["id", "start", "ende"]
+            id_dict = df.set_index("id").agg(list, axis=1).to_dict()
         else:
-            id_list = []
-            id_file = open(id, "rU")
-            for line in id_file:
-                id_name = line.rstrip('\n')
-                id_list.append(id_name)
+            print("There is error in ID file\n")
+
         out_file = open("output.fasta", 'w')
-        list_len = len(id_list)
-        value = [1] * list_len
-        # id_list converted to dict for faster search
-        dict_list = dict(zip(id_list, value))
-        fasta_iter = Fasta.fasta_reader(file)
-        for record in fasta_iter:
-            fasta_header, seq = record
-            if fasta_header.strip() in dict_list.keys():
-                out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, 60)) + "\n")
-        out_file.close()
-        if not isinstance(id, pd.Series):
-            id_file.close()
+        if df.shape[1] == 1:
+            fasta_iter = Fasta.fasta_reader(file)
+            for record in fasta_iter:
+                fasta_header, seq = record
+                if fasta_header.strip() in id_dict.keys():
+                    out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(seq, 60)) + "\n")
+            out_file.close()
+
+        if df.shape[1] == 3:
+            fasta_iter = Fasta.fasta_reader(file)
+            for record in fasta_iter:
+                fasta_header, seq = record
+                for key, value in id_dict.items():
+                    if fasta_header.strip() == key:
+                        sub_seq = seq[int(value[0] - 1):int(value[1])]
+                        out_file.write(">" + fasta_header + "\n" + '\n'.join(wrap(sub_seq, 60)) + "\n")
+            out_file.close()
+
 
     @staticmethod
     def extract_seq_nomatch(file="fasta_file", id="id_file"):

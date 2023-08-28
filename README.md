@@ -4,7 +4,9 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/bioinfokit?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/bioinfokit)
 [![Build Status](https://travis-ci.org/reneshbedre/bioinfokit.svg?branch=master)](https://travis-ci.org/reneshbedre/bioinfokit)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/bioinfokit/badges/version.svg)](https://anaconda.org/bioconda/bioinfokit)
+<!--
 [![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-red)](https://www.buymeacoffee.com/renesh)
+-->
 
 The bioinfokit toolkit aimed to provide various easy-to-use functionalities to analyze,  
 visualize, and interpret the biological data generated from genome-scale omics experiments.
@@ -734,7 +736,7 @@ Subsequence to stdout
 
 ### Extract sequences from FASTA file
 
-latest update v2.0.4
+latest update v2.1.3
 
 `bioinfokit.analys.Fasta.extract_seq(file, id)`
 
@@ -743,12 +745,15 @@ Extract the sequences from FASTA file based on the list of sequence IDs provided
 Parameters | Description
 ------------ | -------------
 `file` | FASTA file [file] 
-`id` | List of sequence IDs separated by new line [file] or Pandas series
+`id` | List of sequence IDs separated by new line. This file can also contain the ID, start and end coordinates separated by TAB [file]
 
 Returns:
 
 Sequences extracted from FASTA file based on the given IDs provided in id file. Output FASTA file will be saved as 
 output.fasta in current working directory.
+
+<a href="https://www.reneshbedre.com/blog/extract-seq-fasta-python.html" target="_blank">Description and working example</a>
+
 
 ### Split FASTA file into multiple FASTA files
 
@@ -783,6 +788,9 @@ Parameters | Description
 Returns:
 
 Single line FASTA (output.fasta). Output FASTA file will be saved as output.fasta in current working directory.
+
+<a href="https://www.reneshbedre.com/blog/convert-multi-single-line-fasta.html" target="_blank">Description and working example</a>
+
 
 ### Merge counts files from featureCounts
 

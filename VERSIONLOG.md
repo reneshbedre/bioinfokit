@@ -1,3 +1,7 @@
+v2.1.3 has the following updates and changes (August 27, 2023)
+- `analys.Fasta.extract_seq()` function updated to extract the sequences based on specific region from the FASTA file.
+  The support for input as pandas Series is removed.
+
 v2.1.2 has the following updates and changes (August 18, 2023)
 - `analys.Fasta.multi_to_single_line()` function added for converting multi line FASTA into single line FASTA
 
