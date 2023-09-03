@@ -577,15 +577,18 @@ class marker:
         if markeridcol is not None:
             if markernames is not None and markernames is True:
                 for i in df[markeridcol].unique():
-                    if df.loc[df[markeridcol] == i, pv].iloc[0] <= gwasp:
-                        if gstyle == 1:
-                            plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0],
-                                    str(i), fontsize=gfont)
-                        elif gstyle == 2:
-                            plt.annotate(i, xy=(df.loc[df[markeridcol] == i, 'ind'].iloc[0], df.loc[df[markeridcol] == i, 'tpval'].iloc[0]),
-                                         xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
-                                         bbox=dict(boxstyle="round", alpha=0.2),
-                                         arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.2, relpos=(0, 0)))
+                    for j in range(len(df[chr].unique())):
+                        if df.loc[df[markeridcol] == i, pv].iloc[j] <= gwasp:
+                            if gstyle == 1:
+                                plt.text(df.loc[df[markeridcol] == i, 'ind'].iloc[j], df.loc[df[markeridcol] == i, 'tpval'].iloc[j],
+                                        str(i), fontsize=gfont)
+                            elif gstyle == 2:
+                                plt.annotate(i, xy=(df.loc[df[markeridcol] == i, 'ind'].iloc[j], df.loc[df[markeridcol] == i, 'tpval'].iloc[j]),
+                                            xycoords='data', xytext=(5, -15), textcoords='offset points', size=6,
+                                            bbox=dict(boxstyle="round", alpha=0.2),
+                                            arrowprops=dict(arrowstyle="wedge,tail_width=0.5", alpha=0.2, relpos=(0, 0)))
+
+
             elif markernames is not None and isinstance(markernames, (tuple, list)):
                 for i in df[markeridcol].unique():
                     if i in markernames:
@@ -631,7 +634,7 @@ class marker:
             df['tpval'] = df[pv]
         # df = df.sort_values(chr)
         # if the column contains numeric strings
-        df = df.loc[pd.to_numeric(df[chr], errors='coerce').sort_values().index]
+        df = df.loc[pd.to_numeric(df[chr], errors='ignore').sort_values().index]
         # add indices
         df['ind'] = range(len(df))
         df_group = df.groupby(chr)
@@ -657,14 +660,12 @@ class marker:
         if theme == 'dark':
             general.dark_bg()
         fig, ax = plt.subplots(figsize=dim)
-        i = 0
-        for label, df1 in df.groupby(chr):
+        for i, (label, df1) in enumerate(df.groupby(chr)):
             df1.plot(kind='scatter', x='ind', y='tpval', color=color_list[i], s=dotsize, alpha=valpha, ax=ax)
             df1_max_ind = df1['ind'].iloc[-1]
             df1_min_ind = df1['ind'].iloc[0]
             xlabels.append(label)
             xticks.append((df1_max_ind - (df1_max_ind - df1_min_ind) / 2))
-            i += 1
 
         # add GWAS significant line
         if gwas_sign_line is True:
@@ -681,7 +682,7 @@ class marker:
         else:
             ylm = np.arange(0, max(df['tpval']+1), 1)
         ax.set_yticks(ylm)
-        ax.set_xticklabels(xlabels, rotation=ar)
+        ax.set_xticklabels(xlabels, fontsize=axtickfontsize, fontproperties=axtickfontname, rotation=ar)
         # ax.set_yticklabels(ylm, fontsize=axtickfontsize, fontname=axtickfontname, rotation=ar)
         if axxlabel:
             _x = axxlabel
