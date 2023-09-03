@@ -713,7 +713,7 @@ class stat:
     def bardot(df="dataframe", dim=(6, 4), bw=0.4, colorbar="#f2aa4cff", colordot=["#101820ff"], hbsize=4, r=300, ar=0,
                dotsize=6, valphabar=1, valphadot=1, markerdot="o", errorbar=True, show=False, ylm=None, axtickfontsize=9,
                axtickfontname="Arial", axlabelfontsize=9, axlabelfontname="Arial", yerrlw=None, yerrcw=None, axxlabel=None,
-                axylabel=None, figtype='png'):
+                axylabel=None, figtype='png', theme=None):
         # set axis labels to None
         _x = None
         _y = None
