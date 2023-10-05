@@ -385,7 +385,7 @@ class analys_general:
                         df_counts += 1
                     elif funct == 'get_dict':
                         mult_group[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) &
-                                                      (df[xfac_var[1]] == ele2)].mean().loc[res_var]
+                                                      (df[xfac_var[1]] == ele2)][res_var].mean()
                         mult_group_count[(ele1, ele2)] = df[(df[xfac_var[0]] == ele1) &
                                                             (df[xfac_var[1]] == ele2)].shape[0]
 
@@ -405,7 +405,7 @@ class analys_general:
                             df_counts += 1
                         elif funct == 'get_dict':
                             mult_group[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) & (df[xfac_var[1]] == ele2) &
-                                                                (df[xfac_var[2]] == ele3)].mean().loc[res_var]
+                                                                (df[xfac_var[2]] == ele3)][res_var].mean()
                             mult_group_count[(ele1, ele2, ele3)] = df[(df[xfac_var[0]] == ele1) &
                                                                       (df[xfac_var[1]] == ele2) &
                                                                       (df[xfac_var[2]] == ele3)].shape[0]
@@ -418,7 +418,7 @@ class analys_general:
                     group_list.append(list(df[df[xfac_var] == ele][res_var]))
                     df_counts += 1
                 elif funct == 'get_dict':
-                    mult_group[ele] = df[df[xfac_var] == ele].mean().loc[res_var]
+                    mult_group[ele] = df[df[xfac_var] == ele][res_var].mean()
                     mult_group_count[ele] = df[df[xfac_var] == ele].shape[0]
         elif isinstance(xfac_var, list) and len(xfac_var) > 3:
             raise Exception('Only three factors supported')
@@ -1188,13 +1188,13 @@ class stat:
             tcritvar = stats.t.ppf((1 + (1 - alpha)) / 2, len(a_val)-1)
             # print results
             self.summary = "\nPaired t-test \n" + "\n" + \
-                           tabulate([["Sample size", len(a_val)], ["Difference Mean", df['diff_betw_res'].mean()], ["t", res_out[0]],
+                           tabulate([["Sample size", len(a_val)], ["Difference Mean", df['diff_betw_res'].mean(numeric_only=True)], ["t", res_out[0]],
                                      ["Df", len(a_val)-1], ["p value (one-tail)", res_out[1]/2],
                                      ["p value (two-tail)", res_out[1]],
-                                     ["Lower " + str(ci) + "%", df['diff_betw_res'].mean() - (tcritvar * sem)],
-                                     ["Upper " + str(ci) + "%", df['diff_betw_res'].mean() + (tcritvar * sem)]])
+                                     ["Lower " + str(ci) + "%", df['diff_betw_res'].mean(numeric_only=True) - (tcritvar * sem)],
+                                     ["Upper " + str(ci) + "%", df['diff_betw_res'].mean(numeric_only=True) + (tcritvar * sem)]])
             # access mean, t value, p value (one-tail), p value (two-tail)
-            self.result = [df['diff_betw_res'].mean(), res_out[0], res_out[1]/2, res_out[1]]
+            self.result = [df['diff_betw_res'].mean(numeric_only=True), res_out[0], res_out[1]/2, res_out[1]]
         else:
             raise ValueError("Provide a value to test_type parameter for appropriate t-test")
 
