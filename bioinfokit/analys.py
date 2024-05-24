@@ -216,6 +216,16 @@ class Fasta:
         elif outfmt == 'list':
             print([s for s in seq_chunks if len(s)==seq_size])
 
+    @staticmethod
+    # convert multi line to single line FASTA
+    def max_min_len(file=None):
+        fasta_iter = Fasta.fasta_reader(file)
+        len_dict = dict()
+        for record in fasta_iter:
+            header, seq = record
+            len_dict[header] = int(len(seq))
+        print("Max Length Seq:", max(len_dict, key=len_dict.get), max(len_dict.values()))
+        print("Min Length Seq:", min(len_dict, key=len_dict.get), min(len_dict.values()))
 
 class fastq:
     def __init__(self):

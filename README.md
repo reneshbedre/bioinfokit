@@ -828,6 +828,24 @@ BED file for each chromosome (files will be saved in same directory)
 
 [Working example](https://www.reneshbedre.com/blog/bedtools-genomics.html#38-split-bed-file-by-chromosome)
 
+### Max and Min sequence lengths from Fasta
+
+latest update v2.1.4
+
+`bioinfokit.analys.Fasta.max_min_len(fasta)`
+
+Find Max and Min sequence lengths from Fasta
+
+Parameters | Description
+------------ | -------------
+`fasta` | Input Fasta file [default: None] 
+
+Returns:
+
+Max and Min sequence lengths from Fasta file
+
+[Working example](https://www.reneshbedre.com/blog/bedtools-genomics.html#38-split-bed-file-by-chromosome)
+
 ## Functional enrichment analysis
 
 ### Gene family enrichment analysis (GenFam) 

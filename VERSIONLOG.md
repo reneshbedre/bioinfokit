@@ -1,3 +1,6 @@
+v2.1.4 has the following updates and changes (May 24, 2024)
+- `analys.Fasta.max_min_len()` function added to find the max and min lengths from the FASTA file.
+
 v2.1.3 has the following updates and changes (August 27, 2023)
 - `analys.Fasta.extract_seq()` function updated to extract the sequences based on specific region from the FASTA file.
   The support for input as pandas Series is removed.
