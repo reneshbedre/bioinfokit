@@ -1423,7 +1423,7 @@ class gff:
         cds_ct = 0
 
         for line in read_gff_file_cds:
-            if not line.startswith('#'):
+            if not line.startswith('#') and line.strip():
                 line = re.split('\s+', line.strip())
                 if line[2] == 'mRNA' or line[2] == 'transcript' or line[2] == trn_feature_name:
                     # attr = re.split(';', line[8])
@@ -1471,7 +1471,7 @@ class gff:
         ttr_i, cds_i, exon_i, ftr_i = dict(), dict(), dict(), dict()
 
         for line in read_gff_file:
-            if not line.startswith('#'):
+            if not line.startswith('#') and line.strip():
                 line = re.split('\s+', line.strip())
                 if line[2] == 'gene':
                     # attr = re.split(';', line[8])
@@ -1711,7 +1711,7 @@ class gff:
         read_gff_file = open(file, 'r')
         transcript_id = ''
         for line in read_gff_file:
-            if not line.startswith('#'):
+            if not line.startswith('#') and line.strip():
                 line = re.split('\t', line.strip())
                 if line[2]=='gene':
                     if 'ID=' in line[8]:
@@ -1854,7 +1854,7 @@ class lncrna:
         mrna_dict_1 = dict()
         line_num = 0
         for line in read_gff_file:
-            if not line.startswith('#'):
+            if not line.startswith('#') and line.strip():
                 line = re.split('\t', line.strip())
                 line_num += 1
                 line.extend([line_num])
