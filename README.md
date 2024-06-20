@@ -301,7 +301,7 @@ Scree plot image (screeplot.png will be saved in same directory)
 `latest update v2.0.1`
 
 `bioinfokit.visuz.cluster.pcaplot(x, y, z, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
-    figtype, r, show, plotlabels, dim, theme)`
+    figtype, r, show, plotlabels, dim, theme, firstToPlot, secondToPlot, thirdToPlot)`
 
 Parameters | Description
 ------------ | -------------
@@ -320,6 +320,9 @@ Parameters | Description
 `plotlabels` | Plot labels as defined by labels parameter [True or False][default:True]
 `dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
+`firstToPlot` | PCA component to plot on the x axis [int (default:0)]
+`secondToPlot` | PCA component to plot on the y axis [int (default:1)]
+`thirdToPlot` | PCA component to plot on the z axis [int (default:2)]
 
 Returns:
 
@@ -333,7 +336,7 @@ PCA loadings plot 2D and 3D image (pcaplot_2d.png and pcaplot_3d.png will be sav
 
 `bioinfokit.visuz.cluster.biplot(cscore, loadings, labels, var1, var2, var3, axlabelfontsize, axlabelfontname,
     figtype, r, show, markerdot, dotsize, valphadot, colordot, arrowcolor, valphaarrow, arrowlinestyle, arrowlinewidth,
-    centerlines, colorlist, legendpos, datapoints, dim, theme)`
+    centerlines, colorlist, legendpos, datapoints, dim, theme, firstToPlot, secondToPlot, thirdToPlot)`
 
 Parameters | Description
 ------------ | -------------
@@ -362,6 +365,9 @@ Parameters | Description
 `datapoints`| plot data points on graph [bool (True or False)][default: True]
 `dim` | Figure size [[Tuple](https://www.reneshbedre.com/blog/python-tuples.html) of two floats (width, height) in inches][default: (6, 4)]
 `theme` | Change background theme. If theme set to `dark`, the dark background will be produced instead of white [string][default:'None']
+`firstToPlot` | PCA component to plot on the x axis [int (default:0)]
+`secondToPlot` | PCA component to plot on the y axis [int (default:1)]
+`thirdToPlot` | PCA component to plot on the z axis [int (default:2)]
 
 Returns:
 
